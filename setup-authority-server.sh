@@ -59,3 +59,5 @@ TestingV3AuthInitialVotingInterval 300
 TestingV3AuthInitialVoteDelay 20
 TestingV3AuthInitialDistDelay 20
 EOL"
+
+sudo /etc/init.d/tor restart
