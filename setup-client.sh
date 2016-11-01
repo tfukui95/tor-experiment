@@ -24,7 +24,7 @@ Log info file /var/lib/tor/info.log
 ProtocolWarnings 1
 SafeLogging 0
 DisableDebuggerAttachment 0
-DirAuthority RS4 orport=5000 no-v2 hs v3ident=finger1 192.168.1.4:7000 finger2
+DirAuthority RS4 orport=5000 no-v2 hs v3ident=$finger1 192.168.1.4:7000 $finger2
 
 SocksPort 9011
 OrPort 5000
