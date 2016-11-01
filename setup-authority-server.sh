@@ -17,10 +17,10 @@ sudo tor-gencert --create-identity-key -m 12 -a 192.168.1.4:7000 \
             -c /var/lib/tor/keys/authority_certificate 
             
 tor --list-fingerprint --orport 1 \
-    --dirserver "x 127.0.0.1:1 ffffffffffffffffffffffffffffffffffffffff" 
+    --dirserver "x 127.0.0.1:1 ffffffffffffffffffffffffffffffffffffffff" \
     
 finger1=$(sudo cat /var/lib/tor/keys/authority_certificate  | grep fingerprint | cut -f 2 -d ' ')
-finger2=$(sudo cat /var/lib/tor/fingerprint | cut -f 2 -d ' ')
+finger2=$(sudo cat /users/tef243/.tor/fingerprint | cut -f 2 -d ' ')
 
 # http://stackoverflow.com/questions/7875540/how-do-you-write-multiple-line-configuration-file-using-bash-and-use-variables
 # http://stackoverflow.com/questions/18836853/sudo-cat-eof-file-doesnt-work-sudo-su-does
