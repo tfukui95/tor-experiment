@@ -31,3 +31,4 @@ OrPort 5000
 Address 192.168.1.1
 EOL"
 
+sudo /etc/init.d/tor restart
