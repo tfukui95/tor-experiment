@@ -39,6 +39,5 @@ IPv6Exit 1
 
 EOL"
 
-sudo /etc/init.d/tor restart
     
 
