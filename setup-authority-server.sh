@@ -32,8 +32,10 @@ ConnLimit 60
 Nickname RS4
 ShutdownWaitLength 0
 PidFile /var/lib/tor/pid
-Log notice file /var/lib/tor/notice.log
-Log info file /var/lib/tor/info.log
+Log notice file /var/log/tor/notice.log
+Log info file /var/log/tor/info.log
+Log debug file /var/log/tor/debug.log
+
 ProtocolWarnings 1
 SafeLogging 0
 DisableDebuggerAttachment 0
