@@ -9,14 +9,17 @@ Why was Tor built in the first place? Let us first take look back at the history
 
 In fact, other than those who would use Tor for cloaking criminal activity, the US Navy needed other people other themselves to use Tor. Using a cloaking software exclusively by the US Navy would conversly decloak the people, because an attacker watching the Tor network would know that anything that goes in or out of the network would be by the US Navy. The US Navy required as diverse of a community of people as possible to use Tor in order to hide themselves behind everyone. This was an essential part in fulfilling their primary objective of cloaking the identity of government and intelligence personnel, which was why Tor became a consumer product that everyone would be able to use. Everything was a balance of priority: Tor would not be the perfect to solution for everything, but it would at least be a solution for their primary objective. The crime that comes out of releasing Tor to the public would need to be dealt with at a later time. 
 
-![alt text](http://geography.oii.ox.ac.uk/wp-content/uploads/2014/06/Tor_Hexagons.png)
+![](http://geography.oii.ox.ac.uk/wp-content/uploads/2014/06/Tor_Hexagons.png)
 
 *Data Source: Internet Geographies at the Oxford Internet Institute*
 
 We can see from the above image that the number of Tor users other than those of the US Navy in fact did increase immensely by placing it on the market. Who are these people that are using Tor? A main group of users of Tor are journalists and activists that live in countries that place restrictions on the Internet. For example many journalists in China use Tor to get past China's national firewall in order to write about events occurring locally around them, in order to create commotion regarding both social and political reform[2]. Other groups of people that want to raise their voice to the public without revealing their identities include activists, whistleblowers, bloggers, and high and low profile people.
 
+## An Overview of Tor Using
+![](https://climateviewer.files.wordpress.com/2013/10/tor-https-01.png?w=940)  
+*Data Source: Electronic Frontier Foundation (EFF): Tor and HTTPS
 
-
+((Question: Am i able to not just copy the picture but the simulation with the buttons?))
 
 
 ## References
