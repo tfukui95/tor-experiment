@@ -17,7 +17,7 @@ We can see from the above image that the number of Tor users other than those of
 
 ## An Overview of Tor Using
 ![](https://climateviewer.files.wordpress.com/2013/10/tor-https-01.png?w=940)  
-*Data Source: Electronic Frontier Foundation (EFF): Tor and HTTPS
+*Data Source: Electronic Frontier Foundation (EFF): Tor and HTTPS  
 (Question for Fraida: Am i able to not just copy the picture but the simulation with the buttons?)
 
 
