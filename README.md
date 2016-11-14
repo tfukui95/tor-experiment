@@ -9,7 +9,8 @@ Why was Tor built in the first place? Let us first take look back at the history
 
 In fact, other than those who would use Tor for cloaking criminal activity, the US Navy needed other people other themselves to use Tor. Using a cloaking software exclusively by the US Navy would conversly decloak the people, because an attacker watching the Tor network would know that anything that goes in or out of the network would be by the US Navy. The US Navy required as diverse of a community of people as possible to use Tor in order to hide themselves behind everyone. This was an essential part in fulfilling their primary objective of cloaking the identity of government and intelligence personnel, which was why Tor became a consumer product that everyone would be able to use. Everything was a balance of priority: Tor would not be the perfect to solution for everything, but it would at least be a solution for their primary objective. The crime that comes out of releasing Tor to the public would need to be dealt with at a later time. 
 
-
+[http://geography.oii.ox.ac.uk/wp-content/uploads/2014/06/Tor_Hexagons.png]
+We can see from the above image that the number of Tor users other than those of the US Navy did explode by placing it on the market.
 
 
 
