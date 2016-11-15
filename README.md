@@ -21,14 +21,18 @@ Research
 
 
 ## An Overview of Tor's Capabilities
+How does Tor actually work? Tor is a software that can run in conjunction with HTTPS, which further increases its security capabilities. HTTPS (Hypertext Transfer Protocol over TLS) is a secure communication protocol used widely in the Internet, which provides authentication of accessed websites and provides privacy of the data that is exchanged between the client, web server, and the website[3]. Encryption of data also occurs, which protects the user from attackers that spy on the network to steal the user's information. Let us take a look at the following example of a simple network to further see the capabilities of Tor and HTTPS.
+
 ![](https://climateviewer.files.wordpress.com/2013/10/tor-https-01.png?w=940)  
 *Data Source: Electronic Frontier Foundation (EFF): Tor and HTTPS  
 (Question for Fraida: Am i able to not just copy the picture but the simulation with the buttons?)
 
-
+The above network shows a number of users/nodes with different roles: user, hacker, NSA, ISP, and others who have data sharing either with the ISP or the site that the user is accessing. The source is the user who is on the laptop, and the destination is the black box named Site.com. The yellow box next to each node represents what information about the network the node can see. We can see that in the above network, every node can see all the information that is being exchanged between the user and the website. This includes the site that the user is accessing, the username and password used to access the site, the actual payload/data that is being exchanged, and the location of the user. This specific scenario is when neither Tor nor HTTPS is being used by the user to access the website. For a hacker, such a case is paradise because they can see everything that you send, and can even steal your username and password information and pretend that they are you and do malicious activities.  
 
 ## References
 
 [0] "Somehting importatn", somebody. [link to page](http://somepage.txt)
   [1] [https://pando.com/2014/07/16/tor-spooks/]
   [2] [https://www.torproject.org/about/torusers.html.en]
+  [3] [https://www.instantssl.com/ssl-certificate-products/https.html]
+  
