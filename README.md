@@ -23,7 +23,7 @@ Research
 ## An Overview of Tor's Capabilities
 How does Tor actually work? Tor is a software that can run in conjunction with HTTPS, which further increases its security capabilities. HTTPS (Hypertext Transfer Protocol over TLS) is a secure communication protocol used widely in the Internet, which provides authentication of accessed websites and provides privacy of the data that is exchanged between the client, web server, and the website[3]. Encryption of data also occurs, which protects the user from attackers that spy on the network to steal the user's information. Let us take a look at the following example of a simple network to further see the capabilities of Tor and HTTPS.
 
-![](https://climateviewer.files.wordpress.com/2013/10/tor-https-01.png?w=940)  
+![](tfukui95.github.com/tor-experiment/img/~Tor~HTTPS.jpg)
 *Data Source: Electronic Frontier Foundation (EFF): Tor and HTTPS  
 (Question for Fraida: Am i able to not just copy the picture but the simulation with the buttons?)
 
