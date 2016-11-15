@@ -32,7 +32,7 @@ The above network shows a number of users/nodes with different roles: user, hack
 ## References
 
 [0] "Somehting importatn", somebody. [link to page](http://somepage.txt)
-  [1] [https://pando.com/2014/07/16/tor-spooks/]
-  [2] [https://www.torproject.org/about/torusers.html.en]
-  [3] [https://www.instantssl.com/ssl-certificate-products/https.html]
+  [1] [https://pando.com/2014/07/16/tor-spooks/]  
+  [2] [https://www.torproject.org/about/torusers.html.en]  
+  [3] [https://www.instantssl.com/ssl-certificate-products/https.html]  
   
