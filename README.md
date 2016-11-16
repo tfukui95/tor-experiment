@@ -1,6 +1,6 @@
 # Anonymity of Network Traffic Using Tor
 
-## Background
+## I. Background
 Today we live in a world where the Internet is accessible from almost anything that we have in our possession. However as Internet continues to become more expansive and accessible, the attacks on people using the Internet by spying on and stealing their information also increases. Nowadays we never know who may be in between you and your friend when sending text messages. How is this problem being solved in today's world? Well if there was no possible solution, I would not be writing this thesis right now. Let us take a deep dive into this solution, known as Tor.
 
 ### Overview of Tor
@@ -20,7 +20,7 @@ We can see from the above image that the number of Tor users other than those of
 Research
 
 
-## An Overview of Tor's Capabilities
+## II. An Overview of Tor's Capabilities
 How does Tor actually work? Tor is a software that can run in conjunction with HTTPS, which further increases its security capabilities. HTTPS (Hypertext Transfer Protocol over TLS) is a secure communication protocol used widely in the Internet, which provides authentication of accessed websites and provides privacy of the data that is exchanged between the client, web server, and the website[3]. Encryption of data also occurs, which protects the user from attackers that spy on the network to steal the user's information. Let us take a look at the following example of a simple network to further see the capabilities of Tor and HTTPS.
 ![](https://github.com/tfukui95/tor-experiment/blob/master/~Tor~HTTPS.PNG)  
 *Data Source: Electronic Frontier Foundation (EFF): Tor and HTTPS*  
@@ -36,10 +36,16 @@ We can clearly see that the user, the website, and those that have data sharing 
 Now let us examine what happens when we only use Tor to access a website:
 ![](https://github.com/tfukui95/tor-experiment/blob/master/Tor~HTTPS.PNG)   
 *Data Source: Electronic Frontier Foundation (EFF): Tor and HTTPS*  
-We now see
+We now observe that in between the two NSA nodes, there are now three new nodes, which represent three tor relays. The hacker, the nodes sharing data with the first ISP, and the first NSA node can only see the location of the user sending traffic. They do not know the username information, the data the user is sending, nor the site that the user is accessing. Why is this the case even when the user is not using HTTPS? This is because Tor also encrypts the information in which the tor relays can only decrypt. This encryption process begins with the user running the Tor software's special proxy called the onion proxy (OP). The OP then accesses a special kind of onion router called the directory server, which is a certain reliable node that provides directories that contain known routers, including their location and current state. Using the directory the OP determines which routers are going to be used, negotiates the encryption keys for each router, and encrypts the packet accordingly. Therefore a user's traffic is encrypted at the user stage by the onion proxy. The reason why the nodes before the first tor relay do not even know which site the user is accessing is because the user's traffic destination is initially the first tor relay in the circuit. Each tor relay in the tor network only knows the certain amount of information that they can decrypt, which is why it becomes harder for hackers and other people spying on one's traffic to figure out who is communicating with who. The specific processes that occur in the Tor process will be explained in much greater detail in the next section, **III. Diving Deeper into the Tor Process**. The last tor relay knows the username information, the data being sent, and the site to access because it is the exit relay's job to send the data to the site. At this point the traffic exits the tor network and mostly everything can be seen by the nodes that are eavesdropping on the network, except for one important piece of information: the user location. After having been bounced around the tor network, the traffic no longer contains the original user's location, which makes it difficult to match which user is accessing the site. However since the user information and data can still be seen, this information can be stolen which is a weakness of using Tor.
+
+We resolve the problem of nodes eavesdropping the second ISP having access to user information by using Tor in conjunction with HTTPS.
+![](https://github.com/tfukui95/tor-experiment/blob/master/TorHTTPS.PNG)  
+*Data Source: Electronic Frontier Foundation (EFF): Tor and HTTPS*  
+
+
+
 
 ## References
-
 [0] "Somehting importatn", somebody. [link to page](http://somepage.txt)  
   [1] [https://pando.com/2014/07/16/tor-spooks/]  
   [2] [https://www.torproject.org/about/torusers.html.en]  
