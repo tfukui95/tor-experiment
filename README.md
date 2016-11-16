@@ -34,6 +34,7 @@ Now let us examine what happens when we use HTTPS to access a website:
 
 We can clearly see that the user, the website, and those that have data sharing with the website still see the all the information. This is expected because the user and the site are the ends of the network, and HTTPS is responsible for encrypting the information that travels between both ends. Due to this encryption, the rest of the network can longer see the username and password of the user, and the data that is being sent to the site. Even with data sharing on the ISP, these nodes cannot decrypt the information. The data sharing must be the site itself to have access to the unencrypted information about the user and the data sent.  
 
+
 Now let us examine what happens when we only use Tor to access a website:
 ![](https://github.com/tfukui95/tor-experiment/blob/master/Tor~HTTPS.PNG)   
 *Data Source: Electronic Frontier Foundation (EFF): Tor and HTTPS
