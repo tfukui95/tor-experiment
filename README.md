@@ -36,7 +36,7 @@ We can clearly see that the user, the website, and those that have data sharing 
 Now let us examine what happens when we only use Tor to access a website:
 ![](https://github.com/tfukui95/tor-experiment/blob/master/Tor~HTTPS.PNG)   
 *Data Source: Electronic Frontier Foundation (EFF): Tor and HTTPS*  
-We
+We now see
 
 ## References
 
