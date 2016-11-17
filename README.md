@@ -42,7 +42,9 @@ The information that the nodes before the entry Tor node can see is still the sa
 
 
 ### Diving Deeper into the Tor Process
+Now that we know what Tor is and the benefits of using Tor to protect your privacy and security, let us examine what goes on behind the scenes of the Tor network. The Tor network consists of onion routers (OR), or nodes that a Tor user's traffic passes through before reaching its destination. There are three main kinds of ORs: entry node, relay node, and exit node. The entry node is where the user's traffic first enters the Tor network. The exit node is conversely where the traffic exits the Tor network. Any nodes in between are relay nodes that simply pass the traffic from one node to the next. The specific functions of each OR will be explained later in the section. Among these ORs there is a special kind of OR called the directory authority (DA), which is a certain more trusted, reliable OR that contains a list of known ORs in the network, including their location and current state. 
 
+The Tor network is constantly changing, and there needs to be some kind of mechanism so that the DAs in the Tor network are constantly aware of these changes that occur. This is where keys come into play. A DA has three kinds of keys: an authority identity key, an authority signing key, and an authority certificate[4]. In order to keep information about the DA up to date, it must sign directory information about itself periodically. This is done by the authority signing key. The authority signing key is not a permanent key, and is replaced around every 3-12 months. In order to authenticate the signing key, a DA has an authority certificate. This certificate must also be authenticated, which is done by the DA's authority identity key. This identity key is a long term key which as the name explains, identifies that the DA truly is a DA. Now that we know the mechanism in which a DA's status is constantly updated, we take a dive into a similar process for the rest of the ORs in the Tor network. A Tor 
 
 
 ## References
@@ -50,4 +52,6 @@ The information that the nodes before the entry Tor node can see is still the sa
   [1] [https://pando.com/2014/07/16/tor-spooks/]  
   [2] [https://www.torproject.org/about/torusers.html.en]  
   [3] [https://www.instantssl.com/ssl-certificate-products/https.html]  
+  [4] [http://liufengyun.chaos-lab.com/prog/2015/01/09/private-tor-network.html]
+  
   
