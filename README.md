@@ -59,6 +59,6 @@ The above shows the structure of a cell, where the top is the control cell struc
   [1] [https://pando.com/2014/07/16/tor-spooks/]  
   [2] [https://www.torproject.org/about/torusers.html.en]  
   [3] [https://www.instantssl.com/ssl-certificate-products/https.html]  
-  [4] [http://liufengyun.chaos-lab.com/prog/2015/01/09/private-tor-network.html]
+  [4] [http://liufengyun.chaos-lab.com/prog/2015/01/09/private-tor-network.html]  
   [5] [https://svn.torproject.org/svn/projects/design-paper/tor-design.pdf]
   
