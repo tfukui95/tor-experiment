@@ -50,7 +50,7 @@ Now that we know the mechanism in which a DA's status is constantly updated, let
 
 ORs pass traffic along the Tor network in fixed-size cells/packets of 512 bytes. Each cell is encrypted in many levels, where these levels are decrypted by a key at each OR until it reaches the exit node where it is then sent to the website. There are two main types of cells: control cells and relay cells. 
 
-![](https://github.com/tfukui95/tor-experiment/blob/master/.PNG)   
+![](https://github.com/tfukui95/tor-experiment/blob/master/cell format.PNG)   
 *Data Source: https://svn.torproject.org*   
 The above shows the structure of a cell, where the top is the control cell structure and the bottom is the relay cell structure. The control cell contains three parts: CircID, CMD, and DATA. CircID is the circuit identifier which specifies which circuit is being referred to. CMD is the command to be done, and DATA is the payload, which contains specific instructions for the command. There are three types of control commands: padding, create/created, and destroy [5]. Padding is a command used to keep a 
 
