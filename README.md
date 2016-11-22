@@ -79,5 +79,5 @@ The DA itself can also be vulnerable to attacks by an adversary, which makes the
   [3] [https://www.instantssl.com/ssl-certificate-products/https.html]  
   [4] [http://liufengyun.chaos-lab.com/prog/2015/01/09/private-tor-network.html]  
   [5] [https://svn.torproject.org/svn/projects/design-paper/tor-design.pdf]
-  [6] [http://tor.stackexchange.com/questions/4939/how-can-i-get-consensus-data-from-directory-authority-servers-for-research-purpo]
+  [6] [http://tor.stackexchange.com/questions/4939/how-can-i-get-consensus-data-from-directory-authority-servers-for-research-purpo]  
   [7] [https://gitweb.torproject.org/torspec.git/tree/tor-spec.txt]
