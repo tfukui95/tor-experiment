@@ -399,7 +399,7 @@ sudo /etc/init.d/tor restart
 To test, run
 
 ```
-curl http://directoryserver/
+curl http://webserver/
 ```
 
 and verify that the server returns the client's IP address.
@@ -407,7 +407,7 @@ and verify that the server returns the client's IP address.
 Next, run
 
 ```
-curl -x socks5://127.0.0.1:9050/ http://directoryserver/
+curl -x socks5://127.0.0.1:9050/ http://webserver/
 ```
 
 and verify that when using the Tor network (through the SOCKS proxy),
@@ -417,12 +417,48 @@ of one of the exit nodes.
 To get more information about circuits available and about which exit relay
 is used for each connection, we can use a couple of Python utility scripts.
 
-First, install some prerequisits:
+First, install some prerequisites:
 
 ```
 sudo apt-get update
 sudo apt-get -y install python-pip
 sudo pip install stem
+```
+
+Then, you can download the utility scripts with
+
+```
+wget https://raw.githubusercontent.com/tfukui95/tor-experiment/master/utilities/exit-relay.py
+wget https://raw.githubusercontent.com/tfukui95/tor-experiment/master/utilities/list-circuits.py
+```
+
+To see what circuits your Tor client is currently aware of, run
+
+```
+sudo python list-circuits.py
+```
+
+To see what exit relay is associated with an outgoing connection, you'll 
+need two terminals open to the client node. On one, run
+
+```
+sudo python exit-relay.py
+```
+
+to start monitoring. On another, make an outgoing connection with
+
+```
+curl -x socks5://127.0.0.1:9050/ http://webserver/                              
+```
+
+and in the first terminal, look for a message like
+
+```
+Exit relay for our connection to 192.168.2.1:80
+  address: 192.168.1.3:5000
+  fingerprint: B1A2C989985CD3C95C0D6C17B0A64A38007F90FB
+  nickname: router3
+  locale: ??
 ```
 
 ## Notes
