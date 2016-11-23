@@ -16,7 +16,7 @@ sudo gpg --keyserver keys.gnupg.net --recv 886DDD89
 sudo gpg --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | sudo apt-key add -
 
 sudo apt-get update
-sudo apt-get -y install tor deb.torproject.org-keyring vim apache2 curl
+sudo apt-get -y install tor deb.torproject.org-keyring vim apache2 curl tor-arm
 ```
 
 ## Bring up a directory authority
@@ -112,13 +112,12 @@ DisableDebuggerAttachment 0
 DirAuthority $HOSTNAME orport=5000 no-v2 hs v3ident=$finger1 192.168.1.4:7000 $finger2
 SocksPort 0
 OrPort 5000
+ControlPort 9051
 Address 192.168.1.4
 DirPort 7000
 # An exit policy that allows exiting to IPv4 LAN
 ExitPolicy accept 192.168.1.0/24:*
-# An exit policy that allows exiting to IPv6 localhost
-ExitPolicy accept [::1]:*
-IPv6Exit 1
+
 AuthoritativeDirectory 1
 V3AuthoritativeDirectory 1
 ContactInfo auth0@test.test
@@ -228,16 +227,16 @@ DirAuthority $HOSTNAME orport=5000 no-v2 hs v3ident=$finger1 192.168.1.4:7000 $f
 
 SocksPort 0
 OrPort 5000
+ControlPort 9051
 
 # An exit policy that allows exiting to IPv4 LAN
 ExitPolicy accept 192.168.1.0/24:*
-# An exit policy that allows exiting to IPv6 localhost
-ExitPolicy accept [::1]:*
-IPv6Exit 1
 EOL"
 ```
 
-This config file created on the directory authority creates a generic config file for all routers, which can then be copied over to a router. The file is saved in `/tmp/router.conf` and can be seen by
+This config file created on the directory authority creates a generic config
+file for all routers, which can then be copied over to a router. The file is
+saved in `/tmp/router.conf` and can be seen by
 
 ```
 cat /tmp/router.conf
@@ -311,6 +310,135 @@ Nov 23 13:06:29.000 [info] dirserv_orconn_tls_done(): Found router $D2EB9948027B
 Repeat all of the above commands for all of the router nodes that you create.
 
 ## Bring up a client
+
+First, stop any currently running Tor process:
+
+```
+sudo /etc/init.d/tor stop
+```
+
+Then, open a Bash shell running as the debian-tor user with:
+
+```
+sudo -u debian-tor bash
+```
+
+Your prompt should now show that you are the debian-tor user. Then, run
+
+```
+tor --list-fingerprint --orport 1 \
+    --dirserver "x 127.0.0.1:1 ffffffffffffffffffffffffffffffffffffffff" \
+    --datadirectory /var/lib/tor/
+```
+
+The output should say something like:
+
+```
+Nov 23 13:25:30.877 [notice] Your Tor server's identity key fingerprint is 'Unnamed 4BD9274359B639B5E812913A9B1962BD84BABFFF'
+Unnamed 4BD9 2743 59B6 39B5 E812 913A 9B19 62BD 84BA BFFF
+```
+
+After this step, run
+
+```
+exit
+```
+
+to go back to your regular (user-owned) shell.
+
+Now in order to create the config file for the client, we need the
+fingerprints of the directory authority, therefore we will create the config
+file in the directory authority first, then copy the file to the client.
+
+Run the following sequence of command on the **Directory Authority**:
+
+```
+finger1=$(sudo cat /var/lib/tor/keys/authority_certificate  | grep fingerprint | cut -f 2 -d ' ')
+finger2=$(sudo cat /var/lib/tor/fingerprint | cut -f 2 -d ' ')
+
+HOSTNAME=$(hostname -s | sed 's/-//g')
+```
+
+
+Then, write the config file with
+
+```
+sudo bash -c "cat >/tmp/client.conf <<EOL
+TestingTorNetwork 1
+DataDirectory /var/lib/tor
+RunAsDaemon 1
+ConnLimit 60
+ShutdownWaitLength 0
+PidFile /var/lib/tor/pid
+Log notice file /var/log/tor/notice.log
+Log info file /var/log/tor/info.log
+Log debug file /var/log/tor/debug.log
+ProtocolWarnings 1
+SafeLogging 0
+DisableDebuggerAttachment 0
+DirAuthority $HOSTNAME orport=5000 no-v2 hs v3ident=$finger1 192.168.1.4:7000 $finger2
+
+SocksPort 9050
+OrPort 5000
+ControlPort 9051
+EOL"
+```
+
+This config file created on the directory authority creates a generic config
+file for a client. The file is saved in `/tmp/client.conf` and can be seen by
+
+```
+cat /tmp/client.conf
+```
+
+Copy the contents of this file. Now, on the **client** node, remove
+the default Tor config file and replace it with the contents of the `/tmp/client.conf` file:
+
+```
+sudo rm /etc/tor/torrc
+sudo vi /etc/tor/torrc
+```
+
+Paste the file contents, the save and close the file.
+
+Now, we'll add some extra config settings that are different on
+each router node: the nickname and the address.
+
+
+```
+HOSTNAME=$(hostname -s | sed 's/-//g')
+echo "Nickname $HOSTNAME" | sudo tee -a /etc/tor/torrc
+ADDRESS=$(hostname -I | tr " " "\n" | grep "192.168")
+echo "Address $ADDRESS" | sudo tee -a /etc/tor/torrc
+```
+
+Now, if you look at the contents of the config file on the client:
+```
+sudo cat /etc/tor/torrc
+```
+
+you should see a couple of lines like
+
+```
+Nickname client
+Address 192.168.1.1
+```
+
+at the end.
+
+Finally, start the Tor service on the client node with
+
+```
+sudo /etc/init.d/tor restart
+```
+
+## Notes
+
+To kill a Tor process, use
+
+```
+sudo pkill -9 tor
+```
 
 ## References
 [1] "Tor FAQ - Key Management" [https://www.torproject.org/docs/faq#KeyManagement](https://www.torproject.org/docs/faq#KeyManagement)  
