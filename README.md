@@ -25,7 +25,35 @@ How does Tor actually work? Tor is a software that can run in conjunction with H
 *Data Source: Electronic Frontier Foundation (EFF): Tor and HTTPS*  
 (Question for Fraida: Am i able to not just copy the picture but the simulation with the buttons?)
 
-The above network shows a number of users/nodes with different roles: user, hacker, NSA, ISP, and others who have data sharing either with the ISP or the site that the user is accessing. The source is the user who is on the laptop, and the destination is the black box named Site.com. The yellow box next to each node represents what information about the network the node can see. We can see that in the above network, every node can see all the information that is being exchanged between the user and the website. This includes the site that the user is accessing, the username and password used to access the site, the actual payload/data that is being exchanged, and the location of the user. This specific scenario is when neither Tor nor HTTPS is being used by the user to access the website. For a hacker, such a case is paradise because they can see everything that you send, and can even steal your username and password information and pretend that they are you and do malicious activities. Users who have data sharing with an ISP are usually law enforcement people who have the rights to access this kind of information. In this case where neither Tor nor HTTPS is used, they can also see all of your information. Next we have the NSA (National Security Agency) which either spies on the network or has secret access to the network through the ISPs. The NSA's aim is primarily to deanonymize users who are using Tor as a method to commit crimes without leaving any tracks. The NSA takes control of web servers by placing their own secret servers to impersonate a specific illegal site and to send malware to the users accessing that site. When neither Tor nor HTTPS is used, the NSA can easily view and access your information. Lastly, the user clearly knows all of the information about itself, and the accessed website also does as well.
+The above network shows a number of users/nodes with different
+roles: user, hacker, NSA, ISP, and others who have data sharing
+either with the ISP or the site that the user is accessing. The
+source is the user who is on the laptop, and the destination is
+the black box named Site.com. The yellow box next to each node
+represents what information about the network the node can see. We
+can see that in the above network, every node can see all the
+information that is being exchanged between the user and the
+website. This includes the site that the user is accessing, the
+username and password used to access the site, the actual
+payload/data that is being exchanged, and the location of the
+user. This specific scenario is when neither Tor nor HTTPS is
+being used by the user to access the website. For a hacker, such a
+case is paradise because they can see everything that you send,
+and can even steal your username and password information and
+pretend that they are you and do malicious activities. Users who
+have data sharing with an ISP are usually law enforcement people
+who have the rights to access this kind of information. In this
+case where neither Tor nor HTTPS is used, they can also see all of 
+your information. Next we have the NSA (National Security Agency)
+which either spies on the network or has secret access to the
+network through the ISPs. The NSA's aim is primarily to deanonymize
+users who are using Tor as a method to commit crimes without
+leaving any tracks. The NSA takes control of web servers by placing
+their own secret servers to impersonate a specific illegal site and
+to send malware to the users accessing that site. When neither Tor
+nor HTTPS is used, the NSA can easily view and access your
+information. Lastly, the user clearly knows all of the information
+about itself, and the accessed website also does as well.
 
 Now let us examine what happens when we use HTTPS to access a website:
 ![](https://github.com/tfukui95/tor-experiment/blob/master/~TorHTTPS.PNG)   
