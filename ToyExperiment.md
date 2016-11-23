@@ -308,6 +308,7 @@ Nov 23 13:06:29.000 [info] dirserv_add_descriptor(): Added descriptor from 'rout
 Nov 23 13:06:29.000 [info] dirserv_orconn_tls_done(): Found router $D2EB9948027BF5795FCA85182869FBFAA7C15B4C~router1 at 192.168.1.2 to be reachable at 192.168.1.2:5000. Yay.
 ```
 
+Repeat all of the above commands for all of the router nodes that you create.
 
 ## Bring up a client
 
