@@ -1,12 +1,13 @@
 # Setting Up Toy Experiment on Tor
 
-For debugging, we would like to put up a working Tor network in three stages:
+## Reserve our topology on GENI
 
-1. Configure one node to act as a directory server. Move on to the next step only when it runs successfully with a config file that tells it to act as a directory server.
-2. Configure one node to act as a relay and use the node from the previous step as the directory server. Move on to the next step only when it runs successfully with a config file that tells it to use that directory server.
-3. Configure one node to act as a client and contact the relay from the previous step.
 
-To start, we installed tor on all of the nodes using the following steps:
+
+## Install Tor software
+
+To start, we installed tor on all of the nodes _except_ the web server
+using the following steps:
 
 ```
 sudo sh -c 'echo "deb http://deb.torproject.org/torproject.org trusty main" >> /etc/apt/sources.list'
@@ -355,40 +356,12 @@ Nov 23 13:25:30.877 [notice] Your Tor server's identity key fingerprint is 'Unna
 Unnamed 4BD9 2743 59B6 39B5 E812 913A 9B19 62BD 84BA BFFF
 ```
 
-
 Download the client config file (that we created on the directory
 server) to the default Tor config file location with:
 
 ```
 wget -O /etc/tor/torrc http://directoryserver/client.conf
 ```
-
-Now, we'll add some extra config settings that are different on
-each node: the nickname and the address.
-
-
-```
-HOSTNAME=$(hostname -s)
-echo "Nickname $HOSTNAME" | sudo tee -a /etc/tor/torrc
-ADDRESS=$(hostname -I | tr " " "\n" | grep "192.168")
-for A in $ADDRESS; do
-  echo "Address $A" | sudo tee -a /etc/tor/torrc
-done
-```
-
-Now, if you look at the contents of the config file on the client:
-```
-sudo cat /etc/tor/torrc
-```
-
-you should see a couple of lines like
-
-```
-Nickname client
-Address 192.168.1.1
-```
-
-at the end.
 
 Finally, start the Tor service on the client node with
 
@@ -438,7 +411,7 @@ To see what circuits your Tor client is currently aware of, run
 sudo python list-circuits.py
 ```
 
-To see what exit relay is associated with an outgoing connection, you'll 
+To see what exit relay is associated with an outgoing connection, you'll
 need two terminals open to the client node. On one, run
 
 ```
