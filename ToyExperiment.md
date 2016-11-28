@@ -25,7 +25,7 @@ On the node that is designated as the web server, set up Apache:
 
 ```
 sudo apt-get update
-sudo apt-get -y install apache php5 libapache2-mod-php5
+sudo apt-get -y install apache2 php5 libapache2-mod-php5
 ```
 
 Then, we will set up a simple PHP script that returns the client's IP addresses
@@ -160,7 +160,14 @@ fingerprints in them, we'll generate them on the directory server (which
 knows its own fingerprints). We'll download them to the individual router
 and client nodes and customize them later.
 
-First, write the router config file with
+First, install apache2, in order to write the router config file and store it
+on the web
+
+```
+sudo apt-get -y install apache2
+```
+
+Next write the router config file with
 
 ```
 sudo bash -c "cat >/var/www/html/router.conf <<EOL
@@ -184,6 +191,9 @@ ControlPort 9051
 
 # An exit policy that allows exiting to IPv4 LAN
 ExitPolicy accept 192.168.1.0/24:*
+ExitPolicy accept 192.168.2.0/24:*
+ExitPolicy accept 192.168.3.0/24:*
+ExitPolicy accept 192.168.4.0/24:*
 EOL"
 ```
 
@@ -269,9 +279,6 @@ Nov 23 12:34:00.137 [notice] Your Tor server's identity key fingerprint is 'Unna
 Unnamed D2EB 9948 027B F579 5FCA 8518 2869 FBFA A7C1 5B4C
 ```
 
-
-to go back to your regular (user-owned) shell.
-
 Now, download the generic router config file that we created on the
 directory server:
 
@@ -285,7 +292,7 @@ each router node: the nickname and the address(es).
 Add the nickname and address(es) with
 
 ```
-HOSTNAME=$(hostname -s')
+HOSTNAME=$(hostname -s)
 echo "Nickname $HOSTNAME" | sudo tee -a /etc/tor/torrc
 ADDRESS=$(hostname -I | tr " " "\n" | grep "192.168")
 for A in $ADDRESS; do
@@ -360,7 +367,18 @@ Download the client config file (that we created on the directory
 server) to the default Tor config file location with:
 
 ```
-wget -O /etc/tor/torrc http://directoryserver/client.conf
+sudo wget -O /etc/tor/torrc http://directoryserver/client.conf
+```
+
+Add the nickname and address(es) with
+
+```
+HOSTNAME=$(hostname -s)
+echo "Nickname $HOSTNAME" | sudo tee -a /etc/tor/torrc
+ADDRESS=$(hostname -I | tr " " "\n" | grep "192.168")
+for A in $ADDRESS; do
+  echo "Address $A" | sudo tee -a /etc/tor/torrc
+done
 ```
 
 Finally, start the Tor service on the client node with
