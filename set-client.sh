@@ -22,5 +22,7 @@ for A in $ADDRESS; do
   echo "Address $A" | sudo tee -a /etc/tor/torrc
 done
 
+sudo cat /etc/tor/torrc
+
 sudo /etc/init.d/tor restart
 
