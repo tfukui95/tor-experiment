@@ -45,6 +45,12 @@ Finally, restart the Apache server:
 sudo /etc/init.d/apache2 restart
 ```
 
+In order to monitor when someone tries to access the webserver, run:
+
+```
+sudo tail -f /var/log/apache2/access.log
+```
+
 ## Bring up a directory authority
 
 Directory authorities help Tor clients learn the addresses of relays that make up the Tor network. Specifically, via the Tor documentation [1]:
@@ -164,7 +170,8 @@ First, install apache2, in order to write the router config file and store it
 on the web
 
 ```
-sudo apt-get -y install apache2
+sudo apt-get update
+sudo apt-get -y install apache2 php5 libapache2-mod-php5
 ```
 
 Next write the router config file with
@@ -322,11 +329,11 @@ sudo /etc/init.d/tor restart
 
 On the directory server, check if it has been made aware of the newly
 added router by searching for its nickname in the log file. For example,
-if the router's nickname is `router1`, check that it has been recognized
+if the router's nickname is `relay1`, check that it has been recognized
 on the directory server with
 
 ```
-sudo cat /var/log/tor/debug.log | grep "router1"
+sudo cat /var/log/tor/debug.log | grep "relay1"
 ```
 
 You should see some output like
@@ -405,6 +412,8 @@ and verify that when using the Tor network (through the SOCKS proxy),
 the server does not know the client's IP address; it returns the IP address
 of one of the exit nodes.
 
+## Testing the Private Tor Network
+### Using Python Utility Scripts
 To get more information about circuits available and about which exit relay
 is used for each connection, we can use a couple of Python utility scripts.
 
@@ -451,6 +460,46 @@ Exit relay for our connection to 192.168.2.1:80
   nickname: router3
   locale: ??
 ```
+### Using Tor Arm
+Another method of figuring out which Tor circuit is being used to access a site
+is by using Tor Arm (anonymizing relay monitor), a program which is serves as a
+terminal status monitor of Tor [4]. Arm provides useful statistics such as
+bandwidth, cpu, and memory usage, as well as known connections, and the tor
+configuration file.
+
+First run
+
+```
+curl -x socks5://127.0.0.1:9050/ http://webserver/
+```
+
+to see which Tor relay is being used as the exit node to access the webserver.
+
+Next, run Arm on each of the Tor relays including the client and the directory
+server. Open up a new terminal for running Arm on the client.
+
+```
+sudo -u debian-tor arm
+```
+
+We can see a running display of bandwidth, cpu, and memory usage. Now from the
+client terminal we will download a large file from the Internet through Tor:
+
+```
+curl -x socks5://127.0.0.1:9050/ -s http://mirror.ufs.ac.za/linuxmint/stable/14/linuxmint-14-kde-dvd-64bit.iso > /dev/null
+```
+
+There will be no output on the screen for the client as it is downloading.
+However on the other client terminal you should observe that the client is
+downloading a file. Other than the Arm window of the client, you should notice a
+similar pattern in three other relay terminals. These three relays are the
+relays being used in the Tor network to access the website and through which
+the file is being downloaded. In order to see which circuit specifically is
+being used, move to the second page of the Arm window of the client to see a
+list of connections that the client knows. Since we found out which relay is
+serving as the exit node before, we should be able to see the circuit that lists
+that information. Make sure that the other two relays are also listed as the
+guard and middle relays.
 
 ## Notes
 
@@ -473,3 +522,4 @@ Use `q` to quit.
 [1] "Tor FAQ - Key Management" [https://www.torproject.org/docs/faq#KeyManagement](https://www.torproject.org/docs/faq#KeyManagement)  
 [2] "How do you write multiple line configuration file using BASH, and use variables on multiline?" YumYumYum, Stack Overflow,  [http://stackoverflow.com/questions/7875540/how-do-you-write-multiple-line-configuration-file-using-bash-and-use-variables](http://stackoverflow.com/questions/7875540/how-do-you-write-multiple-line-configuration-file-using-bash-and-use-variables)  
 [3] "sudo cat << EOF > File doesn't work, sudo su does" iamauser, Stack Overflow, [http://stackoverflow.com/questions/18836853/sudo-cat-eof-file-doesnt-work-sudo-su-does](http://stackoverflow.com/questions/18836853/sudo-cat-eof-file-doesnt-work-sudo-su-does)
+[4] "Arm (Project Page)" [https://www.torproject.org/projects/arm.html.en](https://www.torproject.org/projects/arm.html.en)
