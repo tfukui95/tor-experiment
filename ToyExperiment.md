@@ -503,11 +503,17 @@ guard and middle relays.
 
 ## Notes
 
-Before restarting Tor, you must kill the current Tor process by the following
+Before restarting Tor, you must kill the current Tor process first, and then
+restart Tor.
 
 ```
 sudo pkill -9 tor
+sudo /etc/init.d/tor restart
 ```
+
+It is good practice to restart Tor whenever you haven't used the Tor network
+for a few hours or so, in order to recreate the circuits.
+
 
 To run the Tor monitor, use
 
