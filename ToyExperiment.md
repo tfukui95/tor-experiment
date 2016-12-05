@@ -540,7 +540,7 @@ in the Tor-Arm section above.
 We will require two terminals for the clients for this part. On one, run
 
 ```
-sudo tcpdump -nnxxXSs 1514 -i any 'port 9050'-w client.pcap
+sudo tcpdump -nnxxXSs 1514 -i any 'port 9050' -w client.pcap
 ```
 
 to watch the traffic that is going through the SOCKS proxy port 9050, and then
