@@ -501,6 +501,65 @@ serving as the exit node before, we should be able to see the circuit that lists
 that information. Make sure that the other two relays are also listed as the
 guard and middle relays.
 
+
+## Finding out More Information About the Network
+Now that we were able to figure out which circuit the onion proxy (OP) is using
+to send the client's traffic to its destination, now let's try to see what kind
+of information can be seen at each step of the way. In order to do this, we will
+use a combination of tcpdump, Wireshark and winSCP. Tcpdump is a built-in linux
+function used to watch traffic on a specified network interface. Wireshark is a
+software that can read in a file written by tcpdump, and displays the traffic
+very neatly to allow better observation of the data. WinSCP is a program for
+Windows, that is going to be used to access the tcpdump files that are saved
+on the VMs, and to copy it to our local Desktop, so that we can open the file
+with Wireshark.
+
+### Setting up Wireshark and WinSCP
+Wireshark can be downloaded from the company's [homepage](https://www.wireshark.org/).
+Besides downloading and installing the software, there is no often configuration
+necessary.
+
+WinSCP can also be downloaded from the company's [homepage](https://winscp.net/eng/download.php).
+After installation, we open the application, and immediately a login window
+comes up. To login to a specific VM, we must have certain information available,
+which can be found on GENI, in the Details page of your slice. Choose **SCP** for
+File Protocol. The Host name is the information after the @ symbol used for
+logging into each VM, followed by the port number. Your username is the same as
+the username before the @ symbol. For the password, we must use our ssh key as
+an authentication method. Click "Advanced", followed by "Authentication" under
+SSH. Under Authentication Parameters, click Private Key File, and browse to
+your location of your ssh key. Once you add the key, you will be asked to convert
+your key to PuTTY format because winSCP only supports PuTTY. Go ahead and convert
+the key, and now you can save your login info of your VM, to allow faster login
+the next time.
+
+### Using Tcpdump to Watch Traffic
+First we must figure out which Tor circuit is being used, using the method shown
+in the Tor-Arm section above.
+
+We will require two terminals for the clients for this part. On one, run
+
+```
+sudo tcpdump -nnxxXSs 1514 -i any 'port 9050'-w client.pcap
+```
+
+to watch the traffic that is going through the SOCKS proxy port 9050, and then
+save what it sees in a pcap file called client.pcap.
+
+Next on each relay that is being used in the circuit, run
+
+```
+sudo tcpdump -nnxxXSs 1514 -i any 'port 5000' -w <relay_number>.pcap
+```
+
+where <relay_number> is to be replaced with the number of the specific relay
+that you are working with. For example, if using tcpdump on relay1, the file
+that tcpdump will write to will be relay1.pcap. This tcpdump function will
+watch the traffic that is going through the OR port 5000, and then save what it
+sees in a pcap file.
+
+
+
 ## Notes
 
 Before restarting Tor, you must kill the current Tor process first, and then
