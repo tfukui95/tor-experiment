@@ -558,6 +558,22 @@ that tcpdump will write to will be relay1.pcap. This tcpdump function will
 watch the traffic that is going through the OR port 5000, and then save what it
 sees in a pcap file.
 
+Now at this point we should have four terminals listening on a network. These
+four terminals are the client, and the three ORs being used in the circuit.
+
+Next on the second client terminal, we run
+
+```
+curl -x socks5://127.0.0.1:9050/ http://webserver/
+```
+
+to access the webserver. Since we are using the Tor network to access the site,
+the three ORs must have seen some kind of traffic passing through it. Now let
+us take a look at what the client and each OR saw. Stop the tcpdump processing
+with Ctrl^C. When we stop tcpdump, a file is created with the traffic that was
+seen passing through. Through winSCP, access each of the VMs that was listening
+on the network for Tor traffic. Find the pcap file that was saved, and download
+that file to your Desktop. Now open the files on Wireshark.
 
 
 ## Notes
