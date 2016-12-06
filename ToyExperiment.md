@@ -549,17 +549,37 @@ save what it sees in a pcap file called client.pcap.
 Next on each relay that is being used in the circuit, run
 
 ```
-sudo tcpdump -nnxxXSs 1514 -i any 'port 5000' -w <relay_number>.pcap
+sudo tcpdump -nnxxXSs 1514 -i any 'port 5000' -w relay#.pcap
 ```
 
-where <relay_number> is to be replaced with the number of the specific relay
+where **#** is to be replaced with the number of the specific relay
 that you are working with. For example, if using tcpdump on relay1, the file
 that tcpdump will write to will be relay1.pcap. This tcpdump function will
 watch the traffic that is going through the OR port 5000, and then save what it
 sees in a pcap file.
 
-Now at this point we should have four terminals listening on a network. These
-four terminals are the client, and the three ORs being used in the circuit.
+We must perform one extra step for the exit relay, and that is to open another
+terminal and have the relay listen on port 80, which is the most commonly used
+port for HTTP. On the new terminal run
+
+```
+sudo tcpdump -nnxxXSs 1514 -i any 'port 80' -w exitrelay.pcap
+```
+
+To start listening on the network through port 80.
+
+Lastly we must also set up the web server to have it listen for traffic as well.
+On the web server terminal run
+
+```
+sudo tcpdump -nnxxXSs 1514 -i any 'port 80' -w webserver.pcap
+```
+
+to start listening for traffic on port 80.
+
+Now at this point we should have six terminals listening on a network. These
+five terminals are the client, the three ORs being used in the circuit, an extra
+exit relay terminal, and the web server.
 
 Next on the second client terminal, we run
 
