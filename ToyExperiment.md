@@ -482,11 +482,17 @@ server. Open up a new terminal for running Arm on the client.
 sudo -u debian-tor arm
 ```
 
-We can see a running display of bandwidth, cpu, and memory usage. Now from the
-client terminal we will download a large file from the Internet through Tor:
+We can see a running display of bandwidth, cpu, and memory usage. Now we will
+generate a large file from the webserver. On the webserver run
 
 ```
-curl -x socks5://127.0.0.1:9050/ -s http://mirror.ufs.ac.za/linuxmint/stable/14/linuxmint-14-kde-dvd-64bit.iso > /dev/null
+sudo truncate -s 2G /var/www/html/large
+```
+
+Now from the client terminal we will download a large file from the webserver
+
+```
+curl -x socks5://127.0.0.1:9050/ -s http://webserver/large > /dev/null
 ```
 
 There will be no output on the screen for the client as it is downloading.
@@ -503,6 +509,7 @@ guard and middle relays.
 
 
 ## Finding out More Information About the Network
+
 Now that we were able to figure out which circuit the onion proxy (OP) is using
 to send the client's traffic to its destination, now let's try to see what kind
 of information can be seen at each step of the way. In order to do this, we will
@@ -515,6 +522,7 @@ on the VMs, and to copy it to our local Desktop, so that we can open the file
 with Wireshark.
 
 ### Setting up Wireshark and WinSCP
+
 Wireshark can be downloaded from the company's [homepage](https://www.wireshark.org/).
 Besides downloading and installing the software, there is no often configuration
 necessary.
@@ -594,6 +602,13 @@ with Ctrl^C. When we stop tcpdump, a file is created with the traffic that was
 seen passing through. Through winSCP, access each of the VMs that was listening
 on the network for Tor traffic. Find the pcap file that was saved, and download
 that file to your Desktop. Now open the files on Wireshark.
+
+
+###To Add
+sudo tcpdump -s 1514 -i any 'port 5000' -U -w - | tee testfile2.pcap | tcpdump -nnxxXSs 1514 -r -
+
+stackoverflow: how can i have tcpdump write to file and standard output the
+appropriate data.
 
 
 ## Notes
