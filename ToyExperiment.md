@@ -543,24 +543,41 @@ the next time.
 
 ### Using Tcpdump to Watch Traffic
 First we must figure out which Tor circuit is being used, using the method shown
-in the Tor-Arm section above.
-
-We will require two terminals for the clients for this part. On one, run
+in the Tor-Arm section above. Next we will be using Tcpdump to watch the traffic
+on the network. We want Tcpdump to both display the output to screen while also
+saving the output to a file. The following is the format
 
 ```
-sudo tcpdump -nnxxXSs 1514 -i any 'port 9050' -w client.pcap
+sudo tcpdump -s 1514 -i any 'port <port_num>' -U -w - | tee <name_file>.pcap | tcpdump -nnxxXSs 1514 -r -
+```
+
+where <port_num> is the specific port number to access, and <name_file> is the
+name that you want to save the file as.
+
+We will require three terminals for the clients for this part. On one, run
+
+```
+sudo tcpdump -s 1514 -i any 'port 9050' -U -w - | tee client9050.pcap | tcpdump -nnxxXSs 1514 -r -
 ```
 
 to watch the traffic that is going through the SOCKS proxy port 9050, and then
-save what it sees in a pcap file called client.pcap.
+save what it sees in a pcap file called client9050.pcap. On another client terminal
+run
+
+```
+sudo tcpdump -s 1514 -i any 'port 5000' -U -w - | tee client5000.pcap | tcpdump -nnxxXSs 1514 -r -
+```
+
+to watch the traffic through port 5000, which would be the traffic between the
+SOCKS proxy and the first relay of the Tor network.
 
 Next on each relay that is being used in the circuit, run
 
 ```
-sudo tcpdump -nnxxXSs 1514 -i any 'port 5000' -w relay#.pcap
+sudo tcpdump -s 1514 -i any 'port 5000' -U -w - | tee $(hostname -s).pcap | tcpdump -nnxxXSs 1514 -r -
 ```
 
-where **#** is to be replaced with the number of the specific relay
+where **$(hostname -s)** will be converted to the name of the specific relay
 that you are working with. For example, if using tcpdump on relay1, the file
 that tcpdump will write to will be relay1.pcap. This tcpdump function will
 watch the traffic that is going through the OR port 5000, and then save what it
@@ -571,7 +588,7 @@ terminal and have the relay listen on port 80, which is the most commonly used
 port for HTTP. On the new terminal run
 
 ```
-sudo tcpdump -nnxxXSs 1514 -i any 'port 80' -w exitrelay.pcap
+sudo tcpdump -s 1514 -i any 'port 80' -U -w - | tee exitrelay.pcap | tcpdump -nnxxXSs 1514 -r -
 ```
 
 To start listening on the network through port 80.
@@ -580,16 +597,16 @@ Lastly we must also set up the web server to have it listen for traffic as well.
 On the web server terminal run
 
 ```
-sudo tcpdump -nnxxXSs 1514 -i any 'port 80' -w webserver.pcap
+sudo tcpdump -s 1514 -i any 'port 80' -U -w - | tee webserver.pcap | tcpdump -nnxxXSs 1514 -r -
 ```
 
 to start listening for traffic on port 80.
 
-Now at this point we should have six terminals listening on a network. These
-five terminals are the client, the three ORs being used in the circuit, an extra
-exit relay terminal, and the web server.
+Now at this point we should have seven terminals listening on a network. These
+terminals are the two client terminals, the three ORs being used in the circuit,
+an extra exit relay terminal, and the web server.
 
-Next on the second client terminal, we run
+Next on the third client terminal, we run
 
 ```
 curl -x socks5://127.0.0.1:9050/ http://webserver/
@@ -602,14 +619,6 @@ with Ctrl^C. When we stop tcpdump, a file is created with the traffic that was
 seen passing through. Through winSCP, access each of the VMs that was listening
 on the network for Tor traffic. Find the pcap file that was saved, and download
 that file to your Desktop. Now open the files on Wireshark.
-
-
-###To Add
-sudo tcpdump -s 1514 -i any 'port 5000' -U -w - | tee testfile2.pcap | tcpdump -nnxxXSs 1514 -r -
-
-stackoverflow: how can i have tcpdump write to file and standard output the
-appropriate data.
-
 
 ## Notes
 
@@ -639,3 +648,5 @@ Use `q` to quit.
 [2] "How do you write multiple line configuration file using BASH, and use variables on multiline?" YumYumYum, Stack Overflow,  [http://stackoverflow.com/questions/7875540/how-do-you-write-multiple-line-configuration-file-using-bash-and-use-variables](http://stackoverflow.com/questions/7875540/how-do-you-write-multiple-line-configuration-file-using-bash-and-use-variables)  
 [3] "sudo cat << EOF > File doesn't work, sudo su does" iamauser, Stack Overflow, [http://stackoverflow.com/questions/18836853/sudo-cat-eof-file-doesnt-work-sudo-su-does](http://stackoverflow.com/questions/18836853/sudo-cat-eof-file-doesnt-work-sudo-su-does)
 [4] "Arm (Project Page)" [https://www.torproject.org/projects/arm.html.en](https://www.torproject.org/projects/arm.html.en)
+[5] "How can I have tcpdump write to file and standard output the
+appropriate data." Stack Overflow, [http://stackoverflow.com/questions/25603831/how-can-i-have-tcpdump-write-to-file-and-standard-output-the-appropriate-data](http://stackoverflow.com/questions/25603831/how-can-i-have-tcpdump-write-to-file-and-standard-output-the-appropriate-data)
