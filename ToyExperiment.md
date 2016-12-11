@@ -412,6 +412,15 @@ and verify that when using the Tor network (through the SOCKS proxy),
 the server does not know the client's IP address; it returns the IP address
 of one of the exit nodes.
 
+When can see who has accessed the webserver by running
+
+```
+sudo su
+tail -f /var/log/apache2/access.log
+```
+
+and then running the curl commands again.
+
 ## Testing the Private Tor Network
 ### Using Python Utility Scripts
 To get more information about circuits available and about which exit relay
@@ -460,6 +469,8 @@ Exit relay for our connection to 192.168.2.1:80
   nickname: router3
   locale: ??
 ```
+
+
 ### Using Tor Arm
 Another method of figuring out which Tor circuit is being used to access a site
 is by using Tor Arm (anonymizing relay monitor), a program which is serves as a
