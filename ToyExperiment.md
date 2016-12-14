@@ -394,15 +394,91 @@ Finally, start the Tor service on the client node with
 sudo /etc/init.d/tor restart
 ```
 
-To test, run
+## Testing the Private Tor Network
+
+In order to clearly see the benefits of using the Tor network, we must first
+run a test to see what information can be seen by a hacker when not using Tor.
+
+### Testing the Network Without Using Tor
+
+In order to access the webserver without going through the Tor network, we
+simply run
 
 ```
 curl http://webserver/
 ```
 
-and verify that the server returns the client's IP address.
+and verify that the server returns the client's IP address. You should see
+something like
 
-Next, run
+```
+
+
+```
+
+Next we will be using Tcpdump to watch the traffic on the network. We want
+Tcpdump to both display the output to screen while also saving the output to a
+file. The following is the format
+
+```
+sudo tcpdump -s 1514 -i any 'port <port_num>' -U -w - | tee <name_file>.pcap | tcpdump -nnxxXSs 1514 -r -
+```
+
+where <port_num> is the specific port number to access, and <name_file> is the
+name that you want to save the file as.
+
+Since we are not using the Tor network, we will be listening on port 80 which
+is the most common HTTP port. Have two client terminals opened, and on one,
+start listening through port 80 by running
+
+```
+sudo tcpdump -s 1514 -i any 'port 80' -U -w - | tee clientnotor.pcap | tcpdump -nnxxXSs 1514 -r -
+```
+
+On the webserver terminal also listen through port 80 by running
+
+```
+sudo tcpdump -s 1514 -i any 'port 80' -U -w - | tee servernotor.pcap | tcpdump -nnxxXSs 1514 -r -
+```
+
+On the other client terminal, access the webserver by running
+
+```
+curl http://webserver/
+```
+
+On both terminals that are listening on the network, we should see something
+like
+
+```
+
+
+
+```
+
+which shows how we can see that the client and webserver are communicating
+directly with each other, and something like
+
+```
+
+
+```
+
+which shows how we can see exactly what traffic they are passing to each other.
+We can conclude how communicating only through HTTP allows a person spying on
+this network to see who is communicating with who, and what specifically is
+being communicated. This form is communication is very risky and prone to
+getting your information stolen.
+
+### Testing the Network Without Using Tor
+
+Now we will test the same curl experiment of accessing the webserver, now
+through the Tor network. Then we will compare the results with when we do not
+use Tor.
+
+First we need to find the exit relay that is being used in the Tor network,
+which serves as the relay that sends the data packet to the webserver. In order
+to do this we run
 
 ```
 curl -x socks5://127.0.0.1:9050/ http://webserver/
@@ -410,91 +486,47 @@ curl -x socks5://127.0.0.1:9050/ http://webserver/
 
 and verify that when using the Tor network (through the SOCKS proxy),
 the server does not know the client's IP address; it returns the IP address
-of one of the exit nodes.
+of the exit relay. You should see something like
 
-When can see who has accessed the webserver by running
+```
+
+```
+
+Clearly the returned address is not the client's IP address, but the IP
+address of a Tor relay that we set up. This relay is the exit relay of the
+circuit that is being used.
+
+We can see who and when someone accesses the webserver by running
 
 ```
 sudo su
 tail -f /var/log/apache2/access.log
 ```
 
-and then running the curl commands again.
+and then running the curl command again.
 
-## Testing the Private Tor Network
-### Using Python Utility Scripts
-To get more information about circuits available and about which exit relay
-is used for each connection, we can use a couple of Python utility scripts.
+Our next step is to figure out which Tor circuit is being used to access the
+webserver. This can be done using Tor Arm (anonymizing relay monitor), a program
+which serves as a terminal status monitor of Tor [4]. Arm provides useful
+statistics such as bandwidth, cpu, and memory usage, as well as known
+connections, and the Tor configuration file.
 
-First, install some prerequisites:
-
-```
-sudo apt-get update
-sudo apt-get -y install python-pip
-sudo pip install stem
-```
-
-Then, you can download the utility scripts with
-
-```
-wget https://raw.githubusercontent.com/tfukui95/tor-experiment/master/utilities/exit-relay.py
-wget https://raw.githubusercontent.com/tfukui95/tor-experiment/master/utilities/list-circuits.py
-```
-
-To see what circuits your Tor client is currently aware of, run
-
-```
-sudo python list-circuits.py
-```
-
-To see what exit relay is associated with an outgoing connection, you'll
-need two terminals open to the client node. On one, run
-
-```
-sudo python exit-relay.py
-```
-
-to start monitoring. On another, make an outgoing connection with
-
-```
-curl -x socks5://127.0.0.1:9050/ http://webserver/                              
-```
-
-and in the first terminal, look for a message like
-
-```
-Exit relay for our connection to 192.168.2.1:80
-  address: 192.168.1.3:5000
-  fingerprint: B1A2C989985CD3C95C0D6C17B0A64A38007F90FB
-  nickname: router3
-  locale: ??
-```
-
-
-### Using Tor Arm
-Another method of figuring out which Tor circuit is being used to access a site
-is by using Tor Arm (anonymizing relay monitor), a program which is serves as a
-terminal status monitor of Tor [4]. Arm provides useful statistics such as
-bandwidth, cpu, and memory usage, as well as known connections, and the tor
-configuration file.
-
-First run
-
-```
-curl -x socks5://127.0.0.1:9050/ http://webserver/
-```
-
-to see which Tor relay is being used as the exit node to access the webserver.
-
-Next, run Arm on each of the Tor relays including the client and the directory
-server. Open up a new terminal for running Arm on the client.
+First we run Arm on each of the Tor relays including the client and the directory
+server.
 
 ```
 sudo -u debian-tor arm
 ```
 
-We can see a running display of bandwidth, cpu, and memory usage. Now we will
-generate a large file from the webserver. On the webserver run
+We can see a running display of bandwidth, cpu, and memory usage. On the client's
+Arm window, if we flip to the second page we can see the Tor circuits that are
+available to pass traffic. In order to figure out which circuit is being used,
+we need to pass traffic through the network and observe which Tor relays are
+also passing that same traffic. To do this, we will generate a large file on the
+webserver, to be downloaded by the client to allow enough time for us to observe
+each relay's Arm window to see the passing traffic.
+
+Now we will generate a large file from the webserver. On the webserver run
 
 ```
 sudo truncate -s 2G /var/www/html/large
@@ -516,41 +548,9 @@ being used, move to the second page of the Arm window of the client to see a
 list of connections that the client knows. Since we found out which relay is
 serving as the exit node before, we should be able to see the circuit that lists
 that information. Make sure that the other two relays are also listed as the
-guard and middle relays.
+guard and middle relays. This circuit is the one that is being used to pass
+the client's traffic to the webserver, and vice-versa.
 
-
-## Finding out More Information About the Network
-
-Now that we were able to figure out which circuit the onion proxy (OP) is using
-to send the client's traffic to its destination, now let's try to see what kind
-of information can be seen at each step of the way. In order to do this, we will
-use a combination of tcpdump, Wireshark and winSCP. Tcpdump is a built-in linux
-function used to watch traffic on a specified network interface. Wireshark is a
-software that can read in a file written by tcpdump, and displays the traffic
-very neatly to allow better observation of the data. WinSCP is a program for
-Windows, that is going to be used to access the tcpdump files that are saved
-on the VMs, and to copy it to our local Desktop, so that we can open the file
-with Wireshark.
-
-### Setting up Wireshark and WinSCP
-
-Wireshark can be downloaded from the company's [homepage](https://www.wireshark.org/).
-Besides downloading and installing the software, there is no often configuration
-necessary.
-
-WinSCP can also be downloaded from the company's [homepage](https://winscp.net/eng/download.php).
-After installation, we open the application, and immediately a login window
-comes up. To login to a specific VM, we must have certain information available,
-which can be found on GENI, in the Details page of your slice. Choose **SCP** for
-File Protocol. The Host name is the information after the @ symbol used for
-logging into each VM, followed by the port number. Your username is the same as
-the username before the @ symbol. For the password, we must use our ssh key as
-an authentication method. Click "Advanced", followed by "Authentication" under
-SSH. Under Authentication Parameters, click Private Key File, and browse to
-your location of your ssh key. Once you add the key, you will be asked to convert
-your key to PuTTY format because winSCP only supports PuTTY. Go ahead and convert
-the key, and now you can save your login info of your VM, to allow faster login
-the next time.
 
 ### Using Tcpdump to Watch Traffic
 First we must figure out which Tor circuit is being used, using the method shown
@@ -631,6 +631,93 @@ seen passing through. Through winSCP, access each of the VMs that was listening
 on the network for Tor traffic. Find the pcap file that was saved, and download
 that file to your Desktop. Now open the files on Wireshark.
 
+
+
+## Other Methods to See Information about the Network
+
+There are other methods in which we can see the information that is being
+passed along the circuit of the Tor network. However these methods require
+additional installations of programs, and will be listed in this section as an
+additional resource.
+
+One such method to get more information about circuits available and about which
+exit relay is used for each connection, is to use a couple of Python utility
+scripts.
+
+Another method is an addition to Tcpdump, which allows for a better and more
+organized window to analyze the packets that are being passed along the Tor
+network. This method requires Wireshark and winSCP. Wireshark is a software that
+can read in a file written by tcpdump, and displays the traffic very neatly to
+allow better observation of the data. WinSCP is a program for Windows users,
+that is going to be used to access the tcpdump files that are saved on the VMs,
+and to copy it to our local Desktop, so that we can open the file with Wireshark.
+
+### Using Python Utility Scripts
+
+First, install some prerequisites:
+
+```
+sudo apt-get update
+sudo apt-get -y install python-pip
+sudo pip install stem
+```
+
+Then, you can download the utility scripts with
+
+```
+wget https://raw.githubusercontent.com/tfukui95/tor-experiment/master/utilities/exit-relay.py
+wget https://raw.githubusercontent.com/tfukui95/tor-experiment/master/utilities/list-circuits.py
+```
+
+To see what circuits your Tor client is currently aware of, run
+
+```
+sudo python list-circuits.py
+```
+
+To see what exit relay is associated with an outgoing connection, you'll
+need two terminals open to the client node. On one, run
+
+```
+sudo python exit-relay.py
+```
+
+to start monitoring. On another, make an outgoing connection with
+
+```
+curl -x socks5://127.0.0.1:9050/ http://webserver/                              
+```
+
+and in the first terminal, look for a message like
+
+```
+Exit relay for our connection to 192.168.2.1:80
+  address: 192.168.1.3:5000
+  fingerprint: B1A2C989985CD3C95C0D6C17B0A64A38007F90FB
+  nickname: router3
+  locale: ??
+```
+
+### Setting up Wireshark and WinSCP
+
+Wireshark can be downloaded from the company's [homepage](https://www.wireshark.org/).
+Besides downloading and installing the software, there is no often configuration
+necessary.
+
+WinSCP can also be downloaded from the company's [homepage](https://winscp.net/eng/download.php).
+After installation, we open the application, and immediately a login window
+comes up. To login to a specific VM, we must have certain information available,
+which can be found on GENI, in the Details page of your slice. Choose **SCP** for
+File Protocol. The Host name is the information after the @ symbol used for
+logging into each VM, followed by the port number. Your username is the same as
+the username before the @ symbol. For the password, we must use our ssh key as
+an authentication method. Click "Advanced", followed by "Authentication" under
+SSH. Under Authentication Parameters, click Private Key File, and browse to
+your location of your ssh key. Once you add the key, you will be asked to convert
+your key to PuTTY format because winSCP only supports PuTTY. Go ahead and convert
+the key, and now you can save your login info of your VM, to allow faster login
+the next time.
+
 ## Notes
 
 Before restarting Tor, you must kill the current Tor process first, and then
@@ -659,5 +746,4 @@ Use `q` to quit.
 [2] "How do you write multiple line configuration file using BASH, and use variables on multiline?" YumYumYum, Stack Overflow,  [http://stackoverflow.com/questions/7875540/how-do-you-write-multiple-line-configuration-file-using-bash-and-use-variables](http://stackoverflow.com/questions/7875540/how-do-you-write-multiple-line-configuration-file-using-bash-and-use-variables)  
 [3] "sudo cat << EOF > File doesn't work, sudo su does" iamauser, Stack Overflow, [http://stackoverflow.com/questions/18836853/sudo-cat-eof-file-doesnt-work-sudo-su-does](http://stackoverflow.com/questions/18836853/sudo-cat-eof-file-doesnt-work-sudo-su-does)
 [4] "Arm (Project Page)" [https://www.torproject.org/projects/arm.html.en](https://www.torproject.org/projects/arm.html.en)
-[5] "How can I have tcpdump write to file and standard output the
-appropriate data." Stack Overflow, [http://stackoverflow.com/questions/25603831/how-can-i-have-tcpdump-write-to-file-and-standard-output-the-appropriate-data](http://stackoverflow.com/questions/25603831/how-can-i-have-tcpdump-write-to-file-and-standard-output-the-appropriate-data)
+[5] "How can I have tcpdump write to file and standard output the appropriate data." Stack Overflow, [http://stackoverflow.com/questions/25603831/how-can-i-have-tcpdump-write-to-file-and-standard-output-the-appropriate-data](http://stackoverflow.com/questions/25603831/how-can-i-have-tcpdump-write-to-file-and-standard-output-the-appropriate-data)
