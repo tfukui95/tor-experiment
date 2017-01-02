@@ -1,12 +1,40 @@
-# Setting Up Toy Experiment on Tor
+# Setting Up The Toy Experiment on Tor
 
-## Reserve our topology on GENI
+The best way to learn about Tor is to create our own private Tor network using
+GENI, and to see the functions of Tor on a much smaller and more manageable
+scale. By setting up a private Tor network, we will be in control of our own
+client, routers, directory server, and web server.
+
+Once we are done setting up the private Tor network, there will be two routes
+in which a client's packet can be sent to the web server:
+
+1. Through a direct link between client and web server
+2. Through the Tor network
+
+We will be testing both cases to see what kind of information we can see when
+listening on different parts of the network. We will be looking for the
+following three pieces of information for these tests:
+
+1. Whether we can see the client address
+2. Whether can see the web server address
+3. Whether we can see the data packet's contents
+
+For both cases, we will be able to see that not all information can be seen at
+every part of the network.
+
+Before we begin, please know that the process of setting up the private Tor
+network is based partly on an experiment by Liu Fengyun found on this [site](http://liufengyun.chaos-lab.com/prog/2015/01/09/private-tor-network.html).
+
+## Reserving our Topology on GENI
+
+First off, make sure you know the basics of GENI. If not, first complete two labs:
+* [Lab 0: Reserve resources on GENI](http://witestlab.poly.edu/~ffund/el7353/1-reserve-resources.html)
+* [Lab 1: Using the Linux shell](http://witestlab.poly.edu/~ffund/el7353/1-using-linux-shell.html)
 
 
+## Installing the Tor Software
 
-## Install Tor software
-
-To start, we installed tor on all of the nodes _except_ the web server
+To start, we install tor on all of the nodes _except_ the web server
 using the following steps:
 
 ```
@@ -19,7 +47,7 @@ sudo gpg --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | sudo apt-key add -
 sudo apt-get update
 sudo apt-get -y install tor deb.torproject.org-keyring vim curl tor-arm
 ```
-## Set up web server
+## Setting up the Web Server
 
 On the node that is designated as the web server, set up Apache:
 
