@@ -27,15 +27,57 @@ network is based partly on an experiment by Liu Fengyun found on this [site](htt
 
 ## Reserving our Topology on GENI
 
-First off, make sure you know the basics of GENI. If not, first complete two labs:
+First off, make sure you know the basics of GENI. If not, first complete these two labs:
+
 * [Lab 0: Reserve resources on GENI](http://witestlab.poly.edu/~ffund/el7353/1-reserve-resources.html)
 * [Lab 1: Using the Linux shell](http://witestlab.poly.edu/~ffund/el7353/1-using-linux-shell.html)
 
+After creating a slice for this toy experiment, next we must set up our resources.
+The following will be the GENI topology for this experiment:
+
+![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/ToyTopology.png)
+
+We will be needing eight virtual machines (VMs) in total. Choose the Xen VM choice
+for the eight VMs, and click on each one and give each a name depending on its
+function. Use the above topology as a reference. Next, link them into a network
+just like the topology above.
+
+Now we must assign an IP address to each connection between a VM and a link. The
+first 16 bits of the IP addresses are the same, which is **192.168**. The last
+16 bits depend on the link number, followed by the host number. The following is
+the IP address format: **192.168.link_number.host_number.**  The specific
+number we assign to each link and host does not matter as long as we remain
+constant. However, since the instructions that follow will be based off the
+topology above, it is advised to follow the above topology in order to ensure
+proper functioning of the private Tor network. To give an example, first click
+the link which directly connects the client and the web server VM. Let us give the
+number 5 to this link. If we scroll down to the **Interfaces** section, we can
+see all of the VMs connected on that link, and that we can change the settings
+for each VM, including the IP address of that connection and the Netmask. The
+Netmask for each connection is the same, and is **255.255.255.0**. For link 5,
+we can see that the host and web server are the VMs connected to this link. If we
+look at the topology above, we can see that the host number for the client is 100,
+and the host number for the web server is 200. Therefore the IP address that is
+to be assigned for the connection from the client to link 5 is **192.168.5.100**
+and the IP address for the connection from the web server to link 5 is **192.168.5.200**.
+In this way, each of the connections should be assigned IP addresses and Netmask
+numbers, using the topology as a guide to which numbers to use.
+
+After each VM and link is set up, we must click the Site, and choose a site to
+reserve our resources from. Choose any site that has a green check next to its
+name. After choosing this site, scroll all the way down and press *Reserve Resources*.
+After the status of adding sources says **Finished**, go back to the slice page
+and you will see the resources that we have just added. Time is required in
+order to completely reserve the resources, so we must wait for a few moments.
+When a VM's reservation is complete, the border of the VM will change from black
+to green. When all VM borders are green, meaning that the whole topology is
+ready to be used, we will continue on to our next step of installing Tor onto
+each VM.
 
 ## Installing the Tor Software
 
-To start, we install tor on all of the nodes _except_ the web server
-using the following steps:
+To start, we install tor on all of the nodes *except* the web server using the
+following steps:
 
 ```
 sudo sh -c 'echo "deb http://deb.torproject.org/torproject.org trusty main" >> /etc/apt/sources.list'
@@ -47,6 +89,7 @@ sudo gpg --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | sudo apt-key add -
 sudo apt-get update
 sudo apt-get -y install tor deb.torproject.org-keyring vim curl tor-arm
 ```
+
 ## Setting up the Web Server
 
 On the node that is designated as the web server, set up Apache:
@@ -79,7 +122,7 @@ In order to monitor when someone tries to access the webserver, run:
 sudo tail -f /var/log/apache2/access.log
 ```
 
-## Bring up a directory authority
+## Setting up the Directory Authority
 
 Directory authorities help Tor clients learn the addresses of relays that make up the Tor network. Specifically, via the Tor documentation [1]:
 
@@ -118,11 +161,13 @@ sudo -u debian-tor tor --list-fingerprint --orport 1 \
 The output should say something like:
 
 ```
-Nov 23 12:27:31.540 [notice] Your Tor server's identity key fingerprint is 'Unnamed 84F349212E57E0E33A324849E290331596BB6217'
-Unnamed 84F3 4921 2E57 E0E3 3A32 4849 E290 3315 96BB 6217
+Nov 23 12:27:31.540 [notice] Your Tor server's identity key fingerprint is
+'Unnamed 84F349212E57E0E33A324849E290331596BB6217' Unnamed 84F3 4921 2E57 E0E3
+3A32 4849 E290 3315 96BB 6217
 ```
 
-Now we'll create a config file for the directory authority. First, get the two fingerprints:
+Now we'll create a configuration file for the directory authority. First, get
+the two fingerprints:
 
 ```
 finger1=$(sudo cat /var/lib/tor/keys/authority_certificate  | grep fingerprint | cut -f 2 -d ' ')
@@ -179,7 +224,8 @@ EOL"
 ```
 
 
-Note: See [2] for background on writing a multi-line file with variables, and [3] for background on using cat to write a multi-line file to a protected file.
+Note: See [2] for background on writing a multi-line file with variables, and
+[3] for background on using cat to write a multi-line file to a protected file.
 
 Use
 
@@ -286,12 +332,14 @@ sudo cat /var/log/tor/debug.log | grep "Trusted"
 to search the log file, we see a line
 
 ```
-Nov 09 11:03:02.000 [debug] parse_dir_authority_line(): Trusted 100 dirserver at 192.168.1.4:7000 (CA36BEB3CDA5028BDD7B1E1F743929A81E26A5AA)
+Nov 09 11:03:02.000 [debug] parse_dir_authority_line(): Trusted 100 dirserver
+at 192.168.1.4:7000 (CA36BEB3CDA5028BDD7B1E1F743929A81E26A5AA)
 ```
 
-which is promising - it seems to indicated that we are using our directory authority at 192.168.1.4 (the current host).
+which is promising - it seems to indicated that we are using our directory
+authority at 192.168.1.4 (the current host).
 
-## Bring up a router
+## Setting up a Router
 
 First, stop any currently running Tor process:
 
@@ -375,7 +423,7 @@ Nov 23 13:06:29.000 [info] dirserv_orconn_tls_done(): Found router $D2EB9948027B
 
 Repeat all of the above commands for all of the router nodes that you create.
 
-## Bring up a client
+## Setting up a Client
 
 First, stop any currently running Tor process:
 
