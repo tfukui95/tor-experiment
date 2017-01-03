@@ -90,6 +90,11 @@ sudo apt-get update
 sudo apt-get -y install tor deb.torproject.org-keyring vim curl tor-arm
 ```
 
+An important point to note here, is that the code to get the repository from
+Torproject differs depending on the version of Ubuntu that you are using. In my
+case, I am using Ubuntu 14.04. If you are using an older or newer version,
+look online for the correct code for your version.
+
 ## Setting up the Web Server
 
 On the node that is designated as the web server, set up Apache:
@@ -358,8 +363,9 @@ sudo -u debian-tor tor --list-fingerprint --orport 1 \
 The output should say something like:
 
 ```
-Nov 23 12:34:00.137 [notice] Your Tor server's identity key fingerprint is 'Unnamed D2EB9948027BF5795FCA85182869FBFAA7C15B4C'
-Unnamed D2EB 9948 027B F579 5FCA 8518 2869 FBFA A7C1 5B4C
+Nov 23 12:34:00.137 [notice] Your Tor server's identity key fingerprint is
+'Unnamed D2EB9948027BF5795FCA85182869FBFAA7C15B4C' Unnamed D2EB 9948 027B F579
+5FCA 8518 2869 FBFA A7C1 5B4C
 ```
 
 Now, download the generic router config file that we created on the
@@ -415,10 +421,15 @@ sudo cat /var/log/tor/debug.log | grep "relay1"
 You should see some output like
 
 ```
-Nov 23 13:06:29.000 [debug] router_parse_list_from_string(): Read router '$D2EB9948027BF5795FCA85182869FBFAA7C15B4C~router1 at 192.168.1.2', purpose 'general'
-Nov 23 13:06:29.000 [debug] dirserv_single_reachability_test(): Testing reachability of router1 at 192.168.1.2:5000.
-Nov 23 13:06:29.000 [info] dirserv_add_descriptor(): Added descriptor from 'router1' (source: 192.168.1.2): Descriptor accepted.
-Nov 23 13:06:29.000 [info] dirserv_orconn_tls_done(): Found router $D2EB9948027BF5795FCA85182869FBFAA7C15B4C~router1 at 192.168.1.2 to be reachable at 192.168.1.2:5000. Yay.
+Nov 23 13:06:29.000 [debug] router_parse_list_from_string(): Read router
+'$D2EB9948027BF5795FCA85182869FBFAA7C15B4C~router1 at 192.168.1.2', purpose 'general'
+Nov 23 13:06:29.000 [debug] dirserv_single_reachability_test(): Testing reachability
+of router1 at 192.168.1.2:5000.
+Nov 23 13:06:29.000 [info] dirserv_add_descriptor(): Added descriptor from 'router1'
+(source: 192.168.1.2): Descriptor accepted.
+Nov 23 13:06:29.000 [info] dirserv_orconn_tls_done(): Found router
+$D2EB9948027BF5795FCA85182869FBFAA7C15B4C~router1 at 192.168.1.2 to be reachable
+at 192.168.1.2:5000. Yay.
 ```
 
 Repeat all of the above commands for all of the router nodes that you create.
@@ -442,8 +453,9 @@ sudo -u debian-tor tor --list-fingerprint --orport 1 \
 The output should say something like:
 
 ```
-Nov 23 13:25:30.877 [notice] Your Tor server's identity key fingerprint is 'Unnamed 4BD9274359B639B5E812913A9B1962BD84BABFFF'
-Unnamed 4BD9 2743 59B6 39B5 E812 913A 9B19 62BD 84BA BFFF
+Nov 23 13:25:30.877 [notice] Your Tor server's identity key fingerprint is
+'Unnamed 4BD9274359B639B5E812913A9B1962BD84BABFFF' Unnamed 4BD9 2743 59B6 39B5
+E812 913A 9B19 62BD 84BA BFFF
 ```
 
 Download the client config file (that we created on the directory
@@ -488,9 +500,13 @@ and verify that the server returns the client's IP address. You should see
 something like
 
 ```
-
-
+Remote address: 192.168.5.100
+Forwarded for:
 ```
+
+From this we can see how that the webserver is telling us that the VM that
+accessed the webserver is the client, which shows that the client and webserver
+are directly communicating with each other.
 
 Next we will be using Tcpdump to watch the traffic on the network. We want
 Tcpdump to both display the output to screen while also saving the output to a
@@ -511,7 +527,7 @@ start listening through port 80 by running
 sudo tcpdump -s 1514 -i any 'port 80' -U -w - | tee clientnotor.pcap | tcpdump -nnxxXSs 1514 -r -
 ```
 
-On the webserver terminal also listen through port 80 by running
+On the web server terminal also listen through port 80 by running
 
 ```
 sudo tcpdump -s 1514 -i any 'port 80' -U -w - | tee servernotor.pcap | tcpdump -nnxxXSs 1514 -r -
@@ -527,28 +543,33 @@ On both terminals that are listening on the network, we should see something
 like
 
 ```
-
-
-
+IP 192.168.5.100.38826 > 192.168.5.200.80
+IP 192.168.5.200.80 > 192.168.5.100.38826
 ```
 
 which shows how we can see that the client and webserver are communicating
-directly with each other, and something like
+directly with each other. On the right-hand side of the output we should see
+something like
 
 ```
-
-
+MGET./.HTTPS/1.1..User-Agent:.curl/7.35.0..Host:.webserver..Accept:. */*
 ```
 
-which shows how we can see exactly what traffic they are passing to each other.
-We can conclude how communicating only through HTTP allows a person spying on
-this network to see who is communicating with who, and what specifically is
-being communicated. This form is communication is very risky and prone to
-getting your information stolen.
+which is a request to access the webserver, and something like
 
-### Testing the Network Without Using Tor
+```
+Content-Length:.47..Content-Type:.text/html....Remote.address:.192.168.5.100.Forwarded.for:...
+```
 
-Now we will test the same curl experiment of accessing the webserver, now
+which is the output of the curl command that we ran earlier. This shows how we
+can see exactly what traffic they are passing to each other. We can conclude how
+communicating only through HTTP allows a person spying on this network to see
+who is communicating with who, and what specifically is being communicated. This
+form is communication is very risky and prone to getting your information stolen.
+
+### Testing the Network Using Tor
+
+Now we will test the same curl experiment of accessing the web server, now
 through the Tor network. Then we will compare the results with when we do not
 use Tor.
 
@@ -565,7 +586,8 @@ the server does not know the client's IP address; it returns the IP address
 of the exit relay. You should see something like
 
 ```
-
+Remote address: 192.168.2.1
+Forwarded for:
 ```
 
 Clearly the returned address is not the client's IP address, but the IP
@@ -629,18 +651,8 @@ the client's traffic to the webserver, and vice-versa.
 
 
 ### Using Tcpdump to Watch Traffic
-First we must figure out which Tor circuit is being used, using the method shown
-in the Tor-Arm section above. Next we will be using Tcpdump to watch the traffic
-on the network. We want Tcpdump to both display the output to screen while also
-saving the output to a file. The following is the format
 
-```
-sudo tcpdump -s 1514 -i any 'port <port_num>' -U -w - | tee <name_file>.pcap | tcpdump -nnxxXSs 1514 -r -
-```
-
-where <port_num> is the specific port number to access, and <name_file> is the
-name that you want to save the file as.
-
+We will again be using tcpdump to listen to the network at different locations.
 We will require three terminals for the clients for this part. On one, run
 
 ```
@@ -648,15 +660,20 @@ sudo tcpdump -s 1514 -i any 'port 9050' -U -w - | tee client9050.pcap | tcpdump 
 ```
 
 to watch the traffic that is going through the SOCKS proxy port 9050, and then
-save what it sees in a pcap file called client9050.pcap. On another client terminal
-run
+save what it sees in a pcap file called client9050.pcap. The SOCKS proxy is the
+proxy that is used for the client and the onion proxy to communicate with each
+other. This communication is a loop-back interface, in other words the
+communication occurs in the local ethernet. On another client terminal run
 
 ```
 sudo tcpdump -s 1514 -i any 'port 5000' -U -w - | tee client5000.pcap | tcpdump -nnxxXSs 1514 -r -
 ```
 
-to watch the traffic through port 5000, which would be the traffic between the
-SOCKS proxy and the first relay of the Tor network.
+to watch the traffic through port 5000, which is the port to listen on the Tor
+network. This would mean that we would be listening on any traffic that is
+being transferred from the client to the Tor network. Specifically, this
+communication would be between the client and the entry relay that is being
+used when the traffic enters the Tor network.
 
 Next on each relay that is being used in the circuit, run
 
@@ -678,7 +695,7 @@ port for HTTP. On the new terminal run
 sudo tcpdump -s 1514 -i any 'port 80' -U -w - | tee exitrelay.pcap | tcpdump -nnxxXSs 1514 -r -
 ```
 
-To start listening on the network through port 80.
+to start listening on the network through port 80.
 
 Lastly we must also set up the web server to have it listen for traffic as well.
 On the web server terminal run
@@ -690,8 +707,8 @@ sudo tcpdump -s 1514 -i any 'port 80' -U -w - | tee webserver.pcap | tcpdump -nn
 to start listening for traffic on port 80.
 
 Now at this point we should have seven terminals listening on a network. These
-terminals are the two client terminals, the three ORs being used in the circuit,
-an extra exit relay terminal, and the web server.
+terminals are the two client terminals, terminals for the three ORs being used
+in the circuit, an extra exit relay terminal, and the web server terminal.
 
 Next on the third client terminal, we run
 
@@ -701,13 +718,87 @@ curl -x socks5://127.0.0.1:9050/ http://webserver/
 
 to access the webserver. Since we are using the Tor network to access the site,
 the three ORs must have seen some kind of traffic passing through it. Now let
-us take a look at what the client and each OR saw. Stop the tcpdump processing
+us take a look at what the client and each OR saw. Stop the tcpdump process
 with Ctrl^C. When we stop tcpdump, a file is created with the traffic that was
-seen passing through. Through winSCP, access each of the VMs that was listening
-on the network for Tor traffic. Find the pcap file that was saved, and download
-that file to your Desktop. Now open the files on Wireshark.
+seen passing through. If you want to access the saved file to see the traffic
+on Wireshark's interface, follow the steps in the following section. Otherwise,
+as we listen on the network, the traffic that we can see will be outputted on
+the display of each terminal.
 
+## Conclusion
 
+From using tcpdump when using and not using Tor, there is a clear difference
+in the information that we can and cannot see at each node. The following table
+summarizes what can be seen when listening on a network that doesn't use Tor:
+
+|      | Client Address    | Web Server Address     | Packet Contents     |
+| :------------- | :------------- | :------------- | :------------- |
+| **Client Port 80**     | Yes       | Yes    | Yes     |
+| **Web Server Port 80** | Yes       | Yes    | Yes     |
+| **Middle-Man Port 80** | Yes       | Yes    | Yes     |
+
+From this table, we can see then when not using Tor, and using the direct link
+between the client and web server, all information can be seen. Clearly we know
+that the client and the web server knows who it is communicating with, and the
+packet contents that are being sent. However, what is dangerous is that any
+attacker that is listening on the same network can see all the information that
+both ends of the network can also see. This leads to easy spying, stealing of
+information and privacy, and may lead to a virus since the attacker knows your
+location and what site you visit.
+
+This next table summarizes the same key points, but for when we communicate
+while using the Tor network:
+
+|      | Client Address    | Web Server Address     | Packet Contents     |
+| :------------- | :------------- | :------------- | :------------- |
+| **Client Port 9050**     | Yes       | No    | Yes     |
+| **Client Port 5000**  | Yes       | No    | No    |
+| **Entry Relay Port 5000** | Yes       | No   | No     |
+| **Middle Relay Port 5000**     | No       | No    | No    |
+| **Exit Relay Port 5000** | No       | No    | No    |
+| **Exit Relay Port 80** | No      | Yes    | Yes     |
+| **Web Server Port 80** | No      | Yes    | Yes     |
+
+In order to better understand this table, let us look at each column one at a
+time. The leftmost column is arranged chronologically in the order which a
+packet gets transmitted to the web server. First we look at the client address
+column, where we see that the client address can be seen in the beginning, where
+the entry relay is the last node which knows the client address. The reason why
+the change occurs here is because this is the point where the packet enters the
+Tor network. Inside the Tor network, including the entry and exit relays, each
+relay only knows who sent it the packet and who to send the packet to next.
+Therefore the entry relay gets the packet from the client, and knows to send it
+to the middle relay, but once it gets to the middle relay, the middle relay only
+knows that it got the packet from the entry relay and does not know anything
+about the client who originally sent the packet. Therefore from that point the
+client address is no longer known.
+
+Taking a look at the next column which is the web server address, we can see
+that the web server address is not known towards the beginning, until it reaches
+the exit relay and while listening through port 80. The reason why the web
+server address is not known until this point is due to the encryption that is
+done by the onion proxy at the beginning. When the packet reaches the exit relay,
+the exit relay decrypts the last layer of encryption and at that point, the
+location of the webserver is first known. Since the exit relay is responsible for
+sending the packet to the web server, who can't decrypt any kind of Tor
+encryption, the web server address as well as the packet contents are unencrypted.
+
+The last column of the table is the packet contents column, which tells us who
+sees encrypted or unencrypted packet information. We can see that the nodes
+which can see the unencrypted packet data are the nodes at the beginning and the
+end of the circuit. In order words, the nodes that are inside the Tor network
+cannot see the packet contents, because the information is encrypted while
+traveling inside the Tor network, and the ends of the circuit cannot decrypt
+Tor encryption so the information must be unencrypted at the ends.
+
+One of the most important conclusions to arrive upon from this experiment is that
+when using the Tor network, there is no one node that knows the whole mapping
+of the circuit. Therefore even if one node, say for example one of the Tor relays
+gets taken control over, the relay only knows who gave it the packet and who it
+needs to send it to, and nothing else. As long as no too many nodes get taken
+over, anonymity will definitely stay intact. This is the power of Tor, in being
+able to cloak client and web server communication as well as their locations and
+actual packet contents while the packet traverses through the Tor network.
 
 ## Other Methods to See Information about the Network
 
@@ -817,9 +908,10 @@ sudo -u debian-tor arm
 Use the left and right arrow keys to switch between different screens.
 Use `q` to quit.
 
+
 ## References
 [1] "Tor FAQ - Key Management" [https://www.torproject.org/docs/faq#KeyManagement](https://www.torproject.org/docs/faq#KeyManagement)  
 [2] "How do you write multiple line configuration file using BASH, and use variables on multiline?" YumYumYum, Stack Overflow,  [http://stackoverflow.com/questions/7875540/how-do-you-write-multiple-line-configuration-file-using-bash-and-use-variables](http://stackoverflow.com/questions/7875540/how-do-you-write-multiple-line-configuration-file-using-bash-and-use-variables)  
-[3] "sudo cat << EOF > File doesn't work, sudo su does" iamauser, Stack Overflow, [http://stackoverflow.com/questions/18836853/sudo-cat-eof-file-doesnt-work-sudo-su-does](http://stackoverflow.com/questions/18836853/sudo-cat-eof-file-doesnt-work-sudo-su-does)
-[4] "Arm (Project Page)" [https://www.torproject.org/projects/arm.html.en](https://www.torproject.org/projects/arm.html.en)
-[5] "How can I have tcpdump write to file and standard output the appropriate data." Stack Overflow, [http://stackoverflow.com/questions/25603831/how-can-i-have-tcpdump-write-to-file-and-standard-output-the-appropriate-data](http://stackoverflow.com/questions/25603831/how-can-i-have-tcpdump-write-to-file-and-standard-output-the-appropriate-data)
+[3] "sudo cat << EOF > File doesn't work, sudo su does" iamauser, Stack Overflow, [http://stackoverflow.com/questions/18836853/sudo-cat-eof-file-doesnt-work-sudo-su-does](http://stackoverflow.com/questions/18836853/sudo-cat-eof-file-doesnt-work-sudo-su-does)  
+[4] "Arm (Project Page)" [https://www.torproject.org/projects/arm.html.en](https://www.torproject.org/projects/arm.html.en)  
+[5] "How can I have tcpdump write to file and standard output the appropriate data." Stack Overflow, [http://stackoverflow.com/questions/25603831/how-can-i-have-tcpdump-write-to-file-and-standard-output-the-appropriate-data](http://stackoverflow.com/questions/25603831/how-can-i-have-tcpdump-write-to-file-and-standard-output-the-appropriate-data)  
