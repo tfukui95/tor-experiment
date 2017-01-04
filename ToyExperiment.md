@@ -811,7 +811,7 @@ One such method to get more information about circuits available and about which
 exit relay is used for each connection, is to use a couple of Python utility
 scripts.
 
-Another method is an addition to Tcpdump, which allows for a better and more
+Another method is an addition to tcpdump, which allows for a better and more
 organized window to analyze the packets that are being passed along the Tor
 network. This method requires Wireshark and winSCP. Wireshark is a software that
 can read in a file written by tcpdump, and displays the traffic very neatly to
