@@ -19,7 +19,7 @@ Nowadays many sites are sent through protocols such as HTTPS in order to protect
 a user's privacy. HTTPS (Hypertext Transfer Protocol over TLS) is a secure
 communication protocol used widely in the Internet, which provides authentication
 of accessed websites and provides privacy of the data that is exchanged between
-the client, web server, and the website[3]. HTTPS provides end-to-end encryption
+the client, web server, and the website[1]. HTTPS provides end-to-end encryption
 of data so that in case an attacker is spying on the network, that attacker is
 not able to decrypt the information and figure out what is being transmitted.
 Tor works in conjunction with HTTPS, therefore the two methods combined provides
@@ -30,39 +30,41 @@ communication, as well as the locations of both ends.
 
 Onion routing research began in 1995 by David Goldschlag, Michael Reed, and Paul
 Syverson, with one goal in mind, which was to separate identification from
-routing [1]. Authenticating one's identity can be done through the data that is
+routing [2]. Authenticating one's identity can be done through the data that is
 passed in the data stream, and does not necessarily have to be through one's
-location. The goal that these three men had in mind was not to create anonymity
-when browsing the Internet, but anonymous routing. 
+location. The goal that these three men had in mind was not to create a complete
+form of anonymity when browsing the Internet, but anonymous routing.
 
+Today there are over 6000 Tor relays inside the Tor network, serving over 1.5
+million users [3]. In the present day, there is a variety of Tor users with different
+goals that they wish to achieve from using Tor. One group of users are law
+enforcement and intelligence agency personnel, who must stay anonymous when
+browsing the Internet to investigate a certain case. There actions cannot be
+traced, therefore anonymous routing is the best solution. Another group of users
+stems from those who want to voice their opinion on a certain topic without
+revealing their true identity. Tor provides a means for people to discuss and post
+on the Internet without a risk for exposure of their location and identity. Then
+there are other more ordinary people who simply want to make sure that there
+information is protected at a level on step higher than just HTTPS. Simply limiting
+the amount of information that can be seen by a person spying on the network is
+the main goal that people wish to achieve from using Tor.
 
+How does using Tor differ from using a Virtual Private Network (VPN)? VPNs have
+a vulnerability where an adversary can observe the information that is being
+communicated to the VPN, and it is also easy to associate the users and affiliations
+with a VPN [2]. For example, a school's VPN tells us that the users of that VPN are
+only students or professors of that school, which narrows down the pool of users
+incredibly. Compared to a VPN, the Tor network has a wide variety of users on the
+same network. This variety is what is key to the anonymity that is provided by
+onion routing. For example, using a cloaking software exclusively by the US Navy
+would conversely decloak the people, because an attacker watching the Tor network
+would know that anything that goes in or out of the network would be by the US Navy.
+The US Navy required as diverse of a community of people as possible to use Tor
+in order to hide themselves behind everyone. This was an essential part in
+fulfilling their primary objective of cloaking the identity of government and
+intelligence personnel, which was why Tor became an "open source" consumer product
+that everyone would be able to use [2].
 
-Why was Tor built in the first place? Let us first take look back at the history
-of Tor when it was first created. Tor was originally developed by the US military
-for the purpose of providing some kind of cloaking mechanism of the identity of
-government personnel when they worked online[1]. Mainly funded by the Office of
-Naval Research and DARPA (Defense Advanced Research Projects Agency), the main
-goal of creating Tor was to provide anonymity for military and intelligence
-operations that require the use of public communication infrastructure and/or
-databases[1]. This was their primary objective, and perhaps the only one. The
-developers of Tor knew that their software would be able to be used by other people
-for other reasons beyond their control. People would be able to use Tor to commit
-crimes all while cloaking their tracks. Even while knowing this, the development
-of Tor continued and was marketed for everyone to use because the primary
-objective remained as the top and only priority. Everything else was secondary.
-
-In fact, other than those who would use Tor for cloaking criminal activity, the
-US Navy needed other people other themselves to use Tor. Using a cloaking software
-exclusively by the US Navy would conversely decloak the people, because an attacker
-watching the Tor network would know that anything that goes in or out of the
-network would be by the US Navy. The US Navy required as diverse of a community
-of people as possible to use Tor in order to hide themselves behind everyone. This
-was an essential part in fulfilling their primary objective of cloaking the
-identity of government and intelligence personnel, which was why Tor became a
-consumer product that everyone would be able to use. Everything was a balance of
-priority: Tor would not be the perfect to solution for everything, but it would
-at least be a solution for their primary objective. The crime that comes out of
-releasing Tor to the public would need to be dealt with at a later time.
 
 ![](http://geography.oii.ox.ac.uk/wp-content/uploads/2014/06/Tor_Hexagons.png)
 
@@ -74,7 +76,7 @@ these people that are using Tor? A main group of users of Tor are journalists
 and activists that live in countries that place restrictions on the Internet. For
 example many journalists in China use Tor to get past China's national firewall
 in order to write about events occurring locally around them, in order to create
-commotion regarding both social and political reform[2]. Other groups of people
+commotion regarding both social and political reform[4]. Other groups of people
 that want to raise their voice to the public without revealing their identities
 include activists, whistleblowers, bloggers, and high and low profile people. Tor
 is also used by law enforcement officers for surveillance of sites that may
@@ -211,8 +213,6 @@ nodes can see what information on specific settings.
 | **Packet Contents**     | Everyone | User, Site + Data Sharing | Exit Node <-> Site + Data Sharing | User, Site + Data Sharing |
 | **Using Tor** | N/A | N/A | Everyone | Everyone |
 
-
-
 ### Diving Deeper into the Tor Process
 
 Now that we know what Tor is and the benefits of using Tor to protect your privacy
@@ -232,7 +232,10 @@ state.
 
 The Tor network is constantly changing, and there needs to be some kind of mechanism
 so that the DAs in the Tor network are constantly aware of these changes that
-occur. This is where keys come into play. A DA has three kinds of keys: an
+occur. This is where keys come into play. A key is a form of authentication which
+provides a means to encrypt as well as to decrypt information. Keys allow safe
+communication of data, by making sure that information being sent is only decrypted
+by the people that it was intended for. A DA has three kinds of keys: an
 authority identity key, an authority signing key, and an authority certificate.
 In order to keep information about the DA up to date, it must sign directory
 information about itself periodically. This is done by the authority signing key.
@@ -248,7 +251,7 @@ An OR has four kinds of keys: a secret id key, a secret onion key, a secret onio
 key ntor, and a fingerprint. The secret id key is similar to the authority identity
 key, and is used to sign the router's descriptor, TLS certificates, and to sign
 directories. A router descriptor contains the specifications of that router,
-including its keys, location, bandwidth, exit policy, and other minor details[4].
+including its keys, location, bandwidth, exit policy, and other minor details[5].
 The reason to sign directories comes from the necessity to constantly keep the
 directories updated about all of the ORs, so that the directory authority can
 provide up-to-date information to the OP and client. The secret onion key is a
@@ -256,7 +259,7 @@ key that is used when establishing a Tor circuit to pass traffic along its netwo
 These keys are not permanent unlike the identity key, and are changed every so
 often in order to prevent any form of compromise. The onion key also creates
 short-lived keys used to access TLS connections to communicate with one another
-and the user[4]. The secret onion key ntor is a short-term key used specifically
+and the user[5]. The secret onion key ntor is a short-term key used specifically
 for the opening of a tor circuit, when a three-way handshake is required. The
 fingerprint key, as the name suggests is a fingerprint of the identity key, used
 so that the identity key's location and security is preserved.
@@ -276,7 +279,7 @@ three parts: CircID, CMD, and DATA. CircID is the circuit identifier which speci
 which circuit is being referred to. CMD is the command to be done, and DATA is the
 payload, which contains specific instructions for the command. There are three
 main types of control commands for creating a connection: PADDING, CREATE/CREATED,
-and DESTROY[4]. Padding is a command used to keep a connection alive. The create,
+and DESTROY[5]. Padding is a command used to keep a connection alive. The create,
 created and destroy commands are used to build and break down a circuit. A CREATE
 cell's payload contains information on the handshake that is to be used to create
 a new connection. Relay cells have an additional relay header to identify that
@@ -318,7 +321,7 @@ the simplest of the three and securely allows both sides to confirm each others'
 availability.
 
 For renegotiation and in-protocol handshakes, the following control cell commands
-are required: VERSIONS, CERTS, AUTH_CHALLENGE, and AUTHENTICATE [5]. In a
+are required: VERSIONS, CERTS, AUTH_CHALLENGE, and AUTHENTICATE [6]. In a
 renegotiation handshake, first after a node initializes, the responding node sends
 a single connection certificate as the initial TLS connection. Following this a
 renegotiation is performed, similar to the certificates-up-front handshake.
@@ -336,7 +339,7 @@ certificates that a node claims to have in possession. The responder send back i
 own CERT cell, followed by a AUTH_CHALLENGE which as the name describes, is a request
 by the responder to authenticate the initiator's trustworthiness. The initiator
 responds with an AUTH_CHALLENGE cell, a CERT cell, and an AUTHENTICATE cell which
-contains the authentication [5]. Now that the authentication process has finished,
+contains the authentication [6]. Now that the authentication process has finished,
 both nodes send each other a NETINFO cell containing its location and timestamp.
 
 **Directory Authority**  
@@ -348,7 +351,7 @@ From there a new strategy was developed in which a group of reliable and well-kn
 ORs called directory authorities (DA) would be responsible for keeping an update
 directory of the states and locations of all Tor routers. Each DA also acts as an
 HTTPS server for clients to access to gain the most up-to-date states of the Tor
-network[4]. The DA does not add ORs who do not have a proper identity key, which
+network[5]. The DA does not add ORs who do not have a proper identity key, which
 prevents attackers from creating fake nodes.
 
 The DA itself can also be vulnerable to attacks by an adversary, which makes the
@@ -357,12 +360,14 @@ the DAs in the network must be synchronized with one another, making sure that t
 agree with the same common directory. Clients must make sure that a directory is
 signed by a number of DAs to consider it trustworthy. This process of synchronizing
 with other DAs is called consensus. The DAs come to a new consensus every hour
-and the consensus is frequently checked to make sure that it is not too old [6].
+and the consensus is frequently checked to make sure that it is not too old [7].
 
 ## References
-  [1] "A Peel of Onion" Paul Syverson, [http://dl.acm.org/citation.cfm?id=2076750](http://dl.acm.org/citation.cfm?id=2076750)  
-  [2] "Inception" Tor Project, [https://www.torproject.org/about/torusers.html.en](https://www.torproject.org/about/torusers.html.en)  
-  [3] "What is HTTPS?" [https://www.instantssl.com/ssl-certificate-products/https.html](https://www.instantssl.com/ssl-certificate-products/https.html)  
-  [4] "Tor: The Second-Generation Onion Router" Roger Dingledine, Nick Mathewson, Paul Syverson, Tor Project, [https://svn.torproject.org/svn/projects/design-paper/tor-design.pdf](https://svn.torproject.org/svn/projects/design-paper/tor-design.pdf)  
-  [5] "Tor Protocol Specification" Roger Dingledine, Nick Mathewson, Tor Project, [https://gitweb.torproject.org/torspec.git/tree/tor-spec.txt](https://gitweb.torproject.org/torspec.git/tree/tor-spec.txt)  
-  [6] "How can I get consensus data from Directory authority servers for research purpose?" Stack Overflow,  [http://tor.stackexchange.com/questions/4939/how-can-i-get-consensus-data-from-directory-authority-servers-for-research-purpo](http://tor.stackexchange.com/questions/4939/how-can-i-get-consensus-data-from-directory-authority-servers-for-research-purpo)  
+
+  [1] "What is HTTPS?" [https://www.instantssl.com/ssl-certificate-products/https.html](https://www.instantssl.com/ssl-certificate-products/https.html)  
+  [2] "A Peel of Onion" Paul Syverson, [http://dl.acm.org/citation.cfm?id=2076750](http://dl.acm.org/citation.cfm?id=2076750)
+  [3] "Tor Metrics" Tor Project, [https://metrics.torproject.org/](https://metrics.torproject.org/)
+  [4] "Inception" Tor Project, [https://www.torproject.org/about/torusers.html.en](https://www.torproject.org/about/torusers.html.en)  
+  [5] "Tor: The Second-Generation Onion Router" Roger Dingledine, Nick Mathewson, Paul Syverson, Tor Project, [https://svn.torproject.org/svn/projects/design-paper/tor-design.pdf](https://svn.torproject.org/svn/projects/design-paper/tor-design.pdf)  
+  [6] "Tor Protocol Specification" Roger Dingledine, Nick Mathewson, Tor Project, [https://gitweb.torproject.org/torspec.git/tree/tor-spec.txt](https://gitweb.torproject.org/torspec.git/tree/tor-spec.txt)  
+  [7] "How can I get consensus data from Directory authority servers for research purpose?" Stack Overflow,  [http://tor.stackexchange.com/questions/4939/how-can-i-get-consensus-data-from-directory-authority-servers-for-research-purpo](http://tor.stackexchange.com/questions/4939/how-can-i-get-consensus-data-from-directory-authority-servers-for-research-purpo)  
