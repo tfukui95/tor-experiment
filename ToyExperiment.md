@@ -1,4 +1,6 @@
-# Setting Up The Toy Experiment on Tor
+# Analyzing Anonymous Routing of Network Traffic Using Tor
+
+## Setting Up the Toy Experiment on Tor
 
 The best way to learn about Tor is to create our own private Tor network using
 GENI, and to see the functions of Tor on a much smaller and more manageable
@@ -25,7 +27,7 @@ every part of the network.
 Before we begin, please know that the process of setting up the private Tor
 network is based partly on an experiment by Liu Fengyun found on this [site](http://liufengyun.chaos-lab.com/prog/2015/01/09/private-tor-network.html).
 
-## Reserving our Topology on GENI
+### Reserving our Topology on GENI
 
 First off, make sure you know the basics of GENI. If not, first complete these two labs:
 
@@ -74,7 +76,7 @@ to green. When all VM borders are green, meaning that the whole topology is
 ready to be used, we will continue on to our next step of installing Tor onto
 each VM.
 
-## Installing the Tor Software
+### Installing the Tor Software
 
 To start, we install tor on all of the nodes *except* the web server using the
 following steps:
@@ -95,7 +97,7 @@ Torproject differs depending on the version of Ubuntu that you are using. In my
 case, I am using Ubuntu 14.04. If you are using an older or newer version,
 look online for the correct code for your version.
 
-## Setting up the Web Server
+### Setting up the Web Server
 
 On the node that is designated as the web server, set up Apache:
 
@@ -127,7 +129,7 @@ In order to monitor when someone tries to access the webserver, run:
 sudo tail -f /var/log/apache2/access.log
 ```
 
-## Setting up the Directory Authority
+### Setting up the Directory Authority
 
 Directory authorities help Tor clients learn the addresses of relays that make up the Tor network. Specifically, via the Tor documentation [1]:
 
@@ -344,7 +346,7 @@ at 192.168.1.4:7000 (CA36BEB3CDA5028BDD7B1E1F743929A81E26A5AA)
 which is promising - it seems to indicated that we are using our directory
 authority at 192.168.1.4 (the current host).
 
-## Setting up a Router
+### Setting up a Router
 
 First, stop any currently running Tor process:
 
@@ -434,7 +436,7 @@ at 192.168.1.2:5000. Yay.
 
 Repeat all of the above commands for all of the router nodes that you create.
 
-## Setting up a Client
+### Setting up a Client
 
 First, stop any currently running Tor process:
 
@@ -725,7 +727,7 @@ on Wireshark's interface, follow the steps in the following section. Otherwise,
 as we listen on the network, the traffic that we can see will be outputted on
 the display of each terminal.
 
-## Conclusion
+## Summary of Toy Experiment
 
 From using tcpdump when using and not using Tor, there is a clear difference
 in the information that we can and cannot see at each node. The following table

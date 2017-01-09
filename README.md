@@ -1,17 +1,41 @@
-# Anonymity of Network Traffic Using Tor
+# Analyzing Anonymous Routing of Network Traffic Using Tor
 
 ## Background
 
 Today we live in a world where the Internet is accessible from almost anything
-that we have in our possession. However as Internet continues to become more
+that we have in our possession. However as the Internet continues to become more
 expansive and accessible, the attacks on people using the Internet by spying on
-and stealing their information also increases. Nowadays we never know who may be
-in between you and your friend when sending text messages. How is this problem
-being solved in today's world? Well if there was no possible solution, I would
-not be writing this today. Let us take a deep dive into this solution, known as
-Tor.
+and stealing their information also increases. Tor is an anonymity network that
+is volunteer-based, where the users of the Tor network can become part of the
+network to increase its size and randomness. The Tor network is a system of relays
+that passes around a client's traffic before sending the traffic to the client's
+actual destination. While a client's traffic traverses through the Tor network,
+the origin of the traffic becomes no longer known, and the final destination is
+only known at the exit point of the Tor network. Also while in the Tor network,
+client traffic is encrypted by Tor. In this way, Tor protects users from attackers
+who spy on a network and try to steal a user's information.
 
-### Overview of Tor
+Nowadays many sites are sent through protocols such as HTTPS in order to protect
+a user's privacy. HTTPS (Hypertext Transfer Protocol over TLS) is a secure
+communication protocol used widely in the Internet, which provides authentication
+of accessed websites and provides privacy of the data that is exchanged between
+the client, web server, and the website[3]. HTTPS provides end-to-end encryption
+of data so that in case an attacker is spying on the network, that attacker is
+not able to decrypt the information and figure out what is being transmitted.
+Tor works in conjunction with HTTPS, therefore the two methods combined provides
+end-to-end encryption of data, and protection by cloaking client and destination
+communication, as well as the locations of both ends.
+
+### The Origin of Tor
+
+Onion routing research began in 1995 by David Goldschlag, Michael Reed, and Paul
+Syverson, with one goal in mind, which was to separate identification from
+routing [1]. Authenticating one's identity can be done through the data that is
+passed in the data stream, and does not necessarily have to be through one's
+location. The goal that these three men had in mind was not to create anonymity
+when browsing the Internet, but anonymous routing. 
+
+
 
 Why was Tor built in the first place? Let us first take look back at the history
 of Tor when it was first created. Tor was originally developed by the US military
@@ -29,7 +53,7 @@ objective remained as the top and only priority. Everything else was secondary.
 
 In fact, other than those who would use Tor for cloaking criminal activity, the
 US Navy needed other people other themselves to use Tor. Using a cloaking software
-exclusively by the US Navy would conversly decloak the people, because an attacker
+exclusively by the US Navy would conversely decloak the people, because an attacker
 watching the Tor network would know that anything that goes in or out of the
 network would be by the US Navy. The US Navy required as diverse of a community
 of people as possible to use Tor in order to hide themselves behind everyone. This
@@ -56,18 +80,14 @@ include activists, whistleblowers, bloggers, and high and low profile people. To
 is also used by law enforcement officers for surveillance of sites that may
 potentially be used for illegal criminal activity or illegal gambling. Above all
 these groups of people however, a large group of users of Tor are people who
-simply with to evade surveillance and protect their privacy when browsing the
+simply wish to evade surveillance and protect their privacy when browsing the
 Internet.
 
-
-### An Overview of Tor's Security
+### Overview of Tor's Security
 
 How does Tor actually work? Tor is a software that can run in conjunction with
-HTTPS, which further increases its security capabilities. HTTPS (Hypertext Transfer
-Protocol over TLS) is a secure communication protocol used widely in the Internet,
-which provides authentication of accessed websites and provides privacy of the data
-that is exchanged between the client, web server, and the website[3]. Encryption
-of data also occurs, which protects the user from attackers that spy on the network
+HTTPS, which further increases its security capabilities. Encryption of data
+also occurs, which protects the user from attackers that spy on the network
 to steal the user's information. Let us take a look at the following example of
 a simple network to further see the capabilities of Tor and HTTPS.
 
