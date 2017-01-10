@@ -26,7 +26,7 @@ Tor works in conjunction with HTTPS, therefore the two methods combined provides
 end-to-end encryption of data, and protection by cloaking client and destination
 communication, as well as the locations of both ends.
 
-### The Origin of Tor
+### The Origin and History of Tor
 
 Onion routing research began in 1995 by David Goldschlag, Michael Reed, and Paul
 Syverson, with one goal in mind, which was to separate identification from
@@ -65,25 +65,34 @@ fulfilling their primary objective of cloaking the identity of government and
 intelligence personnel, which was why Tor became an "open source" consumer product
 that everyone would be able to use [2].
 
+![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/Top5.PNG)  
+*Data Source: Tor Metrics*
 
-![](http://geography.oii.ox.ac.uk/wp-content/uploads/2014/06/Tor_Hexagons.png)
+The above shows the number of Tor clients per day for five countries for the past
+five years. The countries for whose line chart is shown are the top five countries
+that are currently using. We see an interesting trend that is present in all five
+countries, where the number of Tor clients skyrockets all around the same time in
+the year 2013.
 
-*Data Source: Internet Geographies at the Oxford Internet Institute*
+![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/2013TorUsers.PNG)
+*Data Source: Tor Metrics*
 
-We can see from the above image that the number of Tor users other than those of
-the US Navy in fact did increase immensely by placing it on the market. Who are
-these people that are using Tor? A main group of users of Tor are journalists
-and activists that live in countries that place restrictions on the Internet. For
-example many journalists in China use Tor to get past China's national firewall
-in order to write about events occurring locally around them, in order to create
-commotion regarding both social and political reform[4]. Other groups of people
-that want to raise their voice to the public without revealing their identities
-include activists, whistleblowers, bloggers, and high and low profile people. Tor
-is also used by law enforcement officers for surveillance of sites that may
-potentially be used for illegal criminal activity or illegal gambling. Above all
-these groups of people however, a large group of users of Tor are people who
-simply wish to evade surveillance and protect their privacy when browsing the
-Internet.
+The above shows the total number of Tor clients per day for the year 2013, where
+we see this rapid increase in Tor usage. The increase begins in mid-August, and
+seems to settle down by the end of September. After doing some research on Tor
+during that time period, results came up concerning an enormous botnet in August
+2013 that increased the number of Tor users. A botnet is a network of computers
+that are infected with malware, and is controlled without the owners knowing.
+These computers are often controlled to send spam automatically. This botnet was
+known as MEVADE/SEFNIT, created by an Israeli/Ukranian adware company, and the
+effect that this botnet had on the Tor network was that the number of Tor users
+increased from about 1 million to more than 5 million users [4]. This resulted in a
+drastic reduction in the speed of the Tor network, and a breakdown of the
+stability of the network. We see that after the number of Tor users reaches a peak
+around the end of September, the number begins to decrease gradually, which we can
+assume is when the botnet was compromised and the Tor network began to gain its
+stability back again. Today, the Tor network is very stable and provides service
+to a relatively constant pool of around 1.5 million clients.
 
 ### Overview of Tor's Security
 
@@ -94,7 +103,6 @@ to steal the user's information. Let us take a look at the following example of
 a simple network to further see the capabilities of Tor and HTTPS.
 
 ![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/~Tor~HTTPS.PNG)  
-
 *Data Source: Electronic Frontier Foundation (EFF): Tor and HTTPS*  
 
 The above network shows a number of users/nodes with different
@@ -136,8 +144,10 @@ information. Lastly, the user clearly knows all of the information
 about itself, and the accessed website also does as well.
 
 Now let us examine what happens when we use HTTPS to access a website:
+
 ![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/~TorHTTPS.PNG)   
-*Data Source: Electronic Frontier Foundation (EFF): Tor and HTTPS*  
+*Data Source: Electronic Frontier Foundation (EFF): Tor and HTTPS*   
+
 We can clearly see that the user, the website, and those that have data sharing
 with the website still see the all the information. This is expected because the
 user and the site are the ends of the network, and HTTPS is responsible for
@@ -149,8 +159,10 @@ itself to have access to the unencrypted information about the user and the data
 sent.  
 
 Now let us examine what happens when we only use Tor to access a website:
+
 ![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/Tor~HTTPS.PNG)   
 *Data Source: Electronic Frontier Foundation (EFF): Tor and HTTPS*  
+
 We now observe that in between the two NSA nodes, there are now three new nodes,
 which represent three tor relays. The hacker, the nodes sharing data with the
 first ISP, and the first NSA node can only see the location of the user sending
@@ -184,8 +196,10 @@ a weakness of using Tor.
 
 We resolve the problem that nodes eavesdropping the second ISP have access to user
 information by using Tor in conjunction with HTTPS.  
+
 ![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/TorHTTPS.PNG)  
 *Data Source: Electronic Frontier Foundation (EFF): Tor and HTTPS*  
+
 The information that the nodes before the entry Tor node can see is still the same,
 which is very limited. The biggest change that we can see is that the nodes
 eavesdropping on the second ISP which is after the Tor network can no longer see
@@ -228,7 +242,7 @@ directory authority (DA), which is a certain more trusted, reliable OR that
 contains a list of known ORs in the network, including their location and current
 state.
 
-**Keys**  
+#### Keys
 
 The Tor network is constantly changing, and there needs to be some kind of mechanism
 so that the DAs in the Tor network are constantly aware of these changes that
@@ -264,15 +278,16 @@ for the opening of a tor circuit, when a three-way handshake is required. The
 fingerprint key, as the name suggests is a fingerprint of the identity key, used
 so that the identity key's location and security is preserved.
 
-**Cells**  
+#### Cells  
 
 ORs pass traffic along the Tor network in fixed-size cells/packets of 512 bytes.
  Each cell is encrypted in many levels, where these levels are decrypted by a key
  at each OR until it reaches the exit node where it is then sent to the website.
  There are two main types of cells: control cells and relay cells.
 
-![](https://github.com/tfukui95/tor-experiment/blob/master/cell format.PNG)   
-*Data Source: https://svn.torproject.org*   
+![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/cell%20format.PNG)   
+*Data Source: https://svn.torproject.org*  
+
 The above shows the structure of a cell, where the top is the control cell
 structure and the bottom is the relay cell structure. The control cell contains
 three parts: CircID, CMD, and DATA. CircID is the circuit identifier which specifies
@@ -306,19 +321,24 @@ is that the payload of a RELAY EXTEND cell also contains the handshake instructi
 of the payload of a CREATE cell. The only additional component of the payload are
 link specifers that describe the next node to connect to.
 
-**Initialization of Connections**  
+#### Initialization of Connections
+
 Before a connection between two nodes is created and opened, there are a number
 of steps of package exchanges that must take place to negotiate authenticity of
 the nodes. This process is called a TLS handshake to ensure that the link between
 two nodes is secure and encrypted. There are three kinds of TLS handshakes:
 certificates-up-front, renegotiation and in-protocol.
 
+![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/CertificatesUpFront.PNG)  
+
 The certificates-up-front handshake is the simplest TLS handshake that is supported
 by all versions of Tor. In this process, both sides of the link must send each
-other a two-certificate chain. This chain consists of a short-term connection public
-key and a self-signed certificate that contains its identity key. This process is
-the simplest of the three and securely allows both sides to confirm each others'
-availability.
+other a two-certificate chain. This chain consists of a certificate using a
+short-term connection public key and a self-signed certificate that contains its
+identity key. This process is the simplest of the three and securely allows both
+sides to confirm each others' availability.
+
+![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/Renegotiation.PNG)  
 
 For renegotiation and in-protocol handshakes, the following control cell commands
 are required: VERSIONS, CERTS, AUTH_CHALLENGE, and AUTHENTICATE [6]. In a
@@ -331,9 +351,11 @@ each others' location and timestamp, which is the local clock of the node. A
 NETINFO cell also contains address locations of other ORs that are known by that
 specific OR.
 
+![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/InProtocol.PNG)  
+
 An in-protocol handshake requires a few different steps from the renegotiation
 handshake. After the initial TLS connection, renegotiation is skipped, and instead
-both sides send a VERSION cell to negotiation the link protocol version. Directly
+both sides send a VERSION cell to negotiate the link protocol version. Directly
 following this the initiator sends a CERT cell, which contains a list of keys and
 certificates that a node claims to have in possession. The responder send back its
 own CERT cell, followed by a AUTH_CHALLENGE which as the name describes, is a request
@@ -342,7 +364,8 @@ responds with an AUTH_CHALLENGE cell, a CERT cell, and an AUTHENTICATE cell whic
 contains the authentication [6]. Now that the authentication process has finished,
 both nodes send each other a NETINFO cell containing its location and timestamp.
 
-**Directory Authority**  
+#### Directory Authority
+
 In an older version of Onion Routing, the state of each router was updated through
 flooding: each router was to send a status update to its neighbors, which spread
 to other neighbors. However there was much inconvenience with this design due to
@@ -367,7 +390,7 @@ and the consensus is frequently checked to make sure that it is not too old [7].
   [1] "What is HTTPS?" [https://www.instantssl.com/ssl-certificate-products/https.html](https://www.instantssl.com/ssl-certificate-products/https.html)  
   [2] "A Peel of Onion" Paul Syverson, [http://dl.acm.org/citation.cfm?id=2076750](http://dl.acm.org/citation.cfm?id=2076750)
   [3] "Tor Metrics" Tor Project, [https://metrics.torproject.org/](https://metrics.torproject.org/)
-  [4] "Inception" Tor Project, [https://www.torproject.org/about/torusers.html.en](https://www.torproject.org/about/torusers.html.en)  
+  [4] "On the Actors Behind MEVADE/SEFNIT" Forward-Looking Threat Research Team,  [http://www.trendmicro.com/cloud-content/us/pdfs/security-intelligence/white-papers/wp-on-the-actors-behind-mevade-sefnit.pdf](http://www.trendmicro.com/cloud-content/us/pdfs/security-intelligence/white-papers/wp-on-the-actors-behind-mevade-sefnit.pdf)  
   [5] "Tor: The Second-Generation Onion Router" Roger Dingledine, Nick Mathewson, Paul Syverson, Tor Project, [https://svn.torproject.org/svn/projects/design-paper/tor-design.pdf](https://svn.torproject.org/svn/projects/design-paper/tor-design.pdf)  
   [6] "Tor Protocol Specification" Roger Dingledine, Nick Mathewson, Tor Project, [https://gitweb.torproject.org/torspec.git/tree/tor-spec.txt](https://gitweb.torproject.org/torspec.git/tree/tor-spec.txt)  
   [7] "How can I get consensus data from Directory authority servers for research purpose?" Stack Overflow,  [http://tor.stackexchange.com/questions/4939/how-can-i-get-consensus-data-from-directory-authority-servers-for-research-purpo](http://tor.stackexchange.com/questions/4939/how-can-i-get-consensus-data-from-directory-authority-servers-for-research-purpo)  
