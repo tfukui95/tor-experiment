@@ -74,7 +74,7 @@ that are currently using. We see an interesting trend that is present in all fiv
 countries, where the number of Tor clients skyrockets all around the same time in
 the year 2013.
 
-![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/2013TorUsers.PNG)
+![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/2013TorUser.PNG)
 *Data Source: Tor Metrics*
 
 The above shows the total number of Tor clients per day for the year 2013, where
