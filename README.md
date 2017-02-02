@@ -39,7 +39,7 @@ Today there are over 6000 Tor relays inside the Tor network, serving over 1.5
 million users [3]. In the present day, there is a variety of Tor users with different
 goals that they wish to achieve from using Tor. One group of users are law
 enforcement and intelligence agency personnel, who must stay anonymous when
-browsing the Internet to investigate a certain case. There actions cannot be
+browsing the Internet to investigate a certain case. Their actions cannot be
 traced, therefore anonymous routing is the best solution. Another group of users
 stems from those who want to voice their opinion on a certain topic without
 revealing their true identity. Tor provides a means for people to discuss and post
@@ -163,7 +163,7 @@ Now let us examine what happens when we only use Tor to access a website:
 ![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/Tor~HTTPS.PNG)   
 *Data Source: Electronic Frontier Foundation (EFF): Tor and HTTPS*  
 
-We now observe that in between the two NSA nodes, there are now three new nodes,
+We now observe that in between the two NSA nodes, are now three new nodes,
 which represent three tor relays. The hacker, the nodes sharing data with the
 first ISP, and the first NSA node can only see the location of the user sending
 traffic. They do not know the username information, the data the user is sending,
