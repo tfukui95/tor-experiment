@@ -103,7 +103,7 @@ to steal the user's information. Let us take a look at the following example of
 a simple network to further see the capabilities of Tor and HTTPS.
 
 ![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/~Tor~HTTPS.PNG)  
-*Data Source: Electronic Frontier Foundation (EFF): Tor and HTTPS*  
+*Image Source: Electronic Frontier Foundation (EFF): Tor and HTTPS*  
 
 The above network shows a number of users/nodes with different
 roles:
@@ -146,10 +146,10 @@ about itself, and the accessed website also does as well.
 Now let us examine what happens when we use HTTPS to access a website:
 
 ![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/~TorHTTPS.PNG)   
-*Data Source: Electronic Frontier Foundation (EFF): Tor and HTTPS*   
+*Image Source: Electronic Frontier Foundation (EFF): Tor and HTTPS*   
 
 We can clearly see that the user, the website, and those that have data sharing
-with the website still see the all the information. This is expected because the
+with the website still see all the information. This is expected because the
 user and the site are the ends of the network, and HTTPS is responsible for
 encrypting the information that travels between both ends. Due to this encryption,
 the rest of the network can longer see the username and password of the user,
@@ -161,7 +161,7 @@ sent.
 Now let us examine what happens when we only use Tor to access a website:
 
 ![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/Tor~HTTPS.PNG)   
-*Data Source: Electronic Frontier Foundation (EFF): Tor and HTTPS*  
+*Image Source: Electronic Frontier Foundation (EFF): Tor and HTTPS*  
 
 We now observe that in between the two NSA nodes, are now three new nodes,
 which represent three tor relays. The hacker, the nodes sharing data with the
@@ -198,7 +198,7 @@ We resolve the problem that nodes eavesdropping the second ISP have access to us
 information by using Tor in conjunction with HTTPS.  
 
 ![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/TorHTTPS.PNG)  
-*Data Source: Electronic Frontier Foundation (EFF): Tor and HTTPS*  
+*Image Source: Electronic Frontier Foundation (EFF): Tor and HTTPS*  
 
 The information that the nodes before the entry Tor node can see is still the same,
 which is very limited. The biggest change that we can see is that the nodes
