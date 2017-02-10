@@ -44,7 +44,16 @@ Next we need to download the necessary TorPS scripts with
 wget https://raw.githubusercontent.com/torps/torps/master/pathsim.py
 ```
 
-Now we are finally ready for path simulation. The first step is to process the Tor consensuses and server descriptors into a compact form for faster path simulation. For our experiment we extracted the consensuses and server descriptors for the year 2016. Therefore run the following:
+Now we are finally ready for path simulation. The first step is to process the Tor consensuses and server descriptors into a compact form for faster path simulation. We first must make the directories in which to store the processed files:
+
+```
+for A in 01 02 03 04 05 06 07 08 09 10 11 12
+do
+sudo mkdir torps/out/server-network-state-2016-$A
+done
+```
+
+For our experiment we extracted the consensuses and server descriptors for the year 2016. Therefore run the following:
 
 ```
 python pathsim.py process --start_year 2016 --start_month 2 --end_year 2016 --end_month 12 --in_dir in --out_dir out --initial_descriptor_dir in/server-descriptors-2016-01
