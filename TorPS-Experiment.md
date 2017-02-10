@@ -24,6 +24,6 @@ Next we download the consensuses from the collector.torproject.org website:
 ```
 for A in 01 02 03 04 05 06 07 08 09 10 11 12
 do
-sudo wget -O torps/in/consensuses-2016-$A http://collector.torproject.org/archive/relay-descriptors/consensuses/consensuses-2016-$A.tar.xz
+sudo wget -O torps/in/consensuses-2016-$A/consensuses-2016-$A http://collector.torproject.org/archive/relay-descriptors/consensuses/consensuses-2016-$A.tar.xz
 done
 ```
