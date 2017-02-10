@@ -28,6 +28,15 @@ sudo wget -O torps/in/consensuses-2016-$A/consensuses-2016-$A.tar.xz http://coll
 done
 ```
 
+Because the files are encrypted, we must extract the file:
+
+```
+for A in 01 02 03 04 05 06 07 08 09 10 11 12
+do
+sudo tar -xf torps/in/consensuses-2016-$A/consensuses-2016-$A.tar.xz
+done
+```
+
 Next we do the same thing but this time for the server descriptor archives:
 
 ```
@@ -35,6 +44,7 @@ for A in 01 02 03 04 05 06 07 08 09 10 11 12
 do
 sudo mkdir torps/in/server-descriptors-2016-$A
 sudo wget -O torps/in/server-descriptors-2016-$A/server-descriptors-2016-$A.tar.xz http://collector.torproject.org/archive/relay-descriptors/server-descriptors/server-descriptors-2016-$A.tar.xz
+sudo tar -xf torps/in/server-descriptors-2016-$A/server-descriptors-2016-$A.tar.xz
 done
 ```
 
