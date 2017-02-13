@@ -15,7 +15,7 @@ Next we need to extract the consensus archives and server descriptor archives fo
 ```
 for A in 01 02 03 
 do
-sudo mkdir torps/in/consensuses-2016-$A
+sudo mkdir ~/torps/in/consensuses-2016-$A
 done
 ```
 
@@ -24,16 +24,17 @@ Next we download the consensuses from the collector.torproject.org website:
 ```
 for A in 01 02 03 
 do
-sudo wget -O torps/in/consensuses-2016-$A/consensuses-2016-$A.tar.xz http://collector.torproject.org/archive/relay-descriptors/consensuses/consensuses-2016-$A.tar.xz
+sudo wget -O ~/torps/in/consensuses-2016-$A/consensuses-2016-$A.tar.xz http://collector.torproject.org/archive/relay-descriptors/consensuses/consensuses-2016-$A.tar.xz
 done
 ```
 
 Because the files are encrypted, we must extract the file:
 
 ```
-for A in 01 02 03 
+for A in 01 02 03
 do
-sudo tar -xf torps/in/consensuses-2016-$A/consensuses-2016-$A.tar.xz
+cd ~/torps/in/consensuses-2016-$A
+sudo tar -xf ~/torps/in/consensuses-2016-$A/consensuses-2016-$A.tar.xz
 done
 ```
 
@@ -42,9 +43,10 @@ Next we do the same thing but this time for the server descriptor archives:
 ```
 for A in 01 02 03 
 do
-sudo mkdir torps/in/server-descriptors-2016-$A
-sudo wget -O torps/in/server-descriptors-2016-$A/server-descriptors-2016-$A.tar.xz http://collector.torproject.org/archive/relay-descriptors/server-descriptors/server-descriptors-2016-$A.tar.xz
-sudo tar -xf torps/in/server-descriptors-2016-$A/server-descriptors-2016-$A.tar.xz
+sudo mkdir ~/torps/in/server-descriptors-2016-$A
+sudo wget -O ~/torps/in/server-descriptors-2016-$A/server-descriptors-2016-$A.tar.xz http://collector.torproject.org/archive/relay-descriptors/server-descriptors/server-descriptors-2016-$A.tar.xz
+cd ~/torps/in/consensuses-2016-$A
+sudo tar -xf ~/torps/in/server-descriptors-2016-$A/server-descriptors-2016-$A.tar.xz
 done
 ```
 
