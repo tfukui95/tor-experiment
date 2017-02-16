@@ -4,9 +4,11 @@ To install Tor Path Simulator (TorPS), we first need to install python stem.
 sudo apt-get install python-stem
 ```
 
-Next we glone the TorPS github repository with
+Next we need to install git and then clone the TorPS github repository with
 
 ```
+sudo apt-get update
+sudo apt-get install git
 git clone https://github.com/torps/torps.git
 ```
 
