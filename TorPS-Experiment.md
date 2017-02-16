@@ -66,7 +66,7 @@ Now we are finally ready for path simulation. The first step is to process the T
 ```
 for A in 01 02 03 
 do
-sudo mkdir torps/out/network-state-2016-$A
+sudo mkdir ~/torps/out/network-state-2016-$A
 done
 ```
 
