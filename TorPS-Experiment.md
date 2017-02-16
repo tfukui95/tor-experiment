@@ -64,6 +64,7 @@ wget https://raw.githubusercontent.com/torps/torps/master/event_callbacks.py
 Now we are finally ready for path simulation. The first step is to process the Tor consensuses and server descriptors into a compact form for faster path simulation. We first must make the directories in which to store the processed files:
 
 ```
+mkdir ~/torps/out
 for A in 01 02 03 
 do
 sudo mkdir ~/torps/out/network-state-2016-$A
