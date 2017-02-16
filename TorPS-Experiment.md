@@ -61,6 +61,13 @@ wget https://raw.githubusercontent.com/torps/torps/master/congestion_aware_paths
 wget https://raw.githubusercontent.com/torps/torps/master/process_consensuses.py
 wget https://raw.githubusercontent.com/torps/torps/master/network_modifiers.py
 wget https://raw.githubusercontent.com/torps/torps/master/event_callbacks.py
+wget https://raw.githubusercontent.com/torps/torps/master/pathsim_analysis.py
+wget https://raw.githubusercontent.com/torps/torps/master/pathsim_plot.py
+wget https://raw.githubusercontent.com/torps/torps/master/plot_torcat-3guards.py
+wget https://raw.githubusercontent.com/torps/torps/master/plot_torcat-all.py
+wget https://raw.githubusercontent.com/torps/torps/master/plot_torcat.py
+wget https://raw.githubusercontent.com/torps/torps/master/vcs_pathsim.py
+
 ```
 
 Now we are finally ready for path simulation. The first step is to process the Tor consensuses and server descriptors into a compact form for faster path simulation. We first must make the directories in which to store the processed files:
