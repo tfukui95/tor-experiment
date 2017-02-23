@@ -37,6 +37,7 @@ for A in 01 02 03
 do
 cd ~/torps/in
 sudo tar -xf ~/torps/in/consensuses-2016-$A/consensuses-2016-$A.tar.xz
+cd ~/torps/in/consensuses-2016-$A
 sudo rm -r consensuses-2016-$A.tar.xz
 done
 ```
