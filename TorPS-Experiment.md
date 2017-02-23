@@ -49,8 +49,10 @@ for A in 01 02 03
 do
 sudo mkdir ~/torps/in/server-descriptors-2016-$A
 sudo wget -O ~/torps/in/server-descriptors-2016-$A/server-descriptors-2016-$A.tar.xz http://collector.torproject.org/archive/relay-descriptors/server-descriptors/server-descriptors-2016-$A.tar.xz
-cd ~/torps/in/server-descriptors-2016-$A
+cd ~/torps/in/
 sudo tar -xf ~/torps/in/server-descriptors-2016-$A/server-descriptors-2016-$A.tar.xz
+cd ~/torps/in/server-descriptors-2016-$A
+sudo rm -r server-descriptors-2016-$A.tar.xz
 done
 ```
 
