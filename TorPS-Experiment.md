@@ -35,7 +35,7 @@ Because the files are encrypted, we must extract the file:
 ```
 for A in 01 02 03
 do
-cd ~/torps/in/consensuses-2016-$A
+cd ~/torps/in
 sudo tar -xf ~/torps/in/consensuses-2016-$A/consensuses-2016-$A.tar.xz
 done
 ```
