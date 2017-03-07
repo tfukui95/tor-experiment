@@ -60,10 +60,11 @@ who.
 1. This attack has been performed by Panchenko et al. and is described in their
 paper called _Website Fingerprinting in Onion Routing Based Anonymization Networks_
 [3]. The paper describes website fingerprinting as another traffic confirmation
-attack, but can be performed by a local adversary. For example, for people in
-oppressive regimes, who try to access websites that are located in outside countries,
-are still able to deanonymized by a local eavesdropper that is able to listen
-to the traffic traveling between the user and the entry node of the Tor network.
+attack, which is described in AS-Level Adversary section, but can be performed by
+a local adversary. For example, for people in oppressive regimes, who try to access
+websites that are located in outside countries, are still able to deanonymized by
+a local eavesdropper that is able to listen to the traffic traveling between the
+user and the entry node of the Tor network.
 2. __Fingerprinting__ is a kind of traffic analysis that involves observing a user's
 traffic and identifying certain patterns which can later be used in traffic
 confirmation to correlate what website a user may be accessing.
@@ -81,30 +82,110 @@ is located on the same network or ISP as the user, or has access to that network
 
 ### Selective Denial of Service (SDoS)
 
-1.
-2.
-3.
-4.
-5.
-6.
+1. This attack is a theoretical attack that is described in a paper by Borisov et al.
+called _Denial of Service or Denial of Security?_ [5]. This attack is described as
+having a secondary objective to deanonymizing the user, which is to decrease the
+reliability and efficiency of using the Tor network. The specifics of how this
+attack is performed will be explained in greater detail in the upcoming bullet
+points.
+2. __Denial of Service (DoS)__ as the name connotes is an attack which aims to disallow
+a user from using a service that would otherwise be allowed. In this case, the DoS
+refers to disallowing using a certain connection in the Tor network to pass traffic.
+3. This attack is active due to the action of killing a connection tunnel to
+disallow the forwarding of a user's traffic.
+4. SDoS is a direct attack on the connection tunnel that would be blocked if
+traffic confirmation is not successful. Otherwise, the attack focuses more on the
+traffic of a user as it enters and leaves the Tor network.
+5. In order to perform this attack successfully, the adversary must be in control
+of an entry and exit relay that is used on the same circuit of a user to pass
+traffic.
+6. This attack has two possible outcomes, where neither is a failed outcome. One
+is that if both the entry and exit nodes of a connection are run by the same
+adversary, then __traffic confirmation__ can be performed to deanonymize the user.
+If this does not turn out to be the outcome, the adversary will block forwarding
+of traffic through that connection tunnel, and as a result the user will need to
+use another circuit. A main point of this active attack is that instead of making
+users not want to use Tor anymore, the attack merely makes the attack a bit less
+reliable but nonetheless functional [5]. Tor users that try to create another circuit
+will provide adversaries more opportunities of deanonymization, which is an
+important strength of this attack.
 
 ### Low Resource Routing Attack
 
-1.
-2.
-3.
-4.
-5.
-6.
+1. This attack has been performed by Bauer et al. and is described in their paper
+_Low-Resource Routing Attacks Against Tor_ [6]. An important goal of this experiment
+was to try to minimize the requirements for an adversary to be able to compromise
+a user and its destination, especially due to the fact that the adversary relays
+have minimal resources.
+2. __Load Balancing__ is a process used in network traffic which aims to balance
+traffic efficiently across all of the available resources in the network. In
+order to maintain a low-latency system, Tor must not only rely on the routers that
+have high amounts of available bandwidth, but on all of the available resources.
+3. This attack is an active attack because not only does the adversary install
+one's own routers, but also logs fake statistics of available bandwidth.
+4. The areas of the Tor network that this attack focuses on are the relays of the
+network, as the adversary's relays are competing with the other relays to be
+chosen as users' relays to direct traffic.
+5. This attack requires a number of low-resource routers that can advertise false
+bandwidth capabilities, as well as a central authority that will link the colluding
+relays by matching the logs of information that each router collects and to see
+whether there is any correlation.
+6. After an adversary has under his/her possession a number of low-resource relays
+that can advertise high bandwidth capabilities, and preferably has an unrestricted
+exit policy to allow all kinds of traffic, the next step is to try to compromise
+the user and destination communication before any payload is sent. This means that
+the attack is focused on the initial circuit building algorithm stage. This is
+important because the adversary relays are simply falsely advertising bandwidth,
+therefore will not be able to efficiently forward any actual payload, so the
+attack must be done in the early stages. Each adversary logs the following information:
+(1) its location on the current circuit’s path (whether it is an entry, middle,
+or exit node); (2) local timestamp; (3) previous circuit ID; (4) previous IP
+address; (5) previous connection’s port; (6) next hop’s IP address; (7) next hop’s
+port; and (8) next hop’s circuit ID." [6]. The colluding central authority then
+collects these logs from each adversary relay and sees whether there is any
+correlation to compromise a connection.
 
 ### Sniper Attack
 
-1.
-2.
-3.
-4.
-5.
-6.
+1. The sniper attack has been performed by Jansen et al. and their experiment
+is laid out in there paper _The Sniper Attack: Anonymously Deanonymizing
+and Disabling the Tor Network_ [7]. The sniper attack is a low cost yet highly
+effective denial of service. However, this attack by itself is only capable of
+performing DoS attacks, and not deanonymization. However, when coupled with
+SDoS, the attacks are very effective.
+2.  __Denial of Service (DoS)__ (taken from the SDoS section above) is an attack which
+aims to disallow a user from using a service that would otherwise be allowed. In
+this case, the DoS refers to disallowing using a certain connection in the Tor
+network to send traffic.  
+__End-to-End Sliding Window Mechanism__ is a mechanism used by Tor to control
+congestion in the Tor network. Each node at the end of a circuit (client and exit
+relay) manages a package window for incoming packets, and a delivery window for
+outgoing packets.
+3. This attack, as it is a DoS attack is certainly active.
+4. The main victim that the Sniper Attack aims for is the entry relay that is
+used in the circuit to pass the user's traffic.
+5. There are two parts of the network that an adversary must control in order to
+conduct this attack: an adversary client and an exit relay. These two colluding
+parts work together to conduct a DoS on the entry relay.
+6. The basic process of this attack is that when the delivery edge of a node stops
+reading from its TCP port, the receive buffer will fill, which would result in
+the adjacent node being able to forward any more traffic, filling up the queue of
+the entry node. The malicious exit node also ignores any empty package window and
+continues to send traffic along the circuit. The middle node does not have any
+congestion control mechanism to stop accepting from the exit relay, so therefore
+continues to pass the traffic to the entry relay, piling up there. A more detailed
+explanation of the attack is provided by Jansen et al [7]:
+
+ > The adversarial client constructs a circuit by selecting the target relay as
+the entry and the adversarial relay as the exit. The client signals the exit to
+start the attack by issuing an arbitrary request over the custom attack circuit,
+and then stops reading from the TCP connection to the target entry. The exit
+simply ignores the empty package windows and continuously sends data it arbitrarily
+generates, increasing the amount of memory consumed by the entry to queue the cells.
+Note that it is not necessary for the malicious exit to produce correctly encrypted
+Tor cells since they will never be fully decrypted by the client (though correct
+circuit IDs are required). Eventually, the Tor process on the entry node depletes
+all of the available memory resources and is terminated by the operating system.
 
 ### DNS Correlation Attack
 
@@ -127,8 +208,18 @@ is located on the same network or ISP as the user, or has access to that network
 
 ## References
 
-[1] "AS-awareness in Tor Path Selection", Matthew Edman, Paul Syverson, [https://www.freehaven.net/anonbib/cache/DBLP:conf/ccs/EdmanS09.pdf](https://www.freehaven.net/anonbib/cache/DBLP:conf/ccs/EdmanS09.pdf)  
+[1] "AS-awareness in Tor Path Selection", Matthew Edman, Paul Syverson,
+[https://www.freehaven.net/anonbib/cache/DBLP:conf/ccs/EdmanS09.pdf](https://www.freehaven.net/anonbib/cache/DBLP:conf/ccs/EdmanS09.pdf)  
 [2] "How do traffic correlation attacks against Tor users work?", Arminius,
 Security Stack Exchange, [http://security.stackexchange.com/questions/147402/how-do-traffic-correlation-attacks-against-tor-users-work](http://security.stackexchange.com/questions/147402/how-do-traffic-correlation-attacks-against-tor-users-work)  
-[3] "Website Fingerprinting in Onion Routing Based Anonymization Networks", Andriy Panchenko, Lukas Niessen, Andreas Zinnen, [https://www.freehaven.net/anonbib/cache/wpes11-panchenko.pdf](https://www.freehaven.net/anonbib/cache/wpes11-panchenko.pdf)
-[4] "Effective Attacks and Provable Defenses for Website Fingerprinting", Tao Wang, Xiang Cai, Rishab Nithyanand, Rob Johnson, Ian Goldberg, [https://www.freehaven.net/anonbib/cache/wang14-fingerprinting-defenses.pdf](https://www.freehaven.net/anonbib/cache/wang14-fingerprinting-defenses.pdf)
+[3] "Website Fingerprinting in Onion Routing Based Anonymization Networks",
+Andriy Panchenko, Lukas Niessen, Andreas Zinnen, [https://www.freehaven.net/anonbib/cache/wpes11-panchenko.pdf](https://www.freehaven.net/anonbib/cache/wpes11-panchenko.pdf)  
+[4] "Effective Attacks and Provable Defenses for Website Fingerprinting", Tao Wang,
+Xiang Cai, Rishab Nithyanand, Rob Johnson, Ian Goldberg, [https://www.freehaven.net/anonbib/cache/wang14-fingerprinting-defenses.pdf](https://www.freehaven.net/anonbib/cache/wang14-fingerprinting-defenses.pdf)  
+[5] "Denial of Service or Denial of Security?", Nikita Borisov, Prateek Mittal,
+George Danezis, Parisa Tabriz, [http://www.australianscience.com.au/research/google/33413.pdf](http://www.australianscience.com.au/research/google/33413.pdf)  
+[6] "Low-Resource Routing Attacks Against Tor", Kevin Bauer, Damon McCoy, Dirk
+Grunwald, Tadayoshi Kohno, Douglas Sicker, [https://www.freehaven.net/anonbib/cache/bauer:wpes2007.pdf](https://www.freehaven.net/anonbib/cache/bauer:wpes2007.pdf)  
+[7] "The Sniper Attack: Anonymously Deanonymizing and Disabling the Tor Network",
+Rob Jansen, Florian Tschorsch, Aaron Johnson, Bjorn Scheuermann, [http://www.robgjansen.com/publications/sniper-ndss2014.pdf](http://www.robgjansen.com/publications/sniper-ndss2014.pdf)  
+[8] ""
