@@ -101,7 +101,7 @@ of an entry and exit relay that is used on the same circuit of a user to pass
 traffic.
 6. This attack has two possible outcomes, where neither is a failed outcome. One
 is that if both the entry and exit nodes of a connection are run by the same
-adversary, then __traffic confirmation__ can be performed to deanonymize the user.
+adversary, then traffic confirmation can be performed to deanonymize the user.
 If this does not turn out to be the outcome, the adversary will block forwarding
 of traffic through that connection tunnel, and as a result the user will need to
 use another circuit. A main point of this active attack is that instead of making
@@ -217,17 +217,53 @@ alternative is to operate on the relay level by running an adversary entry relay
 The adversary must also be able to see the outgoing DNS traffic, therefore must
 either operate on the network level, or run a malicious DNS resolver or server [8].
 Operating a malicious exit relay is also an option, but the efficiency would be
-on par with a normal correlation attack.
+on par with a normal correlation attack. The following image shows the layout
+of a DNS Correlation Attack.
+
+![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/DNSCorrelation.PNG)  
+*Image Source: Paper by Greschbach et al. [8]*   
+
 
 ### Hidden Services Attack
 
-1.
-2.
-3.
-4.
-5.
-6.
-
+1. This attack has been performed by Kwon et al., described in their paper _Circuit
+Fingerprinting Attacks: Passive Deanonymization of Tor Hidden Services_ [9]. This
+attack on users that utilize hidden services of the Tor network is one of the first
+of its kind. In this paper it is described that traffic that is generated to use a
+hidden service is quite unique from regular Tor traffic, and thus it is easy to
+separate these users and focus on the users using hidden services. The method uses
+circuit fingerprinting, a form of attack we observed in the website fingerprinting
+section. The paper describes how circuit fingerprinting comes in "two settings:
+open- or closed-world. In the closed-world setting, the attacker assumes that the
+websites visited are among a list of k known websites, and the goal of the attacker
+is to identify which one. The open-world setting is more realistic in that it assumes
+that the client will visit a larger set of websites" [9].
+2. __Fingerprinting__ is a kind of traffic analysis that involves observing a user's
+traffic and identifying certain patterns which can later be used in traffic
+confirmation to correlate what website a user may be accessing.  
+__Hidden Services__ are special services provided by Tor, in which only Tor users
+can access. Using these services is like an extra layer of anonymity within the
+Tor network.
+3. A Hidden Service Attack is a passive attack because it is a form of circuit
+fingerprinting, which only observes the traffic in the Tor network and aims to
+find any correlation in traffic. An extra step that is taken in this attack is that
+traffic relating to hidden services and traffic of normal Tor usage is separated
+so a more efficient may be conducted.
+4. The focus of attack are the hidden services of the Tor network, which exhibit
+different behaviors from regular Tor traffic.
+5. An important factor for a successful hidden service attack is that the adversary
+must be able to listen to the traffic between the user and the hidden service. This
+communication is not direct, but through the relays that the user chooses to create
+a circuit to the hidden service.
+6. In order for a user to use a hidden service, the hidden service must first choose
+a random relay to serve as the Introduction Point (IP), in which a message containing
+the service's public key is sent. The client also must choose a random relay to serve
+as the Rendezvous Point (RP) which will serve as a connection point to the hidden service.
+Both sides must also create a circuit connection to the IP and RP to exchange keys [9].
+An attack on the hidden services requires knowing how a connection to a hidden
+service is established in the first place, and seeing that traffic sent to a hidden
+service is unique. The actual deanonymization of the circuit is done through a
+website fingerprinting attack, explained in a section above.
 
 ## References
 
@@ -247,3 +283,5 @@ Grunwald, Tadayoshi Kohno, Douglas Sicker, [https://www.freehaven.net/anonbib/ca
 Rob Jansen, Florian Tschorsch, Aaron Johnson, Bjorn Scheuermann, [http://www.robgjansen.com/publications/sniper-ndss2014.pdf](http://www.robgjansen.com/publications/sniper-ndss2014.pdf)  
 [8] "The Effect of DNS on Tor’s Anonymity", Benjamin Greschbach, Tobias Pulls, Laura Roberts,
 Philipp Winter, Nick Feamster, [https://nymity.ch/tor-dns/tor-dns.pdf](https://nymity.ch/tor-dns/tor-dns.pdf)  
+[9] "Circuit Fingerprinting Attacks: Passive Deanonymization of Tor Hidden Services",
+Albert Kwon, Mashael AlSabah, David Lazar, Marc Dacier, Srinivas Devadas, [https://people.csail.mit.edu/devadas/pubs/circuit_finger.pdf](https://people.csail.mit.edu/devadas/pubs/circuit_finger.pdf)  
