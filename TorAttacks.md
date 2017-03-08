@@ -189,12 +189,35 @@ all of the available memory resources and is terminated by the operating system.
 
 ### DNS Correlation Attack
 
-1.
-2.
-3.
-4.
-5.
-6.
+1. This attacked has been developed by Greschbach et al. and is explained in their
+paper _The Effect of DNS on Tor’s Anonymity_ [8]. Unlike most traffic confirmation
+attacks which focus on TCP traffic to correlate a user and its destination's
+communication, this attack focuses on the DNS traffic that is sent alongside TCP
+traffic. Simply loading a webpage requires generating lots of DNS traffic to many
+different domains. In this paper a type of attack called DefecTor is introduced,
+which was produced to test the DNS correlation attack. Compromising a connection
+using DNS traffic confirmation is still a relatively new idea with this paper
+serving as one of the forefronts to this research.
+2. __Domain Name Servers (DNS)__ is like a phone book for the Internet, in which
+they are servers that have a directory of names of domains, and there corresponding
+IP addresses. Although computers can easily remember a series of numbers, we users
+have difficulty doing so, and are able to remember names like Facebook and Youtube
+more easily. DNS are responsible for being the middleman between us users and our
+computer so that we can access the specific site that we want.
+3. A DNS Correlation Attack is a passive active like an AS-Level Adversary Attack,
+as it only listens to the network and collects traces of traffic to see if there
+is any correlation.
+4. This attack focuses its attack on the DNS traffic that is generated whenever
+a Tor user accesses a website.
+5. In order for this attack to be performed, a user must have access to the DNS
+traffic at both ends of the Tor network.
+6. To see the DNS traffic at the entry point of the Tor network, the adversary
+can operate on the network level, for example to have access to an ISP. Another
+alternative is to operate on the relay level by running an adversary entry relay.
+The adversary must also be able to see the outgoing DNS traffic, therefore must
+either operate on the network level, or run a malicious DNS resolver or server [8].
+Operating a malicious exit relay is also an option, but the efficiency would be
+on par with a normal correlation attack.
 
 ### Hidden Services Attack
 
@@ -222,4 +245,5 @@ George Danezis, Parisa Tabriz, [http://www.australianscience.com.au/research/goo
 Grunwald, Tadayoshi Kohno, Douglas Sicker, [https://www.freehaven.net/anonbib/cache/bauer:wpes2007.pdf](https://www.freehaven.net/anonbib/cache/bauer:wpes2007.pdf)  
 [7] "The Sniper Attack: Anonymously Deanonymizing and Disabling the Tor Network",
 Rob Jansen, Florian Tschorsch, Aaron Johnson, Bjorn Scheuermann, [http://www.robgjansen.com/publications/sniper-ndss2014.pdf](http://www.robgjansen.com/publications/sniper-ndss2014.pdf)  
-[8] ""
+[8] "The Effect of DNS on Tor’s Anonymity", Benjamin Greschbach, Tobias Pulls, Laura Roberts,
+Philipp Winter, Nick Feamster, [https://nymity.ch/tor-dns/tor-dns.pdf](https://nymity.ch/tor-dns/tor-dns.pdf)  
