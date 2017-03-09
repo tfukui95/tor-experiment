@@ -265,6 +265,54 @@ service is established in the first place, and seeing that traffic sent to a hid
 service is unique. The actual deanonymization of the circuit is done through a
 website fingerprinting attack, explained in a section above.
 
+## A Taxonomy of Tor Adversaries
+
+In order to better see how all of these adversaries of Tor are unique in of itself
+but also at the same have similarities amonst each other, I have made a taxonomy
+of the attacks in a table.
+
+|      | Active/Passive | Observes Incoming/ Outgoing Traffic  | Level of Authority | Has Been Performed Before |
+| :------------- | :------------- | :------------- | :------------- |
+| **AS-Level Adversary**     |   Passive | <p style="text-align: center;">:heavy_check_mark:</p> | Network Level | <p style="text-align: center;">:heavy_check_mark:</p> |
+| **Website Fingerprinting**  | Passive | <p style="text-align: center;">:heavy_check_mark:</p> | Network Level | <p style="text-align: center;">:heavy_check_mark:</p> |
+| **SDoS** | Active |<p style="text-align: center;">:heavy_check_mark:</p> | Relay Level | |
+| **Low-Resource Routing**     | Active | <p style="text-align: center;">:heavy_check_mark:</p> | Relay Level | <p style="text-align: center;">:heavy_check_mark:</p> |
+| **Sniper** | Active | | Relay Level | <p style="text-align: center;">:heavy_check_mark:</p> |
+| **DNS Correlation** | Passive | <p style="text-align: center;">:heavy_check_mark:</p> | Network/Relay Level | <p style="text-align: center;">:heavy_check_mark:</p> |
+| **Hidden Services** | Passive | <p style="text-align: center;">:heavy_check_mark:</p> | Network Level | <p style="text-align: center;">:heavy_check_mark:</p> |
+
+The first categorization is whether the active or passive. Active attacks usually
+require the usage of one's own resources, such as installing one's own adversary
+relays in order to conduct the attack. Passive attacks on the other hand typically
+have the one requirement of being on the network level, such as an AS or ISP, to
+be able to listen to the network for the user's traffic.
+
+The next categorization is whether the attack requires listening to the traffic
+of a user that goes into and out of the Tor network, or in other words having to
+be at the ends of the Tor network to capture user packets. The Sniper Attack is the
+only attack that does not require any listening on user traffic at the ends of the
+Tor network because the goal of this attack is not deanonymization but rather
+a DoS of the entry relay that is chosen for that circuit. Making the Tor network
+less reliable but still functional is the main objective of the Sniper Attack.
+
+The third categorization defines the level of authority, or in other terms the
+amount of traffic that the attacker needs to be able to see to be able to perform
+the attack. This being said, for example not every attacker is able to perform a
+website fingerprinting attack. We define two levels: network and relay. An attack
+that requires to be on the network level means that the attacker must either be on
+the same connection as the user, or has control over/has data sharing from the ISP
+of the user. An attack that requires to be on the relay level means that the attacker
+must install one's own malicious relays, and have those relays be chosen to create
+a user's circuit.
+
+The last categorization is whether the attack is an actual experiment that has
+been conducted and proven, or is still just a theoretical attack waiting to be
+tested. The only attack that has not actually been tested is the SDoS attack, where
+the theory behind the experiment is there, with credible evidence. The possible
+outcomes of an experiment that is performed is also given, backed by the theoretical
+evidence that is presented.  
+
+
 ## References
 
 [1] "AS-awareness in Tor Path Selection", Matthew Edman, Paul Syverson,
