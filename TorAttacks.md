@@ -110,7 +110,7 @@ reliable but nonetheless functional [5]. Tor users that try to create another ci
 will provide adversaries more opportunities of deanonymization, which is an
 important strength of this attack.
 
-### Low Resource Routing Attack
+### Low-Resource Routing Attack
 
 1. This attack has been performed by Bauer et al. and is described in their paper
 _Low-Resource Routing Attacks Against Tor_ [6]. An important goal of this experiment
@@ -220,8 +220,8 @@ Operating a malicious exit relay is also an option, but the efficiency would be
 on par with a normal correlation attack. The following image shows the layout
 of a DNS Correlation Attack.
 
-![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/DNSCorrelation.PNG)  
-*Image Source: Paper by Greschbach et al. [8]*   
+<p style="text-align: center;"> ![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/DNSCorrelation.PNG)  
+*Image Source: Paper by Greschbach et al. [8]* </p>
 
 
 ### Hidden Services Attack
