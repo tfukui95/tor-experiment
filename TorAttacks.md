@@ -13,7 +13,7 @@ This section aims to provide readers with a concrete understanding of the variou
 attacks that have been conducted on the Tor network. For each attack the following
 points will be covered to keep everything organized:
 
-1. Who has performed this attack previously?
+1. Has this attack been performed previously?
 2. Key terms concerning the attack.
 3. Is the attack active or passive?
 4. Which part of the network does it attack?
