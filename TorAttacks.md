@@ -220,8 +220,8 @@ Operating a malicious exit relay is also an option, but the efficiency would be
 on par with a normal correlation attack. The following image shows the layout
 of a DNS Correlation Attack.
 
-<p style="text-align: center;"> ![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/DNSCorrelation.PNG)  
-*Image Source: Paper by Greschbach et al. [8]* </p>
+<p style="text-align: center;"> ![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/DNSCorrelation.PNG)  </p>  
+<p style="text-align: center;"> *Image Source: Paper by Greschbach et al. [8]* </p>
 
 
 ### Hidden Services Attack
