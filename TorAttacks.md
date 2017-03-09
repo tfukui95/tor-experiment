@@ -272,7 +272,6 @@ but also at the same have similarities amongst each other, I have made a taxonom
 of the attacks in a table.
 
 |      | Active/Passive | Observes Incoming/ Outgoing Traffic  | Level of Authority | Has Been Performed Before |
-<<<<<<< HEAD
 | :-------------: | :-------------: | :-------------: | :-------------: | :-----: |
 | **AS-Level Adversary**     |   Passive | :heavy_check_mark: | Network Level | :heavy_check_mark: |
 | **Website Fingerprinting**  | Passive | :heavy_check_mark:| Network Level | :heavy_check_mark: |
@@ -281,16 +280,6 @@ of the attacks in a table.
 | **Sniper** | Active | | Relay Level | :heavy_check_mark: |
 | **DNS Correlation** | Passive | :heavy_check_mark: | Network/Relay Level | :heavy_check_mark: |
 | **Hidden Services** | Passive | :heavy_check_mark: | Network Level | :heavy_check_mark: |
-=======
-| :------------- | :------------- | :------------- | :------------- |  
-| **AS-Level Adversary**     |   Passive | <p style="text-align: center;">:heavy_check_mark:</p> | Network Level | <p style="text-align: center;">:heavy_check_mark:</p> |  
-| **Website Fingerprinting**  | Passive | <p style="text-align: center;">:heavy_check_mark:</p> | Network Level | <p style="text-align: center;">:heavy_check_mark:</p> |  
-| **SDoS** | Active |<p style="text-align: center;">:heavy_check_mark:</p> | Relay Level | |  
-| **Low-Resource Routing**     | Active | <p style="text-align: center;">:heavy_check_mark:</p> | Relay Level | <p style="text-align: center;">:heavy_check_mark:</p> |  
-| **Sniper** | Active | | Relay Level | <p style="text-align: center;">:heavy_check_mark:</p> |  
-| **DNS Correlation** | Passive | <p style="text-align: center;">:heavy_check_mark:</p> | Network/Relay Level | <p style="text-align: center;">:heavy_check_mark:</p> |  
-| **Hidden Services** | Passive | <p style="text-align: center;">:heavy_check_mark:</p> | Network Level | <p style="text-align: center;">:heavy_check_mark:</p> |  
->>>>>>> 3cec3c553f89fde6505dc312258565e52d262e35
 
 The first categorization is whether the active or passive. Active attacks usually
 require the usage of one's own resources, such as installing one's own adversary
