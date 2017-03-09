@@ -220,7 +220,7 @@ hackers and eavesdroppers were clearly seen. The following table summarizes whic
 nodes can see what information on specific settings.
 
 |      | Neither | HTTPS Only     | Tor Only | HTTPS + Tor |
-| :------------- | :------------- | :------------- | :------------- |
+| :-------------: | :-------------: | :-------------: | :-------------: | :----: |
 | **Client Address**     | Everyone | Everyone | User <-> Entry Node | User <-> Entry Node |
 | **Web Server Address**  | Everyone | Everyone | Exit Node <-> Site + Data Sharing | Exit Node <-> Site + Data Sharing |
 | **Username and Password** | Everyone | User, Site + Data Sharing | Exit Node <-> Site + Data Sharing | User, Site + Data Sharing |
