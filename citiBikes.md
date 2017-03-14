@@ -1,3 +1,4 @@
+```
 sudo apt-get update
 sudo apt-get install unzip
 
@@ -22,8 +23,55 @@ sudo apt-get install imagemagick
 import csv
 
 filename = '201601-citibike-tripdata.csv'
-with opern(filename, 'rb') as csvfile:
+with open(filename, 'rb') as csvfile:
   filereader = csv.reader(csvfile,delimiter= ',')
+  header = next(filereader)
   for row in filereader:
-    print(','.join(row))
+    print(row[1])
+    
+print(header)
 
+durations = []
+filename = '201601-citibike-tripdata.csv'
+with open(filename, 'rb') as csvfile:
+  filereader = csv.reader(csvfile,delimiter= ',')
+  header = next(filereader)
+  for row in filereader:
+    durations.append(int(row[0])
+   
+print(durations)
+```
+
+Using pandas
+
+```
+sudo apt-get install python-pandas
+
+import pandas as pd
+filename='201601-citibike-tripdata.csv'
+df=pd.read_csv(filename, sep=',')
+
+print(df)
+
+df.columns
+
+df.head()
+
+df.tail()
+
+df.tail(3)
+
+df.describe()
+```
+
+Completing the assignment
+
+```
+awk -F "\"*,\"*" '{print $5}' 201601-citibike-tripdata.csv | sort | uniq > stations.txt
+wc -l stations.txt > xxx
+read lines nameFile< xxx
+echo $lines
+
+for A in 0:$lines
+  
+```
