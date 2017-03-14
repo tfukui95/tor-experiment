@@ -71,7 +71,10 @@ awk -F "\"*,\"*" '{print $5}' 201601-citibike-tripdata.csv | sort | uniq > stati
 wc -l stations.txt > xxx
 read lines nameFile< xxx
 echo $lines
+```
 
+Finding the counts for stations that were starting points
+```
 counts = []
 import csv
 filename = '201601-citibike-tripdata.csv'
@@ -89,3 +92,58 @@ with open(filename, 'rb') as csvfile:
       counts.append(x)
         
   print counts
+  temp1 = counts[:]
+```
+
+
+Finding the counts for stations that were ending points
+```
+counts2 = []
+import csv
+filename = '201601-citibike-tripdata.csv'
+with open(filename, 'rb') as csvfile:
+  filereader = csv.reader(csvfile,delimiter= ',')
+  header = next(filereader)
+  with open('stations.txt') as inputfile:
+    for line in inputfile:
+      x=0
+      line = line.replace("\n", "")
+      csvfile.seek(0,0)
+      for row in filereader:
+        if (row[8] == line):
+          x=x+1
+      counts2.append(x)
+        
+  print counts2
+  temp2 = counts2[:]
+```
+
+Adding the two lists together
+
+```
+totalCount = [(x + y) for x, y in zip(temp1, temp2)]
+
+```
+
+Combining stations to the number of occurrences as a start or stop station
+
+```
+stations = []
+f= open("topStations.txt","w+")
+with open('stations.txt') as inputfile:
+  for line in inputfile:
+    line = line.replace("\n", "")
+    stations.append(line)
+    print line
+  inputfile.seek(0,0)
+  i=0
+  for line2 in inputfile:
+    line2 = line2.replace("\n", "")
+    f.write(str(totalCount[i]) + " " + line2)
+    f.write("\n")
+    i+=1
+  sorted(f)
+  f.close()
+  with open('topStations.txt') as inputfile:
+    for line3 in inputfile:
+      print line3
