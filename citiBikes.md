@@ -27,7 +27,7 @@ with open(filename, 'rb') as csvfile:
   filereader = csv.reader(csvfile,delimiter= ',')
   header = next(filereader)
   for row in filereader:
-    print(row[1])
+    print(row[4])
     
 print(header)
 
@@ -72,6 +72,20 @@ wc -l stations.txt > xxx
 read lines nameFile< xxx
 echo $lines
 
-for A in 0:$lines
-  
-```
+counts = []
+import csv
+filename = '201601-citibike-tripdata.csv'
+with open(filename, 'rb') as csvfile:
+  filereader = csv.reader(csvfile,delimiter= ',')
+  header = next(filereader)
+  with open('stations.txt') as inputfile:
+    for line in inputfile:
+      x=0
+      line = line.replace("\n", "")
+      csvfile.seek(0,0)
+      for row in filereader:
+        if (row[4] == line):
+          x=x+1
+      counts.append(x)
+        
+  print counts
