@@ -222,10 +222,8 @@ of a DNS Correlation Attack.
 
 <p style="text-align: center;">  
 ![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/DNSCorrelation.PNG)  
-</p>  
-<p style="text-align: center;">  
+
 *Image Source: Paper by Greschbach et al. [8]*  
- </p>
 
 
 ### Hidden Services Attack
