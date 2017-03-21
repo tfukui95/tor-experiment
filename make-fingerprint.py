@@ -6,10 +6,9 @@ filename = 'finger.csv'
 with open(filename, 'rb') as csvfile:
   filereader = csv.reader(csvfile,delimiter= ',')
   with open('finger2.csv', 'wb') as csvfile2:
-      filewriter= csv.writer(csvfile2, delimiter=' ',
-                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    filewriter= csv.writer(csvfile2, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     for row in filereader:
-        if (row[2] == 192.168.5.200):
-            filewriter.writerow([+, row[0])
-        else
-            filewrite.writerow([-, row[0]])
+      if (row[2] == 192.168.5.200):
+        filewriter.writerow([+, row[0]])
+      else:
+        filewrite.writerow([-, row[0]])
