@@ -8,7 +8,10 @@ with open(filename, 'rb') as csvfile:
   with open('finger2.csv', 'wb') as csvfile2:
     filewriter= csv.writer(csvfile2, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     for row in filereader:
-      if (row[2] == 192.168.5.200):
-        filewriter.writerow([+, row[0]])
-      else:
-        filewrite.writerow([-, row[0]])
+      print row[0]
+      print row [1]
+      print roe [2]
+      #if (row[2] == 192.168.5.200):
+        #filewriter.writerow([+, row[0]])
+      #else:
+        #filewrite.writerow([-, row[0]])
