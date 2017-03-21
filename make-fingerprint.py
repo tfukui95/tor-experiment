@@ -9,9 +9,9 @@ with open(filename, 'rb') as csvfile:
     filewriter= csv.writer(csvfile2, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     for row in filereader:
       print row[0]
-      print row [1]
-      print roe [2]
-      #if (row[2] == 192.168.5.200):
-        #filewriter.writerow([+, row[0]])
-      #else:
-        #filewrite.writerow([-, row[0]])
+      print row[1]
+      print row[2]
+#if (row[2] == 192.168.5.200):
+#filewriter.writerow([+, row[0]])
+#else:
+#filewrite.writerow([-, row[0]])
