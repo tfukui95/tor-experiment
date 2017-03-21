@@ -120,8 +120,33 @@ and predicting results, with an easy to use graphical user interface. The softwa
 provides functions for preprocessing, filtering, classifying, associating, and
 visualizing data which is usually imported from a database or csv file.
 
+## Setting up the Experiment on our Private Tor Networks
 
+Open up another client and exit relay terminal. On the exit relay run
+```
+sudo tshark -i eth1 -n -f "ip" -T fields -e frame.len -e ip.src -e ip.dst -E separator=,
+```
 
+On the client run
+```
+curl -x socks5://127.0.0.1:9050/ http://webserver/
+curl -x socks5://127.0.0.1:9050/ -s http://webserver/large > /dev/null
+```
+
+On the exit relay terminal you should see a comma separated list, where each row
+contains the packet size, the source of the packet, and the destination of the packet.
+If you see packets between an exit relay and the middle relay, try the same
+tshark function but with eth2:
+
+```
+sudo tshark -i eth2 -n -f "ip" -T fields -e frame.len -e ip.src -e ip.dst -E separator=,
+```
+
+Now we want to save this data into a csv file, so on the exit relay terminal, run
+
+```
+sudo tshark -i eth2 -n -f "ip" -T fields -e frame.len -e ip.src -e ip.dst -E separator=, >finger.csv
+```
 
 
 ## References
