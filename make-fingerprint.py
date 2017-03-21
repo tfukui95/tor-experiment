@@ -10,5 +10,5 @@ with open(filename, 'rb') as csvfile:
     for row in filereader:
       if (row[2] == '192.168.5.200'):
         filewriter.writerow([+, row[0]])
-      else:
-        filewrite.writerow([-, row[0]])
+        else:
+          filewrite.writerow([-, row[0]])
