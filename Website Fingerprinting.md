@@ -148,6 +148,14 @@ Now we want to save this data into a csv file, so on the exit relay terminal, ru
 sudo tshark -i eth2 -n -f "ip" -T fields -e frame.len -e ip.src -e ip.dst -E separator=, >finger.csv
 ```
 
+```
+sudo apt-get -y install python-pip
+sudo pip install stem
+
+wget https://raw.githubusercontent.com/tfukui95/tor-experiment/master/make-fingerprint.py
+
+sudo python make-fingerprint.py
+```
 
 ## References
 
