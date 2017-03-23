@@ -2,7 +2,15 @@
 # and creates a fingerprint of that instance by
 
 import csv
-filename = 'finger.csv'
+import argparse
+
+# Add command line arguments. To see them, run "python scriptname.py --help"
+parser = argparse.ArgumentParser(description='Process a packet capture.')
+parser.add_argument('--filename', default='finger.csv', help='Name of packet capture file.')
+
+args = parser.parse_args()
+
+filename = args.filename
 with open(filename, 'rb') as csvfile:
   filereader = csv.reader(csvfile,delimiter= ',')
   with open('finger2.csv', 'wb') as csvfile2:
