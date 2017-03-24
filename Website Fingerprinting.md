@@ -139,7 +139,7 @@ If you see packets between an exit relay and the middle relay, try the same
 tshark function but with eth2:
 
 ```
-sudo tshark -i eth2 -n -f "ip" -T fields -e frame.len -e ip.src -e ip.dst -E separator=,
+sudo tshark -i eth1 -n -f "ip" -T fields -e frame.len -e ip.src -e ip.dst -E separator=,
 ```
 
 Now we want to save this data into a csv file, so on the exit relay terminal, run
