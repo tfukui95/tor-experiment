@@ -46,6 +46,8 @@ for size in filterlist:
         sizeMarker = abs(size)
         previousDirection = direction
     sizemarkerlist.append(size)
+# Append size marker for the last set of packets after going through the list
+sizemarkerlist.append('S' + str((sizeMarker/610+1)*600))
 
 # Insert total transmitted byte markers at the end
 totalByteList = []
