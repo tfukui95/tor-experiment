@@ -1,6 +1,8 @@
 # Analyzing Anonymous Routing of Network Traffic Using Tor
 
-## Background
+## Introduction
+
+### Background
 
 Today we live in a world where the Internet is accessible from almost anything
 that we have in our possession. However as the Internet continues to become more
@@ -36,11 +38,11 @@ location. The goal that these three men had in mind was not to create a complete
 form of anonymity when browsing the Internet, but anonymous routing.
 
 Today there are over 6000 Tor relays inside the Tor network, serving over 1.5
-million users [3]. In the present day, there is a variety of Tor users with different
+million users every day[3]. In the present day, there is a variety of Tor users with different
 goals that they wish to achieve from using Tor. One group of users are law
 enforcement and intelligence agency personnel, who must stay anonymous when
 browsing the Internet to investigate a certain case. Their actions cannot be
-traced, therefore anonymous routing is the best solution. Another group of users
+traced; therefore anonymous routing is the best solution. Another group of users
 stems from those who want to voice their opinion on a certain topic without
 revealing their true identity. Tor provides a means for people to discuss and post
 on the Internet without a risk for exposure of their location and identity. Then
@@ -50,13 +52,13 @@ the amount of information that can be seen by a person spying on the network is
 the main goal that people wish to achieve from using Tor.
 
 How does using Tor differ from using a Virtual Private Network (VPN)? VPNs have
-a vulnerability where an adversary can observe the information that is being
+vulnerability where an adversary can observe the information that is being
 communicated to the VPN, and it is also easy to associate the users and affiliations
 with a VPN [2]. For example, a school's VPN tells us that the users of that VPN are
 only students or professors of that school, which narrows down the pool of users
 incredibly. Compared to a VPN, the Tor network has a wide variety of users on the
-same network. This variety is what is key to the anonymity that is provided by
-onion routing. For example, using a cloaking software exclusively by the US Navy
+same network. This variety is what is essential to the anonymity that is provided by
+onion routing. For example, using cloaking software exclusively by the US Navy
 would conversely decloak the people, because an attacker watching the Tor network
 would know that anything that goes in or out of the network would be by the US Navy.
 The US Navy required as diverse of a community of people as possible to use Tor
@@ -94,7 +96,9 @@ assume is when the botnet was compromised and the Tor network began to gain its
 stability back again. Today, the Tor network is very stable and provides service
 to a relatively constant pool of around 1.5 million clients.
 
-### Overview of Tor's Security
+## Overview of Tor's Security
+
+### The Functions of Tor
 
 How does Tor actually work? Tor is a software that can run in conjunction with
 HTTPS, which further increases its security capabilities. Encryption of data
