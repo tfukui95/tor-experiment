@@ -3,6 +3,9 @@
 
 import csv
 import argparse
+import pandas as pd
+import seaborn as sns
+
 
 # Add command line arguments. To see them, run "python scriptname.py --help"
 parser = argparse.ArgumentParser(description='Process a packet capture.')
@@ -21,100 +24,122 @@ with open(filename, 'rb') as csvfile:
   for row in filereader:
       # Identify direction
       size = int(row[0])
+      direction = "+"
       if row[2] == ip:
-          size = -1*size
-      sizelist.append(size)
+          direction = "-"
+      sizelist.append((direction, size))
 
 # Filter out packets with size 52 - actually, 66
 filterlist = []
-for size in sizelist:
-    if not (size == -66 or size == 66):
-        filterlist.append(size)
+for sizetuple in sizelist:
+    size = sizetuple[1]
+    if not size == 66:
+        filterlist.append(sizetuple)
+
+# To see the list of filtered packets
+print filterlist
 
 # Insert size markers at every direction change
 sizemarkerlist = []
-previousDirection = 1
+previousDirection = '+'
 sizeMarker = 0
-for size in filterlist:
-    direction = 1
-    if size < 0:
-        direction = -1
+for sizetuple in filterlist:
+    direction = sizetuple[0]
+    size = sizetuple[1]
     if direction == previousDirection:
-        sizeMarker += abs(size)
+        sizeMarker += size
     else:  # if the direction has changed
-        sizemarkerlist.append('S' + str((sizeMarker/610+1)*600))
-        sizeMarker = abs(size)
+        sizemarkerlist.append(('S', (sizeMarker/610+1)*600))
+        sizeMarker = size
         previousDirection = direction
-    sizemarkerlist.append(size)
+    sizemarkerlist.append(sizetuple)
 # Append size marker for the last set of packets after going through the list
-sizemarkerlist.append('S' + str((sizeMarker/610+1)*600))
+sizemarkerlist.append(('S', (sizeMarker/610+1)*600))
+
+df = pd.DataFrame(sizemarkerlist, columns = ['header', 'packetsize'])
+df['idx'] = range(1, len(df) + 1)
+
+# Make an ugly figure
+sns_plot = sns.barplot(x="idx", y="packetsize", hue="header", data=df)
+fig = sns_plot.get_figure()
+fig.savefig("markers.png")
+
+# Make a nicer figure
+# Weird bar spacing issue: https://github.com/mwaskom/seaborn/issues/987
+# Fix via http://stackoverflow.com/a/36205574
+# and http://stackoverflow.com/a/36232271
+
+import matplotlib.pylab as pyp
+import matplotlib.patches as mpatches
+
+def custom_legend(colors,labels, legend_location = 'upper left', legend_boundary = (1,1)):
+    # Create custom legend for colors
+    recs = []
+    for i in range(0,len(colors)):
+        recs.append(mpatches.Rectangle((0,0),1,1,fc=colors[i]))
+    pyp.legend(recs,labels,loc=legend_location, bbox_to_anchor=legend_boundary)
+
+# Color boxplots by header
+header_list = pd.unique(df['header'])
+# For more on colors: see http://seaborn.pydata.org/tutorial/color_palettes.html
+colors = sns.color_palette("Set2", len(header_list))
+color_dict = dict(zip(header_list, colors))
+
+sns_plot = sns.barplot(x="idx", y="packetsize", data=df, palette=df["header"].map(color_dict))
+custom_legend(colors,header_list)
+fig = sns_plot.get_figure()
+fig.savefig("markers-fixed.png")
+
 
 # Insert total transmitted byte markers at the end
 totalByteList = []
 totalSizeP = 0 # total byte count for outgoing packets
 totalSizeN = 0 # total byte count for incoming packets
-for size in sizemarkerlist:
-    direction = 1
-    if size < 0:
-        direction = -1
-    if not isinstance( size , int ):
+for sizetuple in sizemarkerlist:
+    direction = sizetuple[0]
+    if not direction in ['+', '-']:
         pass
-    elif direction == 1:
-        totalSizeP += abs(size)
-    elif direction == -1:
-        totalSizeN += abs(size)
-    totalByteList.append(size)
-totalByteList.append('TS+' + str((totalSizeP-1)/10000+1*10000)) # Append total number of bytes marker
-totalByteList.append('TS-' + str((totalSizeN-1)/10000+1*10000))
-
-# Insert number markers
-numberMarkerList = []
-previousDirection = 1
-numberCount = 0
-for size in totalByteList:
-    direction = 1
-    if size < 0:
-        direction = -1
-    if not isinstance( size , int ):
-        pass
-    elif direction != previousDirection: #Change in direction, insert number marker
-        if (numberCount == 1):
-            numberMarkerList.append('N1')
-        elif (numberCount == 2):
-            numberMarkerList.append('N2')
-        elif (numberCount >= 3 and numberCount <= 5):
-            numberMarkerList.append('N3-5')
-        elif (numberCount >= 6 and numberCount <= 8):
-            numberMarkerList.append('N6-8')
-        elif (numberCount >= 9 and numberCount <= 13):
-            numberMarkerList.append('N9-13')
-        else: # The number count is higher than 13
-            numberMarkerList.append('N>14')
-        previousDirection = direction
-        numberCount = 0
-    if isinstance( size , int ):
-        numberCount += 1
-    numberMarkerList.append(size)
+    elif direction == '+':
+        totalSizeP += size
+    elif direction == '-':
+        totalSizeN += size
+    totalByteList.append(sizetuple)
+totalByteList.append(('TS+', (totalSizeP-1)/10000+1*10000)) # Append total number of bytes marker
+totalByteList.append(('TS-', (totalSizeN-1)/10000+1*10000))
 
 # Insert HTML marker
 htmlMarkerList = []
-previousDirection = 1
+previousDirection = '+'
 htmlMarker = 0
 htmlFlag = 0
-for size in numberMarkerList:
-    direction = 1
-    if size < 0:
-        direction = -1
-    if not isinstance( size , int ): # If the row is a marker
+for sizetuple in totalByteList:
+    direction = sizetuple[0]
+    if not direction in ['+', '-']: # If the row is a marker
         pass # do nothing
-    elif direction == -1 and htmlFlag == 0: #If the packet is part of the html document
-        htmlMarker += abs(size)
-        previousDirection = -1
+    elif direction == '-' and htmlFlag == 0: #If the packet is part of the html document
+        htmlMarker += size
+        previousDirection = '-'
     # After the last html packet has been received
-    elif direction == 1 and htmlFlag == 0 and previousDirection == -1:
-        htmlMarkerList.append('H' + str(htmlMarker/610+1*600)) # Append the html marker
+    elif direction == '+' and htmlFlag == 0 and previousDirection == '-':
+        htmlMarkerList.append(('H', htmlMarker/610+1*600)) # Append the html marker
         htmlFlag = 1 # Reading html request has finished
-    htmlMarkerList.append(size)
+    htmlMarkerList.append(sizetuple)
+
+# Insert number markers
+numberMarkerList = []
+previousDirection = '+'
+numberCount = 0
+for sizetuple in htmlMarkerList:
+    direction =  sizetuple[0]
+    if not direction in ['+', '-']:
+        pass
+    elif direction != previousDirection: #Change in direction, insert number marker
+        numberMarkerList.append(('N', numberCount))
+        previousDirection = direction
+        numberCount = 0
+    if direction in ['+', '-']:
+        numberCount += 1
+    numberMarkerList.append(sizetuple)
 
 
 # Insert occurring packet size markers
@@ -124,56 +149,50 @@ uniquePFlag = 0
 uniqueN = []
 uniqueNFlag = 0
 
-for size in htmlMarkerList:
-    direction = 1
-    if size < 0:
-        direction = -1
-    if not isinstance( size , int ):
+for sizetuple in numberMarkerList:
+    direction = sizetuple[0]
+    if not direction in ['+', '-']:
         pass
-    elif direction == 1:
+    elif direction == '+':
         for A in uniqueP:
-            if(A == size): # If we find a match, raise a flag and stop
+            if(A == sizetuple[1]): # If we find a match, raise a flag and stop
                 uniquePFlag = 1
                 break
         if(uniquePFlag == 0): # If there was no match in the list, append
-            uniqueP.append(size)
+            uniqueP.append(sizetuple[1])
         else:
             uniquePFlag = 0
-    elif direction == -1:
+    elif direction == '-':
         for A in uniqueN:
-            if(A == size): # If we find a match, raise a flag and stop
+            if(A == sizetuple[1]): # If we find a match, raise a flag and stop
                 uniqueNFlag = 1
                 break
         if(uniqueNFlag == 0): # If there was no match in the list, append
-            uniqueN.append(size)
+            uniqueN.append(sizetuple[1])
         else:
             uniqueNFlag = 0
-    occurringList.append(size)
-occurringList.append('OP+' + str((((len(uniqueP)-1)/2)+1)*2)) # Append occurring packet marker
-occurringList.append('OP-' + str((((len(uniqueN)-1)/2)+1)*2))
-
+    occurringList.append(sizetuple)
+occurringList.append(('OP+', (((len(uniqueP)-1)/2)+1)*2)) # Append occurring packet marker
+occurringList.append(('OP-', (((len(uniqueN)-1)/2)+1)*2))
 
 # Insert percent incoming/outgoing packet marker and total number of packets markers
 packetList = []
 nPacketsP = 0
 nPacketsN = 0
-direction = 1
-for size in occurringList:
-    direction = 1
-    if size < 0:
-        direction = -1
-    if not isinstance( size , int ):
+for sizetuple in occurringList:
+    direction = sizetuple[0]
+    if not direction in ['+', '-']:
         pass
-    elif direction == 1:
+    elif direction == '+':
         nPacketsP += 1
-    elif direction == -1:
+    elif direction == '-':
         nPacketsN += 1
-    packetList.append(size)
-percentPoverN = float(nPacketsP) / nPacketsN # calculate incoming/outgoing percentage
+    packetList.append(sizetuple)
+percentPoverN = float(nPacketsP)/nPacketsN # calculate incoming/outgoing percentage
 # Append the incoming/outgoing percent marker
-packetList.append('PP-' + str("%.2f" % (float((int(((((percentPoverN-.01)*100))/5)+1)*5))/100)))
- # Append the total number of packet markers
-packetList.append('NP+' + str((((nPacketsP-1)/15)+1)*15))
-packetList.append('NP-' + str((((nPacketsN-1)/15)+1)*15))
+packetList.append(('PP-', "%.2f" % (float((int(((((percentPoverN-.01)*100))/5)+1)*5))/100)))
+ # Append the total number of packet markers for both outgoing and incoming traffic
+packetList.append(('NP+', (((nPacketsP-1)/15)+1)*15))
+packetList.append(('NP-', (((nPacketsN-1)/15)+1)*15))
 
 print packetList
