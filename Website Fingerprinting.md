@@ -1,4 +1,4 @@
-# Analyzing Anonymous Routing of Network Traffic Using Tor
+# Implementation of Website Fingerprinting on GENI
 
 ## Understanding Website Fingerprinting Thoroughly
 
@@ -33,8 +33,8 @@ packet that is going in and out from the user. However this data is not going to
 be blatantly similar to the fingerprint that the attacker creates in step 2, due
 to a difference in user, possible packet fragmentation, and website updates. These
 packets are known as _test instances_
-4. The attacker cannot compromise the target user by comparing the website fingerprint
-and user data by looking at them with the eye, and so must use statistical methods
+4. The attacker tries to compromise the target user by comparing the website fingerprint
+and user data by looking at them with the eye, or uses statistical methods
 to probabilistically come to a conclusion.
 
 ### Characteristics of Packet Traces
@@ -53,12 +53,28 @@ is recorded. Incoming packets are marked as positive, while those that are outgo
 are marked as negative. Keeping track of the order in which the packets arrived
 is important as well.
 
-__Size Markers__- These are markers to be be placed whenever the direction of
+__Filtering ACK Packets__- Acknowledgement packets are sent back and forth almost
+constantly, and do not provide any useful information to the attacker. Therefore
+we first filter out packets of these size.
+
+__Size Markers__- These are markers to be placed whenever the direction of
 traffic changes from ingoing to outgoing and vice-versa. These markers must work
-in conjunction with filtering out the ACK packets.
+in conjunction with filtering out the ACK packets. These markers note how much bytes
+went a certain direction before going the other.
+
+__HTML Markers__- Whenever a request for a webpage is made, the initial process is
+to request for the HTML document. Being that every site has an HTML document of
+a different size, we can use this information to make the packet trace more unique.
+We place an HTML marker after the HTML document is fully received.
 
 __Total Transmitted Bytes__- This involves adding up separately the total number of
-bytes sent and received.
+bytes sent and received at the end of the packet trace.
+
+__Number Markers__- These markers are similar to size markers, but instead mark how
+many packets came a certain direction before switching to the other direction.
+
+__Occurring Packet Sizes__- This marker keeps track of the number of unique packet
+sizes there were in the packet trace, and appended at the end of trace.
 
 __Percentage of Incoming Packets__- This step involves finding the percentage of
 packets that were incoming compared to outgoing.
@@ -83,6 +99,7 @@ cross-validation.
 
 An important reason for performing cross validation is so that training instances
 are not collected from the same circuit that is used to collect test instances [3].
+For the case of our experiment on GENI, we will not be performing cross validation.
 
 ### Method of Packet Classification
 
@@ -107,20 +124,116 @@ are filtered out.
 
 Every 100 cells, a circuit-level SENDME cell is sent [3]. Similar to ACK cells,
 these cells do not provide any useful information and thus should be filtered
-out to improve performance.
+out to improve performance. Another factor that is taken into account is that Tor
+cells are sent in 512-byte sizes, therefore the packets are rounded up to a size
+that is a multiple of 600 and are classified accordingly. For our experiment on GENI,
+we will not be doing any packet classification for data mining.
 
-Another factor that is taken into account is that Tor cells are sent in 512-byte
-sizes, therefore the packets are rounded up to a size that is a multiple of 600
-and are classified accordingly.
+## Setting up the Website Fingerprinting experiment
 
-In the experiment by Panchenko, et. al, the SVM implementation is done on a
-software called Weka, which is a collection of machine learning tools and algorithms
-used popularly for data mining experiments. Weka can be used for analyzing data
-and predicting results, with an easy to use graphical user interface. The software
-provides functions for preprocessing, filtering, classifying, associating, and
-visualizing data which is usually imported from a database or csv file.
+We will now be setting up our own website fingerprinting experiment on GENI. The
+following steps will be taken for this experiment:
 
-## Setting up the Experiment on our Private Tor Network
+1. Reserve resources and set up new a new private Tor network
+2. Get the homepages of a number of sites onto the webserver
+3. Create a fingerprint for each site
+4. Hit a random site on the client, and see if there is a match with any of the
+fingerprints.
+
+For each website's fingerprint as well as the client's traffic that we capture,
+we will be creating plots as visuals to compare the fingerprints.
+
+### Setting up a new Private Tor Network
+
+For the purposes of this experiment, we will be slightly changing the topology of
+our private Tor network to better suit our experiment. The following is our new
+topology:
+
+![](https://raw.githubusercontent.com/tfukui95/tor-experiment/master/ToyTopology2.png)  
+
+We have made three changes to this topology:
+
+1. Remove the direct link between the client and webserver
+2. Remove a link from the client to the Tor network, leaving only one
+3. Add another link for the directory server, for a total of two links
+
+The total number of VMs remains the same, as well as the IP addresses. In the GENI
+Portal, create a new slice. Load the RSpec from the following URL:
+https://raw.githubusercontent.com/tfukui95/tor-experiment/master/final_exp_request_rspec.xml
+
+After the topology is loaded onto your canvas, click "Site", and choose an InstaGENI
+site to reserve our resources from. Then press Reserve Resources. After the topology
+is ready to be used, and we are logged into each VM, we will continue with setting
+up each VM.
+
+Since we have already went through the steps of setting up each VM very thoroughly,
+let us not go into too much detail. Instead we will simply set up the VMs using
+the script files on my Github. To setup the directory server, go to the directory
+server VM and run
+
+```
+wget https://raw.githubusercontent.com/tfukui95/tor-experiment/master/wfp-directoryserver.sh
+bash wfp-directoryserver.sh
+```
+
+After that is finished, let us setup the webserver, relays, and client VMs. On the
+webserver run
+
+```
+wget https://raw.githubusercontent.com/tfukui95/tor-experiment/master/wfp-webserver.sh
+bash wfp-webserver.sh
+```
+
+On each of the relays run
+
+```
+wget https://raw.githubusercontent.com/tfukui95/tor-experiment/master/wfp-router.sh
+bash wfp-router.sh
+```
+
+Lastly on the client VM run
+
+```
+wget https://raw.githubusercontent.com/tfukui95/tor-experiment/master/wfp-client.sh
+bash wfp-client.sh
+```
+
+Now that all the VMs are setup, reconfirm that the private Tor network is up and
+running by using Tor Arm on each of the nodes:
+
+```
+sudo -u debian-tor arm
+```
+
+### Setting up the Websites on the Webserver
+
+Now we will be setting up the webserver for our experiment. We will be saving
+homepages of 5 different website homepages onto our webserver, so that we can create
+fingerprints of these websites later. The following are the 5 websites:
+
+1. NYU Tandon School of Engineering
+2. Facebook
+3. Youtube
+4. Reddit
+5. Official New York Mets Website
+
+For each website, we will be storing the webpage in its own directory inside the
+/var/www/html/ directory of the webserver. We will first download the NYU Tandon
+School of Engineering homepage. On the webserver terminal, run
+
+```
+cd /var/www/html/
+sudo wget -p -k http://engineering.nyu.edu/
+```
+
+Now do the same for the other four sites
+
+```
+sudo wget -p -k http://facebook.com/
+sudo wget -p -k http://youtube.com/
+sudo wget -p -k http://reddit.com/
+sudo wget -p -k https://www.mlb.com/mets
+```
 
 Open up another client and exit relay terminal. On the exit relay run
 ```
@@ -156,6 +269,24 @@ wget https://raw.githubusercontent.com/tfukui95/tor-experiment/master/make-finge
 
 sudo python make-fingerprint.py
 ```
+
+No tor
+```
+sudo tcpdump -s 1514 -i any 'port 80' -U -w - | tee clientnotor.pcap | tcpdump -nnxxXSs 1514 -r -
+scp -P 30522 tef243@pc1.instageni.iu.edu:~/clientnotor.pcap .
+```
+
+With Tor
+```
+sudo tcpdump -s 1514 -i any 'port 5000' -U -w - | tee clienttor.pcap | tcpdump -nnxxXSs 1514 -r -
+scp -P 30522 tef243@pc1.instageni.iu.edu:~/clienttor.pcap .
+```
+
+
+on the client
+```
+sudo apt-get install proxychains
+
 
 
 ## References

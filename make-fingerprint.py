@@ -29,6 +29,7 @@ with open(filename, 'rb') as csvfile:
           direction = "-"
       sizelist.append((direction, size))
 
+
 # Filter out packets with size 52 - actually, 66
 filterlist = []
 for sizetuple in sizelist:
@@ -36,8 +37,6 @@ for sizetuple in sizelist:
     if not size == 66:
         filterlist.append(sizetuple)
 
-# To see the list of filtered packets
-print filterlist
 
 # Insert size markers at every direction change
 sizemarkerlist = []
@@ -55,6 +54,7 @@ for sizetuple in filterlist:
     sizemarkerlist.append(sizetuple)
 # Append size marker for the last set of packets after going through the list
 sizemarkerlist.append(('S', (sizeMarker/610+1)*600))
+
 
 df = pd.DataFrame(sizemarkerlist, columns = ['header', 'packetsize'])
 df['idx'] = range(1, len(df) + 1)
@@ -97,6 +97,7 @@ totalSizeP = 0 # total byte count for outgoing packets
 totalSizeN = 0 # total byte count for incoming packets
 for sizetuple in sizemarkerlist:
     direction = sizetuple[0]
+    size = sizetuple[1]
     if not direction in ['+', '-']:
         pass
     elif direction == '+':
@@ -104,25 +105,29 @@ for sizetuple in sizemarkerlist:
     elif direction == '-':
         totalSizeN += size
     totalByteList.append(sizetuple)
-totalByteList.append(('TS+', (totalSizeP-1)/10000+1*10000)) # Append total number of bytes marker
-totalByteList.append(('TS-', (totalSizeN-1)/10000+1*10000))
+totalByteList.append(('TS+', ((totalSizeP-1)/10000+1)*10000)) # Append total number of bytes marker
+totalByteList.append(('TS-', ((totalSizeN-1)/10000+1)*10000))
 
 # Insert HTML marker
 htmlMarkerList = []
 previousDirection = '+'
 htmlMarker = 0
-htmlFlag = 0
+htmlFlagStart = 0
+htmlFlagEnd = 0
 for sizetuple in totalByteList:
     direction = sizetuple[0]
+    size = sizetuple[1]
     if not direction in ['+', '-']: # If the row is a marker
         pass # do nothing
-    elif direction == '-' and htmlFlag == 0: #If the packet is part of the html document
+    elif direction in ['+', '-'] and htmlFlagStart != 3:
+        htmlFlagStart += 1
+    elif direction == '-' and htmlFlagEnd == 0 and htmlFlagStart == 3: #If the packet is part of the html document
         htmlMarker += size
         previousDirection = '-'
     # After the last html packet has been received
-    elif direction == '+' and htmlFlag == 0 and previousDirection == '-':
-        htmlMarkerList.append(('H', htmlMarker/610+1*600)) # Append the html marker
-        htmlFlag = 1 # Reading html request has finished
+    elif direction == '+' and htmlFlagEnd == 0 and previousDirection == '-':
+        htmlMarkerList.append(('H', (htmlMarker/610+1)*600)) # Append the html marker
+        htmlFlagEnd = 1 # Reading html request has finished
     htmlMarkerList.append(sizetuple)
 
 # Insert number markers
@@ -131,6 +136,7 @@ previousDirection = '+'
 numberCount = 0
 for sizetuple in htmlMarkerList:
     direction =  sizetuple[0]
+    size = sizetuple[1]
     if not direction in ['+', '-']:
         pass
     elif direction != previousDirection: #Change in direction, insert number marker
@@ -151,24 +157,25 @@ uniqueNFlag = 0
 
 for sizetuple in numberMarkerList:
     direction = sizetuple[0]
+    size = sizetuple[1]
     if not direction in ['+', '-']:
         pass
     elif direction == '+':
         for A in uniqueP:
-            if(A == sizetuple[1]): # If we find a match, raise a flag and stop
+            if(A == size): # If we find a match, raise a flag and stop
                 uniquePFlag = 1
                 break
         if(uniquePFlag == 0): # If there was no match in the list, append
-            uniqueP.append(sizetuple[1])
+            uniqueP.append(size)
         else:
             uniquePFlag = 0
     elif direction == '-':
         for A in uniqueN:
-            if(A == sizetuple[1]): # If we find a match, raise a flag and stop
+            if(A == size): # If we find a match, raise a flag and stop
                 uniqueNFlag = 1
                 break
         if(uniqueNFlag == 0): # If there was no match in the list, append
-            uniqueN.append(sizetuple[1])
+            uniqueN.append(size)
         else:
             uniqueNFlag = 0
     occurringList.append(sizetuple)
@@ -180,6 +187,7 @@ packetList = []
 nPacketsP = 0
 nPacketsN = 0
 for sizetuple in occurringList:
+    size = sizetuple[1]
     direction = sizetuple[0]
     if not direction in ['+', '-']:
         pass
