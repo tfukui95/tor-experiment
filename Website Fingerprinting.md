@@ -120,7 +120,7 @@ and predicting results, with an easy to use graphical user interface. The softwa
 provides functions for preprocessing, filtering, classifying, associating, and
 visualizing data which is usually imported from a database or csv file.
 
-## Setting up the Experiment on our Private Tor Networks
+## Setting up the Experiment on our Private Tor Network
 
 Open up another client and exit relay terminal. On the exit relay run
 ```
@@ -145,7 +145,7 @@ sudo tshark -i eth1 -n -f "ip" -T fields -e frame.len -e ip.src -e ip.dst -E sep
 Now we want to save this data into a csv file, so on the exit relay terminal, run
 
 ```
-sudo tshark -i eth2 -n -f "ip" -T fields -e frame.len -e ip.src -e ip.dst -E separator=, >finger.csv
+sudo tshark -i eth2 -n -f "host 192.168.4.100 and tcp and port 5000" -T fields -e frame.len -e ip.src -e ip.dst -E separator=, >finger.csv
 ```
 
 ```
