@@ -56,41 +56,6 @@ for sizetuple in filterlist:
 sizemarkerlist.append(('S', (sizeMarker/610+1)*600))
 
 
-df = pd.DataFrame(sizemarkerlist, columns = ['header', 'packetsize'])
-df['idx'] = range(1, len(df) + 1)
-
-# Make an ugly figure
-sns_plot = sns.barplot(x="idx", y="packetsize", hue="header", data=df)
-fig = sns_plot.get_figure()
-fig.savefig("markers.png")
-
-# Make a nicer figure
-# Weird bar spacing issue: https://github.com/mwaskom/seaborn/issues/987
-# Fix via http://stackoverflow.com/a/36205574
-# and http://stackoverflow.com/a/36232271
-
-import matplotlib.pylab as pyp
-import matplotlib.patches as mpatches
-
-def custom_legend(colors,labels, legend_location = 'upper left', legend_boundary = (1,1)):
-    # Create custom legend for colors
-    recs = []
-    for i in range(0,len(colors)):
-        recs.append(mpatches.Rectangle((0,0),1,1,fc=colors[i]))
-    pyp.legend(recs,labels,loc=legend_location, bbox_to_anchor=legend_boundary)
-
-# Color boxplots by header
-header_list = pd.unique(df['header'])
-# For more on colors: see http://seaborn.pydata.org/tutorial/color_palettes.html
-colors = sns.color_palette("Set2", len(header_list))
-color_dict = dict(zip(header_list, colors))
-
-sns_plot = sns.barplot(x="idx", y="packetsize", data=df, palette=df["header"].map(color_dict))
-custom_legend(colors,header_list)
-fig = sns_plot.get_figure()
-fig.savefig("markers-fixed.png")
-
-
 # Insert total transmitted byte markers at the end
 totalByteList = []
 totalSizeP = 0 # total byte count for outgoing packets
@@ -129,6 +94,42 @@ for sizetuple in totalByteList:
         htmlMarkerList.append(('H', (htmlMarker/610+1)*600)) # Append the html marker
         htmlFlagEnd = 1 # Reading html request has finished
     htmlMarkerList.append(sizetuple)
+
+
+df = pd.DataFrame(sizemarkerlist, columns = ['header', 'packetsize'])
+df['idx'] = range(1, len(df) + 1)
+
+# Make an ugly figure
+sns_plot = sns.barplot(x="idx", y="packetsize", hue="header", data=df)
+fig = sns_plot.get_figure()
+fig.savefig("markers.png")
+
+# Make a nicer figure
+# Weird bar spacing issue: https://github.com/mwaskom/seaborn/issues/987
+# Fix via http://stackoverflow.com/a/36205574
+# and http://stackoverflow.com/a/36232271
+
+import matplotlib.pylab as pyp
+import matplotlib.patches as mpatches
+
+def custom_legend(colors,labels, legend_location = 'upper left', legend_boundary = (1,1)):
+    # Create custom legend for colors
+    recs = []
+    for i in range(0,len(colors)):
+        recs.append(mpatches.Rectangle((0,0),1,1,fc=colors[i]))
+    pyp.legend(recs,labels,loc=legend_location, bbox_to_anchor=legend_boundary)
+
+# Color boxplots by header
+header_list = pd.unique(df['header'])
+# For more on colors: see http://seaborn.pydata.org/tutorial/color_palettes.html
+colors = sns.color_palette("Set2", len(header_list))
+color_dict = dict(zip(header_list, colors))
+
+sns_plot = sns.barplot(x="idx", y="packetsize", data=df, palette=df["header"].map(color_dict))
+custom_legend(colors,header_list)
+fig = sns_plot.get_figure()
+fig.savefig("markers-fixed.png")
+
 
 # Insert number markers
 numberMarkerList = []

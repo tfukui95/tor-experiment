@@ -304,6 +304,11 @@ we must save it as a csv file. On the client terminal using tshark, run
 sudo tshark -i eth1 -n -f "host 192.168.1.100 and tcp and port 5000" -T fields -e frame.len -e ip.src -e ip.dst -E separator=, >engineering.csv
 ```
 
+
+
+
+
+
 ```
 sudo apt-get -y install python-pip
 sudo pip install stem
