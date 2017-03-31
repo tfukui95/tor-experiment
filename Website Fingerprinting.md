@@ -205,7 +205,7 @@ running by using Tor Arm on each of the nodes:
 sudo -u debian-tor arm
 ```
 
-### Setting up the Websites on the Webserver
+### Setting up Websites on the Webserver
 
 Now we will be setting up the webserver for our experiment. We will be saving
 homepages of 5 different website homepages onto our webserver, so that we can create
@@ -226,7 +226,7 @@ cd /var/www/html/
 sudo wget -p -k http://engineering.nyu.edu/
 ```
 
-Now do the same for the other four sites
+Now do the same for the other four websites.
 
 ```
 sudo wget -p -k http://facebook.com/
@@ -235,30 +235,73 @@ sudo wget -p -k http://reddit.com/
 sudo wget -p -k https://www.mlb.com/mets
 ```
 
-Open up another client and exit relay terminal. On the exit relay run
-```
-sudo tshark -i eth1 -n -f "ip" -T fields -e frame.len -e ip.src -e ip.dst -E separator=,
-```
+Now we have all 5 websites set up on our webserver's html directory.
 
-On the client run
-```
-curl -x socks5://127.0.0.1:9050/ http://webserver/
-curl -x socks5://127.0.0.1:9050/ -s http://webserver/large > /dev/null
-```
+### Creating Website Fingerprints
 
-On the exit relay terminal you should see a comma separated list, where each row
-contains the packet size, the source of the packet, and the destination of the packet.
-If you see packets between an exit relay and the middle relay, try the same
-tshark function but with eth2:
+Now we will be creating the fingerprints of each website by accessing the website's
+homepage that is stored on the webserver from the client node. First we must install
+__proxychains__, which we will be using with the wget function to use the Tor network
+to access the websites. Another function that we need is __tshark__, which is a
+network protocol analyzer similar to tcpdump. On the client terminal, run
 
 ```
-sudo tshark -i eth1 -n -f "ip" -T fields -e frame.len -e ip.src -e ip.dst -E separator=,
+sudo apt-get -y install proxychains tshark
 ```
 
-Now we want to save this data into a csv file, so on the exit relay terminal, run
+When we create the fingerprints of the websites, we will be creating plots to
+visualize our fingerprints to better compare with the client traffic that we will
+eventually capture. We will be using __seaborn__, a python visualization library
+that is based off the more common matplotlib. On the client terminal, run
 
 ```
-sudo tshark -i eth2 -n -f "host 192.168.4.100 and tcp and port 5000" -T fields -e frame.len -e ip.src -e ip.dst -E separator=, >finger.csv
+sudo apt-get -y install python-pip python-scipy python-pandas
+sudo pip install seaborn stem
+
+```
+
+Next, in order to make our fingerprints, we must run our website packet captures
+through a filter, defined by a python script that we have written. This script
+takes in the packet trace and filters out unneeded packets and places markers of
+different kinds in the trace, defined in the __Characteristics of Packet Traces__
+section above. This script will create the fingerprint out of the packet trace.
+The python script filter can be accessed on my Github page. On the client terminal,
+run
+
+```
+wget https://raw.githubusercontent.com/tfukui95/tor-experiment/master/make-fingerprint.py
+```
+
+to save the script to our client terminal. Next we need to open another client
+terminal in order to have two. One terminal will be to access the websites that
+are located on the webserver, and then the other terminal will be to listen and
+capture the packet trace. After capturing the traffic we will place the trace through
+the filter using the python script in order to create the fingerprint.
+
+Let us first test to make sure that everything is working out first. On one of the
+client terminals, start listening with tshark by running
+
+```
+sudo tshark -i eth1 -n -f "host 192.168.1.100 and tcp and port 5000" -T fields -e frame.len -e ip.src -e ip.dst -E separator=,
+```
+
+On the other client terminal access the webserver's default index.php page
+
+```
+sudo proxychains wget -p http://webserver/
+```
+
+On the client terminal listening on the network using tshark, you should see a comma
+separated list, where the rows contain the packet size, the source of the packet,
+and the destination of the packet, respectively.
+
+Now we are ready to build the fingerprints of each of the websites. Let us first
+start with the first website that we stored on our webserver, which is the NYU
+Engineering site. In order to be able to run the packet trace through the filter,
+we must save it as a csv file. On the client terminal using tshark, run
+
+```
+sudo tshark -i eth1 -n -f "host 192.168.1.100 and tcp and port 5000" -T fields -e frame.len -e ip.src -e ip.dst -E separator=, >engineering.csv
 ```
 
 ```
@@ -282,11 +325,9 @@ sudo tcpdump -s 1514 -i any 'port 5000' -U -w - | tee clienttor.pcap | tcpdump -
 scp -P 30522 tef243@pc1.instageni.iu.edu:~/clienttor.pcap .
 ```
 
-
-on the client
 ```
-sudo apt-get install proxychains
-
+scp -P 32570 make-fingerprint.py tef243@pc2.instageni.maxgigapop.net:~/
+```
 
 
 ## References
