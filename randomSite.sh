@@ -20,3 +20,23 @@ then
   proxychains wget -q -p http://192.168.2.200/www.mlb.com/mets
 fi
 
+echo -n "Press enter to see which site the client visited:"
+if read -t 100 response; then
+  if [ $siteNumber == 1 ] 
+then
+  echo "The client visited NYU's Engineering homepage"
+elif [ $siteNumber == 2 ] 
+then
+  echo "The client visited Facebook"
+elif [ $siteNumber == 3 ]
+then
+  echo "The client visited Youtube"
+elif [ $siteNumber == 4 ]
+then
+  echo "The client visited Reddit"
+elif [ $siteNumber == 5 ]
+then
+  echo "The client visited the New York Mets homepage"
+else
+    echo "Sorry, you are too slow!"
+fi
