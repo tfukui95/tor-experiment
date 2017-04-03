@@ -1,7 +1,7 @@
 # This script file generates a random number from 1 to 5, and then depending on what number is generated, the user visits a specific site
 # on the webserver.
 
-siteNumber=$(awk -v min=1 -v ma x=5 'BEGIN{srand(); print int(min+rand()*(max-mi n+1))}')
+siteNumber=$(awk -v min=1 -v max=5 'BEGIN{srand(); print int(min+rand()*(max-mi n+1))}')
 
 if [ echo $siteNumber == 1 ] then
   proxychains wget -p http://192.168.2.200/engineering.nyu.edu/
