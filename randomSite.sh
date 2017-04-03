@@ -3,19 +3,19 @@
 
 siteNumber=$(awk -v min=1 -v max=5 'BEGIN{srand(); print int(min+rand()*(max-min+1))}')
 
-if [ echo $siteNumber == 1 ] 
+if [ $siteNumber == 1 ] 
 then
   proxychains wget -p http://192.168.2.200/engineering.nyu.edu/
-elif [ echo $siteNumber == 2 ] 
+elif [ $siteNumber == 2 ] 
 then
   proxychains wget -p http://192.168.2.200/facebook.com/
-elif [ echo $siteNumber == 3 ]
+elif [ $siteNumber == 3 ]
 then
   proxychains wget -p http://192.168.2.200/youtube.com/
-elif [ echo $siteNumber == 4 ]
+elif [ $siteNumber == 4 ]
 then
   proxychains wget -p http://192.168.2.200/reddit.com/
-elif [ echo $siteNumber == 5 ]
+elif [ $siteNumber == 5 ]
 then
   proxychains wget -p http://192.168.2.200/www.mlb.com/mets
 fi
