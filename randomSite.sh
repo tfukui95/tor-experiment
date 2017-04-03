@@ -20,7 +20,7 @@ then
   proxychains wget -q -p http://192.168.2.200/www.mlb.com/mets
 fi
 
-echo -n "Press enter to see which site the client visited:"
+echo -n "Press any key to see which site the client visited:"
 if read -t 100 response
 then
   if [ $siteNumber == 1 ] 
