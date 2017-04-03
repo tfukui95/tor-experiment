@@ -129,7 +129,7 @@ cells are sent in 512-byte sizes, therefore the packets are rounded up to a size
 that is a multiple of 600 and are classified accordingly. For our experiment on GENI,
 we will not be doing any packet classification for data mining.
 
-## Setting up the Website Fingerprinting experiment
+## Setting up the Website Fingerprinting Experiment
 
 We will now be setting up our own website fingerprinting experiment on GENI. The
 following steps will be taken for this experiment:
@@ -404,7 +404,7 @@ python make-fingerprint.py --filename mets.csv
 scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot.png metsPlot.png
 ```
 
-### Testing the Website fingerprints
+### Testing the Website Fingerprints
 
 Now that we have our fingerprints for each of the sites, we will be snooping on
 the client of our private Tor network and see if we can figure out what site the
@@ -461,24 +461,9 @@ the keyboard to see whether your guess was correct.
 
 This is the end of the experiment portion of the thesis. To expand on this experiment,
 feel free to increase the number of sites, clients, marker types, etc. to make the
-experiment even more interesting and realistic.
-
-
-# Notes
-
-For Wireshark
-
-No tor
-```
-sudo tcpdump -s 1514 -i any 'port 5000' -U -w - | tee clientnotor.pcap | tcpdump -nnxxXSs 1514 -r -
-scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/clientnotor.pcap .
-```
-
-With Tor
-```
-sudo tcpdump -s 1514 -i any 'port 5000' -U -w - | tee clienttor.pcap | tcpdump -nnxxXSs 1514 -r -
-scp -P 32570 tef243@pc1.instageni.maxgigapop.net:~/clientnotor.pcap .
-```
+experiment even more interesting and realistic. Using Wireshark to gain a better
+understanding of the packet traces is also recommended. Please refer to the Toy
+Experiment in Chapter 3 for more information on using Wireshark.
 
 
 ## References
