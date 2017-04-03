@@ -232,7 +232,7 @@ Now do the same for the other four websites.
 sudo wget -p -k http://facebook.com/
 sudo wget -p -k http://youtube.com/
 sudo wget -p -k http://reddit.com/
-sudo wget -p -k https://www.mlb.com/mets
+sudo wget -p -k http://www.mlb.com/mets
 ```
 
 Now we have all 5 websites set up on our webserver's html directory.
@@ -255,8 +255,8 @@ eventually capture. We will be using __seaborn__, a python visualization library
 that is based off the more common matplotlib. On the client terminal, run
 
 ```
-sudo apt-get -y install python-pip python-scipy python-pandas
-sudo pip install seaborn stem
+sudo apt-get -y install python-pip python-dev libfreetype6-dev liblapack-dev libxft-dev gfortran
+sudo pip install stem seaborn pandas
 
 ```
 
@@ -304,34 +304,180 @@ we must save it as a csv file. On the client terminal using tshark, run
 sudo tshark -i eth1 -n -f "host 192.168.1.100 and tcp and port 5000" -T fields -e frame.len -e ip.src -e ip.dst -E separator=, >engineering.csv
 ```
 
-
-
-
-
+On the other client terminal, run
 
 ```
-sudo apt-get -y install python-pip
-sudo pip install stem
-
-wget https://raw.githubusercontent.com/tfukui95/tor-experiment/master/make-fingerprint.py
-
-sudo python make-fingerprint.py
+proxychains wget -p http://192.168.2.200/engineering.nyu.edu/
 ```
+
+If the webserver address does not work, replace 192.168.2.200 with 192.168.3.200.
+Now stop the tshark from listening on the network, which will save the captured
+traffic into engineering.csv. Now in order to put the file through the filter
+using the python script, on one of the client terminals, run
+
+```
+python make-fingerprint.py --filename engineering.csv
+```
+
+A list of tuples, containing the type of data (whether a data packet or a marker)
+and the data itself, will be outputted onto the display. During this process a plot
+is created as a visual of the fingerprint for the comparison part of our experiment
+later. The plot is saved as a PNG image file, and should be stored somewhere for
+later. For Windows users like myself, we must use SCP (Secure Copy Protocol) to
+save the image from our remote linux terminal to our local machine. Go to your
+GENI slice page, and click Details to get more information of your client VM.
+
+Open up another Ubuntu terminal, and go to whichever folder you want to save your
+plots to. The SCP command for saving the image to your local Windows desktop is the following:
+
+```
+scp -P <port_number> <user>@<site_address>:~/fingerprint-plot.png <any_filename.png>
+```
+
+Therefore for example in my case, the code to run will be
+
+```
+scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot.png engineeringPlot.png
+```
+
+Now we must do the same for the other four sites. For Facebook:
+
+```
+# On one client terminal
+sudo tshark -i eth1 -n -f "host 192.168.1.100 and tcp and port 5000" -T fields -e frame.len -e ip.src -e ip.dst -E separator=, >facebook.csv
+
+# On the other client terminal
+proxychains wget -p http://192.168.2.200/facebook.com/
+
+# After stopping tshark, on either client terminal
+python make-fingerprint.py --filename facebook.csv
+
+# After the fingerprinting is done, on the local terminal
+scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot.png facebookPlot.png
+```
+
+Next for the fingerprint for Youtube:
+
+```
+# On one client terminal
+sudo tshark -i eth1 -n -f "host 192.168.1.100 and tcp and port 5000" -T fields -e frame.len -e ip.src -e ip.dst -E separator=, >youtube.csv
+
+# On the other client terminal
+proxychains wget -p http://192.168.2.200/youtube.com/
+
+# After stopping tshark, on either client terminal
+python make-fingerprint.py --filename youtube.csv
+
+# After the fingerprinting is done, on the local terminal
+scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot.png youtubePlot.png
+```
+
+Next for the fingerprint for Reddit:
+
+```
+# On one client terminal
+sudo tshark -i eth1 -n -f "host 192.168.1.100 and tcp and port 5000" -T fields -e frame.len -e ip.src -e ip.dst -E separator=, >reddit.csv
+
+# On the other client terminal
+proxychains wget -p http://192.168.2.200/reddit.com/
+
+# After stopping tshark, on either client terminal
+python make-fingerprint.py --filename reddit.csv
+
+# After the fingerprinting is done, on the local terminal
+scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot.png redditPlot.png
+```
+
+Lastly, for the fingerprint for the Mets homepage:
+
+```
+# On one client terminal
+sudo tshark -i eth1 -n -f "host 192.168.1.100 and tcp and port 5000" -T fields -e frame.len -e ip.src -e ip.dst -E separator=, >mets.csv
+
+# On the other client terminal
+proxychains wget -p http://192.168.2.200/www.mlb.com/mets
+
+# After stopping tshark, on either client terminal
+python make-fingerprint.py --filename mets.csv
+
+# After the fingerprinting is done, on the local terminal
+scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot.png metsPlot.png
+```
+
+### Testing the Website fingerprints
+
+Now that we have our fingerprints for each of the sites, we will be snooping on
+the client of our private Tor network and see if we can figure out what site the
+client is visiting. The following is our process:
+
+1. Start listening on the client's network
+2. Have the client randomly choose one of the 5 sites
+3. Capture the traffic that we can see, and create a similar fingerprint plot
+as the one that we made for the websites.
+4. See if we can determine which site the client visited
+
+Now let us start our experiment. On one client terminal, run
+
+```
+sudo tshark -i eth1 -n -f "host 192.168.1.100 and tcp and port 5000" -T fields -e frame.len -e ip.src -e ip.dst -E separator=, >wfpAttack.csv
+```
+
+There is a script file on my Github called randomSite.sh. Save the script file onto
+the client VM and then run it
+
+```
+wget https://raw.githubusercontent.com/tfukui95/tor-experiment/master/randomSite.sh
+bash randomSite.sh
+```
+
+Now the process to create the fingerprint of the user's traffic is the same as before,
+when we made the fingerprints for the websites. After stopping tshark, on either
+client terminal, run
+
+```
+python make-fingerprint.py --filename wfpAttack.csv
+```
+
+After the fingerprinting is done, on the local terminal, run
+
+```
+scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot.png wfpPlot.png
+```
+
+Open up wfpPlot.png on your local machine, and compare it with the other fingerprints.
+See whether it is clear or not which site the client randomly chose to visit. We
+notice that for certain sites it is much easier to distinguish from the rest, for
+example for the NYU Engineering homepage, we can see that towards the end of the
+retrieval of the webpage we see a lot of constant back and forth between client
+and server compared to the first half where there are a lot of packets sent in bunches
+from the webserver. Other sites are not as easy to distinguish, but looking closely,
+we can see that every site's fingerprint has some kind of unique part to it which
+differentiates it from the rest of them.
+
+Go back to the client terminal in which you ran the shell script, which should be
+waiting for a keyboard input saying "Press any key to see which site the client visited:".
+After you arrive upon a guess as to which site the client visited, press any key on
+the keyboard to see whether your guess was correct.
+
+This is the end of the experiment portion of the thesis. To expand on this experiment,
+feel free to increase the number of sites, clients, marker types, etc. to make the
+experiment even more interesting and realistic.
+
+
+# Notes
+
+For Wireshark
 
 No tor
 ```
-sudo tcpdump -s 1514 -i any 'port 80' -U -w - | tee clientnotor.pcap | tcpdump -nnxxXSs 1514 -r -
-scp -P 30522 tef243@pc1.instageni.iu.edu:~/clientnotor.pcap .
+sudo tcpdump -s 1514 -i any 'port 5000' -U -w - | tee clientnotor.pcap | tcpdump -nnxxXSs 1514 -r -
+scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/clientnotor.pcap .
 ```
 
 With Tor
 ```
 sudo tcpdump -s 1514 -i any 'port 5000' -U -w - | tee clienttor.pcap | tcpdump -nnxxXSs 1514 -r -
-scp -P 30522 tef243@pc1.instageni.iu.edu:~/clienttor.pcap .
-```
-
-```
-scp -P 32570 make-fingerprint.py tef243@pc2.instageni.maxgigapop.net:~/
+scp -P 32570 tef243@pc1.instageni.maxgigapop.net:~/clientnotor.pcap .
 ```
 
 

@@ -515,7 +515,7 @@ Tcpdump to both display the output to screen while also saving the output to a
 file. The following is the format
 
 ```
-sudo tcpdump -s 1514 -i any 'port <port_num>' -U -w - | tee <name_file>.pcap | tcpdump -nnxxXSs 1514 -r -
+sudo Tcpdump -s 1514 -i any 'port <port_num>' -U -w - | tee <name_file>.pcap | Tcpdump -nnxxXSs 1514 -r -
 ```
 
 where <port_num> is the specific port number to access, and <name_file> is the
@@ -526,13 +526,13 @@ is the most common HTTP port. Have two client terminals opened, and on one,
 start listening through port 80 by running
 
 ```
-sudo tcpdump -s 1514 -i any 'port 80' -U -w - | tee clientnotor.pcap | tcpdump -nnxxXSs 1514 -r -
+sudo Tcpdump -s 1514 -i any 'port 80' -U -w - | tee clientnotor.pcap | Tcpdump -nnxxXSs 1514 -r -
 ```
 
 On the web server terminal also listen through port 80 by running
 
 ```
-sudo tcpdump -s 1514 -i any 'port 80' -U -w - | tee servernotor.pcap | tcpdump -nnxxXSs 1514 -r -
+sudo Tcpdump -s 1514 -i any 'port 80' -U -w - | tee servernotor.pcap | Tcpdump -nnxxXSs 1514 -r -
 ```
 
 On the other client terminal, access the webserver by running
@@ -654,11 +654,11 @@ the client's traffic to the webserver, and vice-versa.
 
 ### Using Tcpdump to Watch Traffic
 
-We will again be using tcpdump to listen to the network at different locations.
+We will again be using Tcpdump to listen to the network at different locations.
 We will require three terminals for the clients for this part. On one, run
 
 ```
-sudo tcpdump -s 1514 -i any 'port 9050' -U -w - | tee client9050.pcap | tcpdump -nnxxXSs 1514 -r -
+sudo Tcpdump -s 1514 -i any 'port 9050' -U -w - | tee client9050.pcap | Tcpdump -nnxxXSs 1514 -r -
 ```
 
 to watch the traffic that is going through the SOCKS proxy port 9050, and then
@@ -668,7 +668,7 @@ other. This communication is a loop-back interface, in other words the
 communication occurs in the local ethernet. On another client terminal run
 
 ```
-sudo tcpdump -s 1514 -i any 'port 5000' -U -w - | tee client5000.pcap | tcpdump -nnxxXSs 1514 -r -
+sudo Tcpdump -s 1514 -i any 'port 5000' -U -w - | tee client5000.pcap | Tcpdump -nnxxXSs 1514 -r -
 ```
 
 to watch the traffic through port 5000, which is the port to listen on the Tor
@@ -680,12 +680,12 @@ used when the traffic enters the Tor network.
 Next on each relay that is being used in the circuit, run
 
 ```
-sudo tcpdump -s 1514 -i any 'port 5000' -U -w - | tee $(hostname -s).pcap | tcpdump -nnxxXSs 1514 -r -
+sudo Tcpdump -s 1514 -i any 'port 5000' -U -w - | tee $(hostname -s).pcap | Tcpdump -nnxxXSs 1514 -r -
 ```
 
 where **$(hostname -s)** will be converted to the name of the specific relay
-that you are working with. For example, if using tcpdump on relay1, the file
-that tcpdump will write to will be relay1.pcap. This tcpdump function will
+that you are working with. For example, if using Tcpdump on relay1, the file
+that Tcpdump will write to will be relay1.pcap. This Tcpdump function will
 watch the traffic that is going through the OR port 5000, and then save what it
 sees in a pcap file.
 
@@ -694,7 +694,7 @@ terminal and have the relay listen on port 80, which is the most commonly used
 port for HTTP. On the new terminal run
 
 ```
-sudo tcpdump -s 1514 -i any 'port 80' -U -w - | tee exitrelay.pcap | tcpdump -nnxxXSs 1514 -r -
+sudo Tcpdump -s 1514 -i any 'port 80' -U -w - | tee exitrelay.pcap | Tcpdump -nnxxXSs 1514 -r -
 ```
 
 to start listening on the network through port 80.
@@ -703,7 +703,7 @@ Lastly we must also set up the web server to have it listen for traffic as well.
 On the web server terminal run
 
 ```
-sudo tcpdump -s 1514 -i any 'port 80' -U -w - | tee webserver.pcap | tcpdump -nnxxXSs 1514 -r -
+sudo Tcpdump -s 1514 -i any 'port 80' -U -w - | tee webserver.pcap | Tcpdump -nnxxXSs 1514 -r -
 ```
 
 to start listening for traffic on port 80.
@@ -720,8 +720,8 @@ curl -x socks5://127.0.0.1:9050/ http://webserver/
 
 to access the webserver. Since we are using the Tor network to access the site,
 the three ORs must have seen some kind of traffic passing through it. Now let
-us take a look at what the client and each OR saw. Stop the tcpdump process
-with Ctrl^C. When we stop tcpdump, a file is created with the traffic that was
+us take a look at what the client and each OR saw. Stop the Tcpdump process
+with Ctrl^C. When we stop Tcpdump, a file is created with the traffic that was
 seen passing through. If you want to access the saved file to see the traffic
 on Wireshark's interface, follow the steps in the following section. Otherwise,
 as we listen on the network, the traffic that we can see will be outputted on
@@ -729,7 +729,7 @@ the display of each terminal.
 
 ## Summary of Toy Experiment
 
-From using tcpdump when using and not using Tor, there is a clear difference
+From using Tcpdump when using and not using Tor, there is a clear difference
 in the information that we can and cannot see at each node. The following table
 summarizes what can be seen when listening on a network that doesn't use Tor:
 
@@ -813,12 +813,12 @@ One such method to get more information about circuits available and about which
 exit relay is used for each connection, is to use a couple of Python utility
 scripts.
 
-Another method is an addition to tcpdump, which allows for a better and more
+Another method is an addition to Tcpdump, which allows for a better and more
 organized window to analyze the packets that are being passed along the Tor
-network. This method requires Wireshark and winSCP. Wireshark is a software that
-can read in a file written by tcpdump, and displays the traffic very neatly to
-allow better observation of the data. WinSCP is a program for Windows users,
-that is going to be used to access the tcpdump files that are saved on the VMs,
+network. This method requires Wireshark and SCP (Secure Copy Protocol). Wireshark
+is a software that can read in a file written by Tcpdump, and displays the traffic very
+neatly to allow better observation of the data. SCP is a program for Windows users,
+that is going to be used to access the Tcpdump files that are saved on the VMs,
 and to copy it to our local Desktop, so that we can open the file with Wireshark.
 
 ### Using Python Utility Scripts
@@ -867,25 +867,24 @@ Exit relay for our connection to 192.168.2.1:80
   locale: ??
 ```
 
-### Setting up Wireshark and WinSCP
+### Setting up Wireshark and SCP
 
 Wireshark can be downloaded from the company's [homepage](https://www.wireshark.org/).
 Besides downloading and installing the software, there is no often configuration
 necessary.
 
-WinSCP can also be downloaded from the company's [homepage](https://winscp.net/eng/download.php).
-After installation, we open the application, and immediately a login window
-comes up. To login to a specific VM, we must have certain information available,
-which can be found on GENI, in the Details page of your slice. Choose **SCP** for
-File Protocol. The Host name is the information after the @ symbol used for
-logging into each VM, followed by the port number. Your username is the same as
-the username before the @ symbol. For the password, we must use our ssh key as
-an authentication method. Click "Advanced", followed by "Authentication" under
-SSH. Under Authentication Parameters, click Private Key File, and browse to
-your location of your ssh key. Once you add the key, you will be asked to convert
-your key to PuTTY format because winSCP only supports PuTTY. Go ahead and convert
-the key, and now you can save your login info of your VM, to allow faster login
-the next time.
+SCP (Secure Copy Protocol) is used to copy a file from our remote linux terminal
+to our local machine. Go to your GENI slice page, and click Details to get more
+information of your VMs. Open up another Ubuntu terminal, and go to whichever directory
+you want to save your file to. The SCP command for saving a file to your local
+Windows desktop is the following:
+
+```
+scp -P <port_number> <user>@<site_address>:~/<name_of_file> .
+```
+
+After copying over the file, open it up on Wireshark to see what the traffic from
+Tcpdump looks like.
 
 ## Notes
 
@@ -916,4 +915,4 @@ Use `q` to quit.
 [2] "How do you write multiple line configuration file using BASH, and use variables on multiline?" YumYumYum, Stack Overflow,  [http://stackoverflow.com/questions/7875540/how-do-you-write-multiple-line-configuration-file-using-bash-and-use-variables](http://stackoverflow.com/questions/7875540/how-do-you-write-multiple-line-configuration-file-using-bash-and-use-variables)  
 [3] "sudo cat << EOF > File doesn't work, sudo su does" iamauser, Stack Overflow, [http://stackoverflow.com/questions/18836853/sudo-cat-eof-file-doesnt-work-sudo-su-does](http://stackoverflow.com/questions/18836853/sudo-cat-eof-file-doesnt-work-sudo-su-does)  
 [4] "Arm (Project Page)" [https://www.torproject.org/projects/arm.html.en](https://www.torproject.org/projects/arm.html.en)  
-[5] "How can I have tcpdump write to file and standard output the appropriate data." Stack Overflow, [http://stackoverflow.com/questions/25603831/how-can-i-have-tcpdump-write-to-file-and-standard-output-the-appropriate-data](http://stackoverflow.com/questions/25603831/how-can-i-have-tcpdump-write-to-file-and-standard-output-the-appropriate-data)  
+[5] "How can I have Tcpdump write to file and standard output the appropriate data." Stack Overflow, [http://stackoverflow.com/questions/25603831/how-can-i-have-Tcpdump-write-to-file-and-standard-output-the-appropriate-data](http://stackoverflow.com/questions/25603831/how-can-i-have-Tcpdump-write-to-file-and-standard-output-the-appropriate-data)  

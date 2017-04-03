@@ -4,6 +4,10 @@
 import csv
 import argparse
 import pandas as pd
+
+import matplotlib
+# Force matplotlib to not use any Xwindows backend.
+matplotlib.use('Agg')
 import seaborn as sns
 
 
@@ -36,7 +40,6 @@ for sizetuple in sizelist:
     size = sizetuple[1]
     if not size == 66:
         filterlist.append(sizetuple)
-
 
 # Insert size markers at every direction change
 sizemarkerlist = []
@@ -100,9 +103,9 @@ df = pd.DataFrame(sizemarkerlist, columns = ['header', 'packetsize'])
 df['idx'] = range(1, len(df) + 1)
 
 # Make an ugly figure
-sns_plot = sns.barplot(x="idx", y="packetsize", hue="header", data=df)
-fig = sns_plot.get_figure()
-fig.savefig("markers.png")
+# sns_plot = sns.barplot(x="idx", y="packetsize", hue="header", data=df)
+# fig = sns_plot.get_figure()
+# fig.savefig("markers.png")
 
 # Make a nicer figure
 # Weird bar spacing issue: https://github.com/mwaskom/seaborn/issues/987
@@ -128,7 +131,7 @@ color_dict = dict(zip(header_list, colors))
 sns_plot = sns.barplot(x="idx", y="packetsize", data=df, palette=df["header"].map(color_dict))
 custom_legend(colors,header_list)
 fig = sns_plot.get_figure()
-fig.savefig("markers-fixed.png")
+fig.savefig("fingerprint-plot.png")
 
 
 # Insert number markers
