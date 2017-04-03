@@ -38,6 +38,7 @@ then
   elif [ $siteNumber == 5 ]
   then
     echo "The client visited the New York Mets homepage"
+  fi
 else
   echo "Sorry, you are too slow!"
 fi
