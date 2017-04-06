@@ -1,6 +1,6 @@
 # Implementation of Website Fingerprinting on GENI
 
-## Understanding Website Fingerprinting Thoroughly
+## Gaining a Better Understanding of Website Fingerprinting
 
 In order to be able to perform a successful website fingerprinting attack on our
 private Tor network, we must first go through the steps of understanding the
@@ -82,53 +82,6 @@ packets that were incoming compared to outgoing.
 __Total Number of Packets__- Similar to adding up the total number of bytes sent
 and received, the total number of packets is also counted.
 
-### Method of Cross Validation
-
-For a closed-world data set, where the data set size is small, a process called
-cross validation is used in data mining to make the results more meaningful.
-The process is described in the paper by Panchenko, et al. [1]
-
->  the data is split into n evenly large parts, the folds. Then, the entire process
-of training and testing is repeated n times, using one of the n folds as test data
-and the remaining n − 1 folds as training data in turn. The results are averaged
-and therefore more solid and meaningful. In this paper, n is set to 10 with 2
-instances per fold and per class. Additionally, the so-called stratification is
-used, which ensures that the instances within a class are represented as balanced
-as possible in each fold. The entire procedure is called ten-fold stratified
-cross-validation.
-
-An important reason for performing cross validation is so that training instances
-are not collected from the same circuit that is used to collect test instances [3].
-For the case of our experiment on GENI, we will not be performing cross validation.
-
-### Method of Packet Classification
-
-Herrmann et al. introduces the application of support vector machines (SVM) that
-are used in data mining for classification accuracy. The main idea of using SVM's
-is the classification of each instance or packet containing webpage details is
-treated as a vector [1]. The process involves placing a hyperplane in the vector
-space to distinguish between different kinds of vectors. When vectors are not
-able to be separated linearly, a technique called the kernel trick is employed,
-where the vector space is brought to a higher dimension so that a hyperplane
-can be placed again. The whole process behind SVM is quite complicated, and
-thus will not be covered here. Those who would like further information are
-recommended _An Introduction to Support Vector Machines and other kernel-based
-learning methods_ written by N. Christianini and J. Shawe-Taylor.
-
-Some packets found in a traffic stream can be superfluous and may only reduce
-performance of the traffic analysis. TCP ACK packets which are acknowledgement
-packets are known to reduce performance due to its repetitiveness of being sent
-after every packet. This would make all traces seem very similar with all of the
-ACKs, therefore these are removed. Most ACK packets are 40 or 52 bytes, so these
-are filtered out.
-
-Every 100 cells, a circuit-level SENDME cell is sent [3]. Similar to ACK cells,
-these cells do not provide any useful information and thus should be filtered
-out to improve performance. Another factor that is taken into account is that Tor
-cells are sent in 512-byte sizes, therefore the packets are rounded up to a size
-that is a multiple of 600 and are classified accordingly. For our experiment on GENI,
-we will not be doing any packet classification for data mining.
-
 ## Setting up the Website Fingerprinting Experiment
 
 We will now be setting up our own website fingerprinting experiment on GENI. The
@@ -168,8 +121,13 @@ up each VM.
 
 Since we have already went through the steps of setting up each VM very thoroughly,
 let us not go into too much detail. Instead we will simply set up the VMs using
-the script files on my Github. To setup the directory server, go to the directory
-server VM and run
+the script files on my [Github page](https://github.com/tfukui95/tor-experiment). The
+order in which the VMs are set up is very important. Making sure that the directory
+server is set up first before any of the other nodes is vital for the private Tor
+network to be set up properly, as the Tor configuration files for the rest of the nodes
+are first created in the directory server. Once the directory server is set up, the
+order of setup of the other VMs is flexible. To setup  the directory server, go to
+the directory server VM and run
 
 ```
 wget https://raw.githubusercontent.com/tfukui95/tor-experiment/master/wfp-directoryserver.sh
@@ -223,16 +181,16 @@ School of Engineering homepage. On the webserver terminal, run
 
 ```
 cd /var/www/html/
-sudo wget -p -k http://engineering.nyu.edu/
+sudo wget -e robots=off --wait 1 -H -p -k http://engineering.nyu.edu/
 ```
 
 Now do the same for the other four websites.
 
 ```
-sudo wget -p -k http://facebook.com/
-sudo wget -p -k http://youtube.com/
-sudo wget -p -k http://reddit.com/
-sudo wget -p -k http://www.mlb.com/mets
+sudo wget -e robots=off --wait 1 -H -p -k http://facebook.com/
+sudo wget -e robots=off --wait 1 -H -p -k http://youtube.com/
+sudo wget -e robots=off --wait 1 -H -p -k http://reddit.com/
+sudo wget -e robots=off --wait 1 -H -p -k http://www.mlb.com/mets
 ```
 
 Now we have all 5 websites set up on our webserver's html directory.
@@ -265,8 +223,8 @@ through a filter, defined by a python script that we have written. This script
 takes in the packet trace and filters out unneeded packets and places markers of
 different kinds in the trace, defined in the __Characteristics of Packet Traces__
 section above. This script will create the fingerprint out of the packet trace.
-The python script filter can be accessed on my Github page. On the client terminal,
-run
+The python script filter can be accessed on my [Github page](https://github.com/tfukui95/tor-experiment).
+On the client terminal, run
 
 ```
 wget https://raw.githubusercontent.com/tfukui95/tor-experiment/master/make-fingerprint.py
@@ -310,7 +268,6 @@ On the other client terminal, run
 proxychains wget -p http://192.168.2.200/engineering.nyu.edu/
 ```
 
-If the webserver address does not work, replace 192.168.2.200 with 192.168.3.200.
 Now stop the tshark from listening on the network, which will save the captured
 traffic into engineering.csv. Now in order to put the file through the filter
 using the python script, on one of the client terminals, run
@@ -320,25 +277,30 @@ python make-fingerprint.py --filename engineering.csv
 ```
 
 A list of tuples, containing the type of data (whether a data packet or a marker)
-and the data itself, will be outputted onto the display. During this process a plot
-is created as a visual of the fingerprint for the comparison part of our experiment
-later. The plot is saved as a PNG image file, and should be stored somewhere for
-later. For Windows users like myself, we must use SCP (Secure Copy Protocol) to
-save the image from our remote linux terminal to our local machine. Go to your
-GENI slice page, and click Details to get more information of your client VM.
+and the data itself, will be outputted onto the display. During this process two plots
+are created as visuals of the fingerprint for the comparison part of our experiment
+later. The plots are saved as a PNG image file, and should be stored somewhere for
+later. We can use SCP (Secure Copy Protocol) to save the image from our remote Linux
+terminal to our local machine. Go to your GENI slice page, and click Details to
+get more information of your client VM.
 
-Open up another Ubuntu terminal, and go to whichever folder you want to save your
-plots to. The SCP command for saving the image to your local Windows desktop is the following:
+Open up a local terminal, and go to whichever folder you want to save your
+plots to. The SCP command for saving the image to your local machine is the following:
 
 ```
 scp -P <port_number> <user>@<site_address>:~/fingerprint-plot.png <any_filename.png>
 ```
 
-Therefore for example in my case, the code to run will be
+Therefore for example in my case, the codes to run will be
 
 ```
 scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot.png engineeringPlot.png
+scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot2.png engineeringPlot2.png
 ```
+
+The file fingerprint-plot.png contains a plot of incoming and outgoing packets,
+as well as the size markers whenever the direction changes. The file fingerprint-plot2.png
+contains a plot of just the number markers in its own plot.
 
 Now we must do the same for the other four sites. For Facebook:
 
@@ -354,6 +316,7 @@ python make-fingerprint.py --filename facebook.csv
 
 # After the fingerprinting is done, on the local terminal
 scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot.png facebookPlot.png
+scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot2.png facebookPlot2.png
 ```
 
 Next for the fingerprint for Youtube:
@@ -370,6 +333,7 @@ python make-fingerprint.py --filename youtube.csv
 
 # After the fingerprinting is done, on the local terminal
 scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot.png youtubePlot.png
+scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot2.png youtubePlot2.png
 ```
 
 Next for the fingerprint for Reddit:
@@ -386,6 +350,7 @@ python make-fingerprint.py --filename reddit.csv
 
 # After the fingerprinting is done, on the local terminal
 scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot.png redditPlot.png
+scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot2.png redditPlot2.png
 ```
 
 Lastly, for the fingerprint for the Mets homepage:
@@ -402,6 +367,7 @@ python make-fingerprint.py --filename mets.csv
 
 # After the fingerprinting is done, on the local terminal
 scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot.png metsPlot.png
+scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot2.png metsPlot2.png
 ```
 
 ### Testing the Website Fingerprints
@@ -422,8 +388,8 @@ Now let us start our experiment. On one client terminal, run
 sudo tshark -i eth1 -n -f "host 192.168.1.100 and tcp and port 5000" -T fields -e frame.len -e ip.src -e ip.dst -E separator=, >wfpAttack.csv
 ```
 
-There is a script file on my Github called randomSite.sh. Save the script file onto
-the client VM and then run it
+There is a script file on my [Github page](https://github.com/tfukui95/tor-experiment)
+called randomSite.sh. Save the script file onto the client VM and then run it
 
 ```
 wget https://raw.githubusercontent.com/tfukui95/tor-experiment/master/randomSite.sh
@@ -442,9 +408,10 @@ After the fingerprinting is done, on the local terminal, run
 
 ```
 scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot.png wfpPlot.png
+scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot2.png wfpPlot2.png
 ```
 
-Open up wfpPlot.png on your local machine, and compare it with the other fingerprints.
+Open up wfpPlot.png and wfpPlot2.png on your local machine, and compare it with the other fingerprints.
 See whether it is clear or not which site the client randomly chose to visit. We
 notice that for certain sites it is much easier to distinguish from the rest, for
 example for the NYU Engineering homepage, we can see that towards the end of the
@@ -464,7 +431,6 @@ feel free to increase the number of sites, clients, marker types, etc. to make t
 experiment even more interesting and realistic. Using Wireshark to gain a better
 understanding of the packet traces is also recommended. Please refer to the Toy
 Experiment in Chapter 3 for more information on using Wireshark.
-
 
 ## References
 

@@ -515,7 +515,7 @@ Tcpdump to both display the output to screen while also saving the output to a
 file. The following is the format
 
 ```
-sudo Tcpdump -s 1514 -i any 'port <port_num>' -U -w - | tee <name_file>.pcap | Tcpdump -nnxxXSs 1514 -r -
+sudo tcpdump -s 1514 -i any 'port <port_num>' -U -w - | tee <name_file>.pcap | tcpdump -nnxxXSs 1514 -r -
 ```
 
 where <port_num> is the specific port number to access, and <name_file> is the
@@ -526,13 +526,13 @@ is the most common HTTP port. Have two client terminals opened, and on one,
 start listening through port 80 by running
 
 ```
-sudo Tcpdump -s 1514 -i any 'port 80' -U -w - | tee clientnotor.pcap | Tcpdump -nnxxXSs 1514 -r -
+sudo tcpdump -s 1514 -i any 'port 80' -U -w - | tee clientnotor.pcap | tcpdump -nnxxXSs 1514 -r -
 ```
 
 On the web server terminal also listen through port 80 by running
 
 ```
-sudo Tcpdump -s 1514 -i any 'port 80' -U -w - | tee servernotor.pcap | Tcpdump -nnxxXSs 1514 -r -
+sudo tcpdump -s 1514 -i any 'port 80' -U -w - | tee servernotor.pcap | tcpdump -nnxxXSs 1514 -r -
 ```
 
 On the other client terminal, access the webserver by running
@@ -658,7 +658,7 @@ We will again be using Tcpdump to listen to the network at different locations.
 We will require three terminals for the clients for this part. On one, run
 
 ```
-sudo Tcpdump -s 1514 -i any 'port 9050' -U -w - | tee client9050.pcap | Tcpdump -nnxxXSs 1514 -r -
+sudo tcpdump -s 1514 -i any 'port 9050' -U -w - | tee client9050.pcap | tcpdump -nnxxXSs 1514 -r -
 ```
 
 to watch the traffic that is going through the SOCKS proxy port 9050, and then
@@ -668,7 +668,7 @@ other. This communication is a loop-back interface, in other words the
 communication occurs in the local ethernet. On another client terminal run
 
 ```
-sudo Tcpdump -s 1514 -i any 'port 5000' -U -w - | tee client5000.pcap | Tcpdump -nnxxXSs 1514 -r -
+sudo tcpdump -s 1514 -i any 'port 5000' -U -w - | tee client5000.pcap | tcpdump -nnxxXSs 1514 -r -
 ```
 
 to watch the traffic through port 5000, which is the port to listen on the Tor
@@ -680,7 +680,7 @@ used when the traffic enters the Tor network.
 Next on each relay that is being used in the circuit, run
 
 ```
-sudo Tcpdump -s 1514 -i any 'port 5000' -U -w - | tee $(hostname -s).pcap | Tcpdump -nnxxXSs 1514 -r -
+sudo tcpdump -s 1514 -i any 'port 5000' -U -w - | tee $(hostname -s).pcap | tcpdump -nnxxXSs 1514 -r -
 ```
 
 where **$(hostname -s)** will be converted to the name of the specific relay
@@ -694,7 +694,7 @@ terminal and have the relay listen on port 80, which is the most commonly used
 port for HTTP. On the new terminal run
 
 ```
-sudo Tcpdump -s 1514 -i any 'port 80' -U -w - | tee exitrelay.pcap | Tcpdump -nnxxXSs 1514 -r -
+sudo tcpdump -s 1514 -i any 'port 80' -U -w - | tee exitrelay.pcap | tcpdump -nnxxXSs 1514 -r -
 ```
 
 to start listening on the network through port 80.
@@ -703,7 +703,7 @@ Lastly we must also set up the web server to have it listen for traffic as well.
 On the web server terminal run
 
 ```
-sudo Tcpdump -s 1514 -i any 'port 80' -U -w - | tee webserver.pcap | Tcpdump -nnxxXSs 1514 -r -
+sudo tcpdump -s 1514 -i any 'port 80' -U -w - | tee webserver.pcap | tcpdump -nnxxXSs 1514 -r -
 ```
 
 to start listening for traffic on port 80.
@@ -870,8 +870,18 @@ Exit relay for our connection to 192.168.2.1:80
 ### Setting up Wireshark and SCP
 
 Wireshark can be downloaded from the company's [homepage](https://www.wireshark.org/).
-Besides downloading and installing the software, there is no often configuration
+Besides downloading and installing the software, there is often no configuration
 necessary.
+
+Wireshark's default file extension is a pcap file, which the Tcpdump function can
+save its traffic to by the following:
+
+```
+sudo tcpdump -s 1514 -i any 'port <port_num>' -U -w - | tee <name_file>.pcap | tcpdump -nnxxXSs 1514 -r -
+```
+
+This will tell the function to listen on a certain port number, output the traffic
+onto the display, and to save it to a pcap file with the name that you specify.
 
 SCP (Secure Copy Protocol) is used to copy a file from our remote linux terminal
 to our local machine. Go to your GENI slice page, and click Details to get more

@@ -3,12 +3,28 @@
 
 import csv
 import argparse
+import numpy as np
 import pandas as pd
+import pandas as pd2
 
 import matplotlib
 # Force matplotlib to not use any Xwindows backend.
 matplotlib.use('Agg')
+
+import matplotlib.pyplot as plt
 import seaborn as sns
+import seaborn as sns2
+
+import matplotlib.pylab as pyp
+import matplotlib.patches as mpatches
+
+def custom_legend(colors,labels, legend_location = 'upper left', legend_boundary = (1,1)):
+    # Create custom legend for colors
+    recs = []
+    for i in range(0,len(colors)):
+        recs.append(mpatches.Rectangle((0,0),1,1,fc=colors[i]))
+    pyp.legend(recs,labels,loc=legend_location, bbox_to_anchor=legend_boundary)
+
 
 
 # Add command line arguments. To see them, run "python scriptname.py --help"
@@ -98,29 +114,8 @@ for sizetuple in totalByteList:
         htmlFlagEnd = 1 # Reading html request has finished
     htmlMarkerList.append(sizetuple)
 
-
-df = pd.DataFrame(sizemarkerlist, columns = ['header', 'packetsize'])
-df['idx'] = range(1, len(df) + 1)
-
-# Make an ugly figure
-# sns_plot = sns.barplot(x="idx", y="packetsize", hue="header", data=df)
-# fig = sns_plot.get_figure()
-# fig.savefig("markers.png")
-
-# Make a nicer figure
-# Weird bar spacing issue: https://github.com/mwaskom/seaborn/issues/987
-# Fix via http://stackoverflow.com/a/36205574
-# and http://stackoverflow.com/a/36232271
-
-import matplotlib.pylab as pyp
-import matplotlib.patches as mpatches
-
-def custom_legend(colors,labels, legend_location = 'upper left', legend_boundary = (1,1)):
-    # Create custom legend for colors
-    recs = []
-    for i in range(0,len(colors)):
-        recs.append(mpatches.Rectangle((0,0),1,1,fc=colors[i]))
-    pyp.legend(recs,labels,loc=legend_location, bbox_to_anchor=legend_boundary)
+df = pd.DataFrame(sizemarkerlist, columns = ['header', 'Packet Size'])
+df['Packet'] = range(1, len(df) + 1)
 
 # Color boxplots by header
 header_list = pd.unique(df['header'])
@@ -128,14 +123,18 @@ header_list = pd.unique(df['header'])
 colors = sns.color_palette("Set2", len(header_list))
 color_dict = dict(zip(header_list, colors))
 
-sns_plot = sns.barplot(x="idx", y="packetsize", data=df, palette=df["header"].map(color_dict))
+plt.figure()
+sns_plot = sns.barplot(x="Packet", y="Packet Size", data=df, palette=df["header"].map(color_dict))
+ticks = np.arange(1, len(df)+1, 100)
+plt.xticks(ticks, (ticks-1))
+
 custom_legend(colors,header_list)
-fig = sns_plot.get_figure()
-fig.savefig("fingerprint-plot.png")
+plt.savefig("fingerprint-plot.png")
 
 
 # Insert number markers
 numberMarkerList = []
+onlyNumberMarkerList = []
 previousDirection = '+'
 numberCount = 0
 for sizetuple in htmlMarkerList:
@@ -145,11 +144,30 @@ for sizetuple in htmlMarkerList:
         pass
     elif direction != previousDirection: #Change in direction, insert number marker
         numberMarkerList.append(('N', numberCount))
+        onlyNumberMarkerList.append(('N', numberCount))
         previousDirection = direction
         numberCount = 0
     if direction in ['+', '-']:
         numberCount += 1
     numberMarkerList.append(sizetuple)
+    
+
+df = pd.DataFrame(onlyNumberMarkerList, columns = ['header', 'Number of Packets'])
+df['Index'] = range(1, len(df) + 1)
+
+# Color boxplots by header
+header_list = pd.unique(df['header'])
+# For more on colors: see http://seaborn.pydata.org/tutorial/color_palettes.html
+colors = sns.color_palette("Set2", len(header_list))
+color_dict = dict(zip(header_list, colors))
+
+plt.figure()
+sns_plot = sns.barplot(x="Index", y="Number of Packets", data=df, palette=df["header"].map(color_dict))
+ticks = np.arange(1, len(df)+1, 50)
+plt.xticks(ticks, (ticks-1))
+
+custom_legend(colors,header_list)
+plt.savefig("fingerprint-plot2.png")
 
 
 # Insert occurring packet size markers
@@ -206,5 +224,6 @@ packetList.append(('PP-', "%.2f" % (float((int(((((percentPoverN-.01)*100))/5)+1
  # Append the total number of packet markers for both outgoing and incoming traffic
 packetList.append(('NP+', (((nPacketsP-1)/15)+1)*15))
 packetList.append(('NP-', (((nPacketsN-1)/15)+1)*15))
+
 
 print packetList

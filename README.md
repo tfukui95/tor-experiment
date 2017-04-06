@@ -269,7 +269,7 @@ An OR has four kinds of keys: a secret id key, a secret onion key, a secret onio
 key ntor, and a fingerprint. The secret id key is similar to the authority identity
 key, and is used to sign the router's descriptor, TLS certificates, and to sign
 directories. A router descriptor contains the specifications of that router,
-including its keys, location, bandwidth, exit policy, and other minor details[5].
+including its keys, location, bandwidth, exit policy, and other minor details [5].
 The reason to sign directories comes from the necessity to constantly keep the
 directories updated about all of the ORs, so that the directory authority can
 provide up-to-date information to the OP and client. The secret onion key is a
@@ -277,7 +277,7 @@ key that is used when establishing a Tor circuit to pass traffic along its netwo
 These keys are not permanent unlike the identity key, and are changed every so
 often in order to prevent any form of compromise. The onion key also creates
 short-lived keys used to access TLS connections to communicate with one another
-and the user[5]. The secret onion key ntor is a short-term key used specifically
+and the user [5]. The secret onion key ntor is a short-term key used specifically
 for the opening of a tor circuit, when a three-way handshake is required. The
 fingerprint key, as the name suggests is a fingerprint of the identity key, used
 so that the identity key's location and security is preserved.
@@ -298,7 +298,7 @@ three parts: CircID, CMD, and DATA. CircID is the circuit identifier which speci
 which circuit is being referred to. CMD is the command to be done, and DATA is the
 payload, which contains specific instructions for the command. There are three
 main types of control commands for creating a connection: PADDING, CREATE/CREATED,
-and DESTROY[5]. Padding is a command used to keep a connection alive. The create,
+and DESTROY [5]. Padding is a command used to keep a connection alive. The create,
 created and destroy commands are used to build and break down a circuit. A CREATE
 cell's payload contains information on the handshake that is to be used to create
 a new connection. Relay cells have an additional relay header to identify that
@@ -378,7 +378,7 @@ From there a new strategy was developed in which a group of reliable and well-kn
 ORs called directory authorities (DA) would be responsible for keeping an update
 directory of the states and locations of all Tor routers. Each DA also acts as an
 HTTPS server for clients to access to gain the most up-to-date states of the Tor
-network[5]. The DA does not add ORs who do not have a proper identity key, which
+network [5]. The DA does not add ORs who do not have a proper identity key, which
 prevents attackers from creating fake nodes.
 
 The DA itself can also be vulnerable to attacks by an adversary, which makes the

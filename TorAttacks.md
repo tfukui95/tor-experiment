@@ -267,7 +267,7 @@ service is established in the first place, and seeing that traffic sent to a hid
 service is unique. The actual deanonymization of the circuit is done through a
 website fingerprinting attack, explained in a section above.
 
-## A Taxonomy of Tor Adversaries
+## Taxonomy of Tor Adversaries
 
 In order to better see how all of these adversaries of Tor are unique in of itself
 but also at the same have similarities amongst each other, I have made a taxonomy
