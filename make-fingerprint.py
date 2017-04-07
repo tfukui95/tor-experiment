@@ -1,11 +1,12 @@
 # This python script takes in a tshark traffic instance saved as a csv file,
-# and creates a fingerprint of that instance by
+# and creates a fingerprint of that instance by filtering out unneeded information
+# and creating a list of tuples of useful information. Lastly, a number of plots
+# and tables are also created to visualize the fingerprint.
 
 import csv
 import argparse
 import numpy as np
 import pandas as pd
-import pandas as pd2
 
 import matplotlib
 # Force matplotlib to not use any Xwindows backend.
@@ -13,10 +14,11 @@ matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt
 import seaborn as sns
-import seaborn as sns2
 
 import matplotlib.pylab as pyp
 import matplotlib.patches as mpatches
+
+from pandas.tools.plotting import table
 
 def custom_legend(colors,labels, legend_location = 'upper left', legend_boundary = (1,1)):
     # Create custom legend for colors
@@ -114,6 +116,7 @@ for sizetuple in totalByteList:
         htmlFlagEnd = 1 # Reading html request has finished
     htmlMarkerList.append(sizetuple)
 
+# Create a plot for incoming and outgoing packets, as well as size markers
 df = pd.DataFrame(sizemarkerlist, columns = ['header', 'Packet Size'])
 df['Packet'] = range(1, len(df) + 1)
 
@@ -125,6 +128,7 @@ color_dict = dict(zip(header_list, colors))
 
 plt.figure()
 sns_plot = sns.barplot(x="Packet", y="Packet Size", data=df, palette=df["header"].map(color_dict))
+plt.title('Packet Sizes and Size Markers')
 ticks = np.arange(1, len(df)+1, 100)
 plt.xticks(ticks, (ticks-1))
 
@@ -150,8 +154,8 @@ for sizetuple in htmlMarkerList:
     if direction in ['+', '-']:
         numberCount += 1
     numberMarkerList.append(sizetuple)
-    
 
+# Create a plot for just the number markers
 df = pd.DataFrame(onlyNumberMarkerList, columns = ['header', 'Number of Packets'])
 df['Index'] = range(1, len(df) + 1)
 
@@ -163,12 +167,22 @@ color_dict = dict(zip(header_list, colors))
 
 plt.figure()
 sns_plot = sns.barplot(x="Index", y="Number of Packets", data=df, palette=df["header"].map(color_dict))
+plt.title('Number Markers')
 ticks = np.arange(1, len(df)+1, 50)
 plt.xticks(ticks, (ticks-1))
 
 custom_legend(colors,header_list)
 plt.savefig("fingerprint-plot2.png")
 
+
+
+# This list will be for markers that are appended at the end, for creating a
+# table of useful marker information as part of the fingerprint
+endListMarkers = []
+
+ # Append total number of bytes markers
+endListMarkers.append(('TS+', ((totalSizeP-1)/10000+1)*10000))
+endListMarkers.append(('TS-', ((totalSizeN-1)/10000+1)*10000))
 
 # Insert occurring packet size markers
 occurringList = []
@@ -204,6 +218,9 @@ for sizetuple in numberMarkerList:
 occurringList.append(('OP+', (((len(uniqueP)-1)/2)+1)*2)) # Append occurring packet marker
 occurringList.append(('OP-', (((len(uniqueN)-1)/2)+1)*2))
 
+endListMarkers.append(('OP+', (((len(uniqueP)-1)/2)+1)*2))
+endListMarkers.append(('OP-', (((len(uniqueN)-1)/2)+1)*2))
+
 # Insert percent incoming/outgoing packet marker and total number of packets markers
 packetList = []
 nPacketsP = 0
@@ -225,5 +242,19 @@ packetList.append(('PP-', "%.2f" % (float((int(((((percentPoverN-.01)*100))/5)+1
 packetList.append(('NP+', (((nPacketsP-1)/15)+1)*15))
 packetList.append(('NP-', (((nPacketsN-1)/15)+1)*15))
 
+endListMarkers.append(('PP-', "%.2f" % (float((int(((((percentPoverN-.01)*100))/5)+1)*5))/100)))
+endListMarkers.append(('NP+', (((nPacketsP-1)/15)+1)*15))
+endListMarkers.append(('NP-', (((nPacketsN-1)/15)+1)*15))
+
+# Create a table for the special markers that are appended at the end of the list of tuples
+df = pd.DataFrame(endListMarkers, columns = ['Marker', 'Packet Information'])
+
+ax = plt.subplot(721, frame_on=False) # no visible frame
+ax.xaxis.set_visible(False)  # hide the x axis
+ax.yaxis.set_visible(False)  # hide the y axis
+
+table(ax, df, loc='center')  # where df is your data frame
+
+plt.savefig('fingerprinTable.png')
 
 print packetList

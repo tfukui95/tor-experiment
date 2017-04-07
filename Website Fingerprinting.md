@@ -280,7 +280,9 @@ A list of tuples, containing the type of data (whether a data packet or a marker
 and the data itself, will be outputted onto the display. During this process two plots
 are created as visuals of the fingerprint for the comparison part of our experiment
 later. The plots are saved as a PNG image file, and should be stored somewhere for
-later. We can use SCP (Secure Copy Protocol) to save the image from our remote Linux
+later. As an additional part of the fingerprint, a table is created, containing
+information about the other markers that are appended at the end of the list.
+We can use SCP (Secure Copy Protocol) to save the image from our remote Linux
 terminal to our local machine. Go to your GENI slice page, and click Details to
 get more information of your client VM.
 
@@ -296,11 +298,14 @@ Therefore for example in my case, the codes to run will be
 ```
 scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot.png engineeringPlot.png
 scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot2.png engineeringPlot2.png
+scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprinTable.png engineeringTable.png
 ```
 
 The file fingerprint-plot.png contains a plot of incoming and outgoing packets,
 as well as the size markers whenever the direction changes. The file fingerprint-plot2.png
-contains a plot of just the number markers in its own plot.
+contains a plot of just the number markers in its own plot. The table saved as
+fingerprinTable.png is a table of the additional markers such as total bytes sent,
+total packets sent, unique packet sizes, and percentage of incoming/outgoing packets.
 
 Now we must do the same for the other four sites. For Facebook:
 
@@ -317,6 +322,7 @@ python make-fingerprint.py --filename facebook.csv
 # After the fingerprinting is done, on the local terminal
 scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot.png facebookPlot.png
 scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot2.png facebookPlot2.png
+scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprinTable.png facebookTable.png
 ```
 
 Next for the fingerprint for Youtube:
@@ -334,6 +340,7 @@ python make-fingerprint.py --filename youtube.csv
 # After the fingerprinting is done, on the local terminal
 scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot.png youtubePlot.png
 scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot2.png youtubePlot2.png
+scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprinTable.png youtubeTable.png
 ```
 
 Next for the fingerprint for Reddit:
@@ -351,6 +358,7 @@ python make-fingerprint.py --filename reddit.csv
 # After the fingerprinting is done, on the local terminal
 scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot.png redditPlot.png
 scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot2.png redditPlot2.png
+scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprinTable.png redditTable.png
 ```
 
 Lastly, for the fingerprint for the Mets homepage:
@@ -368,6 +376,7 @@ python make-fingerprint.py --filename mets.csv
 # After the fingerprinting is done, on the local terminal
 scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot.png metsPlot.png
 scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot2.png metsPlot2.png
+scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprinTable.png metsTable.png
 ```
 
 ### Testing the Website Fingerprints
@@ -409,6 +418,7 @@ After the fingerprinting is done, on the local terminal, run
 ```
 scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot.png wfpPlot.png
 scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprint-plot2.png wfpPlot2.png
+scp -P 32570 tef243@pc2.instageni.maxgigapop.net:~/fingerprinTable.png wfpTable.png
 ```
 
 Open up wfpPlot.png and wfpPlot2.png on your local machine, and compare it with the other fingerprints.
