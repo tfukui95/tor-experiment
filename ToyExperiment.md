@@ -78,7 +78,7 @@ each VM.
 
 ### Installing the Tor Software
 
-To start, we install tor on all of the nodes *except* the web server using the
+To start, we install Tor on all of the nodes *except* the web server using the
 following steps:
 
 ```
@@ -129,9 +129,9 @@ In order to monitor when someone tries to access the webserver, run:
 sudo tail -f /var/log/apache2/access.log
 ```
 
-### Setting up the Directory Authority
+### Setting up the Directory Server
 
-Directory authorities help Tor clients learn the addresses of relays that make up the Tor network. Specifically, via the Tor documentation [1]:
+Directory servers (also known as directory authorities) help Tor clients learn the addresses of relays that make up the Tor network. Specifically, via the Tor documentation [1]:
 
 > How do clients know what the relays are, and how do they know that they have the right keys for them? Each relay has a long-term public signing key called the "identity key". Each directory authority additionally has a "directory signing key". The directory authorities provide a signed list of all the known relays, and in that list are a set of certificates from each relay (self-signed by their identity key) specifying their keys, locations, exit policies, and so on. So unless the adversary can control a majority of the directory authorities (as of 2012 there are 8 directory authorities), he can't trick the Tor client into using other Tor relays.
 >
@@ -346,7 +346,7 @@ at 192.168.1.4:7000 (CA36BEB3CDA5028BDD7B1E1F743929A81E26A5AA)
 which is promising - it seems to indicated that we are using our directory
 authority at 192.168.1.4 (the current host).
 
-### Setting up a Router
+### Setting up a Tor Router
 
 First, stop any currently running Tor process:
 

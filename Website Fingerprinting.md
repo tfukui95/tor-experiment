@@ -439,8 +439,19 @@ the keyboard to see whether your guess was correct.
 This is the end of the experiment portion of the thesis. To expand on this experiment,
 feel free to increase the number of sites, clients, marker types, etc. to make the
 experiment even more interesting and realistic. Using Wireshark to gain a better
-understanding of the packet traces is also recommended. Please refer to the Toy
-Experiment in Chapter 3 for more information on using Wireshark.
+understanding of the packet traces is also recommended. Wireshark can be downloaded from the company's [homepage](https://www.wireshark.org/).
+Besides downloading and installing the software, there is often no configuration
+necessary.
+
+Wireshark's default file extension is a pcap file, which the Tcpdump function can
+save its traffic to by the following:
+
+```
+sudo tcpdump -s 1514 -i any 'port <port_num>' -U -w - | tee <name_file>.pcap | tcpdump -nnxxXSs 1514 -r -
+```
+
+This will tell the function to listen on a certain port number, output the traffic
+onto the display, and to save it to a pcap file with the name that you specify.
 
 ## References
 
