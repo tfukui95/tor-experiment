@@ -411,28 +411,27 @@ Finally, start the Tor service on the router node with
 sudo /etc/init.d/tor restart
 ```
 
-On the directory server, check if it has been made aware of the newly
-added router by searching for its nickname in the log file. For example,
-if the router's nickname is `relay1`, check that it has been recognized
-on the directory server with
+We can check to see if the routers are beginning to be made aware of each other
+on the private Tor network by accessing the info.log file which we defined earlier
+in the torrc configuration file of each node. If each of the routers are to be made
+aware of each other, one of the handshakes, described above in Chapter 2, must take
+place. For example if we want to check whether relay3 has recognized relay2 and has
+performed a handshake, on the relay3 terminal we run:
 
 ```
-sudo cat /var/log/tor/debug.log | grep "relay1"
+sudo cat /var/log/tor/info.log | grep "192.168.4.2"
 ```
 
 You should see some output like
 
 ```
-Nov 23 13:06:29.000 [debug] router_parse_list_from_string(): Read router
-'$D2EB9948027BF5795FCA85182869FBFAA7C15B4C~router1 at 192.168.1.2', purpose 'general'
-Nov 23 13:06:29.000 [debug] dirserv_single_reachability_test(): Testing reachability
-of router1 at 192.168.1.2:5000.
-Nov 23 13:06:29.000 [info] dirserv_add_descriptor(): Added descriptor from 'router1'
-(source: 192.168.1.2): Descriptor accepted.
-Nov 23 13:06:29.000 [info] dirserv_orconn_tls_done(): Found router
-$D2EB9948027BF5795FCA85182869FBFAA7C15B4C~router1 at 192.168.1.2 to be reachable
-at 192.168.1.2:5000. Yay.
+Apr 18 13:25:12.000 [info] channel_tls_process_versions_cell(): Negotiated version 4 with 192.168.4.2:5000; Sending cells: CERTS
+Apr 18 13:25:12.000 [info] channel_tls_process_certs_cell(): Got some good certificates from 192.168.4.2:5000: Authenticated it.
+Apr 18 13:25:12.000 [info] channel_tls_process_auth_challenge_cell(): Got an AUTH_CHALLENGE cell from 192.168.4.2:5000: Sending authentication
+Apr 18 13:25:12.000 [info] channel_tls_process_netinfo_cell(): Got good NETINFO cell from 192.168.4.2:5000; OR connection is now open, using protocol version 4. Its ID digest is 4EDC07C69A02236F13A8C6E0261F23B618D5ED19. Our address is apparently 192.168.4.3.
 ```
+
+We can see that first the version is negotiated, and then relay3 sends a CERTS cell. After receiving a CERTS cell and AUTH_CHALLENGE from relay2, relay3 authenticates, and then both send a NETINFO cell, confirming their location and timestamp. We can see that the following handshake that they have used to establish their connection is the In-Protol handshake.
 
 Repeat all of the above commands for all of the router nodes that you create.
 
