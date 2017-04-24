@@ -135,7 +135,8 @@ ticks = np.arange(1, len(df)+1, 100)
 plt.xticks(ticks, (ticks-1))
 
 custom_legend(colors,header_list)
-plt.savefig("fingerprint-plot.png")
+filename = filename.replace(".csv", "")
+plt.savefig(filename + "-fingerprint-plot.png")
 
 
 # Insert number markers
@@ -176,8 +177,7 @@ ticks = np.arange(1, len(df)+1, 50)
 plt.xticks(ticks, (ticks-1))
 
 custom_legend(colors,header_list)
-plt.savefig("fingerprint-plot2.png")
-
+plt.savefig(filename + "-fingerprint-plot2.png")
 
 
 # This list will be for markers that are appended at the end, for creating a
@@ -259,6 +259,6 @@ ax.yaxis.set_visible(False)  # hide the y axis
 
 table(ax, df, loc='center')  # where df is your data frame
 
-plt.savefig('fingerprinTable.png')
+plt.savefig(filename + "-fingerprinTable.png")
 
 print packetList
