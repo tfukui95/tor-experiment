@@ -32,7 +32,7 @@ def custom_legend(colors,labels, legend_location = 'upper left', legend_boundary
 # Add command line arguments. To see them, run "python scriptname.py --help"
 parser = argparse.ArgumentParser(description='Process a packet capture.')
 parser.add_argument('--filename', default='finger.csv', help='Name of packet capture file.')
-parser.add_argument('--ip', default='192.168.1.100', help='IP address of client.')
+parser.add_argument('--ip', default='192.168.3.100', help='IP address of client.')
 
 args = parser.parse_args()
 
