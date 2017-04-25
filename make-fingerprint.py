@@ -168,7 +168,7 @@ plt.savefig(filename + "-fingerprint-grid.png")
 endListMarkers = []
 
 # Append HTML marker
-endListMarkers.append(('HTML', htmlMarkerSize))
+endListMarkers.append(('HTML', (htmlMarker/610+1)*600))
 
  # Append total number of bytes markers
 endListMarkers.append(('TS+', ((totalSizeP-1)/10000+1)*10000))
