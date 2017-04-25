@@ -100,6 +100,7 @@ previousDirection = '+'
 htmlMarker = 0
 htmlFlagStart = 0
 htmlFlagEnd = 0
+htmlMarkerSize = 0
 for sizetuple in totalByteList:
     direction = sizetuple[0]
     size = sizetuple[1]
@@ -115,29 +116,7 @@ for sizetuple in totalByteList:
         htmlMarkerList.append(('H', (htmlMarker/610+1)*600)) # Append the html marker
         htmlFlagEnd = 1 # Reading html request has finished
     htmlMarkerList.append(sizetuple)
-
-# Create a plot for incoming and outgoing packets, as well as size markers
-df = pd.DataFrame(sizemarkerlist, columns = ['header', 'Packet Size'])
-df['Packet'] = range(1, len(df) + 1)
-
-# Color boxplots by header
-header_list = pd.unique(df['header'])
-# For more on colors: see http://seaborn.pydata.org/tutorial/color_palettes.html
-colors = sns.color_palette("Set2", len(header_list))
-color_dict = dict(zip(header_list, colors))
-
-plt.figure()
-sns_plot = sns.barplot(x="Packet", y="Packet Size", data=df, palette=df["header"].map(color_dict))
-plt.title('Packet Sizes and Size Markers')
-plt.ylabel('Packet Size')
-plt.xlabel('Packet')
-ticks = np.arange(1, len(df)+1, 100)
-plt.xticks(ticks, (ticks-1))
-
-custom_legend(colors,header_list)
-filename = filename.replace(".csv", "")
-plt.savefig(filename + "-fingerprint-plot.png")
-
+    htmlMarkerSize = size
 
 # Insert number markers
 numberMarkerList = []
@@ -158,31 +137,38 @@ for sizetuple in htmlMarkerList:
         numberCount += 1
     numberMarkerList.append(sizetuple)
 
-# Create a plot for just the number markers
-df = pd.DataFrame(onlyNumberMarkerList, columns = ['header', 'Number of Packets'])
+newList = [tup for tup in numberMarkerList if tup[0] in ['S', 'N', '+', '-']]
+newNewList = []
+for newTup in newList:
+  if newTup[0]=='-':
+    newNewList.append(('Size and Direction',-1*newTup[1]))
+  elif newTup[0]=='+':
+    newNewList.append(('Size and Direction',newTup[1]))
+  elif newTup[0]=='N':
+    newNewList.append(('Number Marker', newTup[1]))
+  elif newTup[0]=='S':
+    newNewList.append(('Size Marker', newTup[1]))
+
+filename = filename.replace(".csv", "")
+
+df = pd.DataFrame(newNewList, columns = ['Header', 'Value'])
 df['Index'] = range(1, len(df) + 1)
 
-# Color boxplots by header
-header_list = pd.unique(df['header'])
-# For more on colors: see http://seaborn.pydata.org/tutorial/color_palettes.html
-colors = sns.color_palette("Set2", len(header_list))
-color_dict = dict(zip(header_list, colors))
-
+sns.set_style("white")
+sns.despine()
 plt.figure()
-sns_plot = sns.barplot(x="Index", y="Number of Packets", data=df, palette=df["header"].map(color_dict))
-plt.title('Number Markers')
-plt.ylabel('Number of Packets')
-plt.xlabel('Index')
-ticks = np.arange(1, len(df)+1, 50)
-plt.xticks(ticks, (ticks-1))
-
-custom_legend(colors,header_list)
-plt.savefig(filename + "-fingerprint-plot2.png")
-
+sns_plot = sns.FacetGrid(df, col='Header', sharex="row", sharey=False)
+sns_plot.map(sns.barplot, 'Index', 'Value').set_titles('{col_name}')
+sns_plot.set(xticks=[])
+sns_plot.set(xlabel='')
+plt.savefig(filename + "-fingerprint-grid.png")
 
 # This list will be for markers that are appended at the end, for creating a
 # table of useful marker information as part of the fingerprint
 endListMarkers = []
+
+# Append HTML marker
+endListMarkers.append(('HTML', htmlMarkerSize))
 
  # Append total number of bytes markers
 endListMarkers.append(('TS+', ((totalSizeP-1)/10000+1)*10000))
@@ -253,12 +239,14 @@ endListMarkers.append(('NP-', (((nPacketsN-1)/15)+1)*15))
 # Create a table for the special markers that are appended at the end of the list of tuples
 df = pd.DataFrame(endListMarkers, columns = ['Marker', 'Packet Information'])
 
+plt.figure()
 ax = plt.subplot(721, frame_on=False) # no visible frame
 ax.xaxis.set_visible(False)  # hide the x axis
 ax.yaxis.set_visible(False)  # hide the y axis
 
 table(ax, df, loc='center')  # where df is your data frame
 
-plt.savefig(filename + "-fingerprinTable.png")
+plt.savefig(filename + "-fingerprint-table.png")
+plt.savefig(filename + "-fingerprint-table.pdf")
 
 print packetList
