@@ -1,5 +1,5 @@
-sudo sh -c 'echo "deb http://deb.torproject.org/torproject.org trusty main" >> /etc/apt/sources.list'
-sudo sh -c 'echo "deb-src http://deb.torproject.org/torproject.org trusty main" >> /etc/apt/sources.list'
+sudo sh -c 'echo "deb http://deb.torproject.org/torproject.org $(lsb_release -c -s) main" >> /etc/apt/sources.list'
+sudo sh -c 'echo "deb-src http://deb.torproject.org/torproject.org $(lsb_release -c -s) main" >> /etc/apt/sources.list'
 
 sudo gpg --keyserver keys.gnupg.net --recv 886DDD89
 sudo gpg --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | sudo apt-key add -
@@ -12,7 +12,7 @@ sudo /etc/init.d/tor stop
 sudo -u debian-tor tor --list-fingerprint --orport 1 \
     --dirserver "x 127.0.0.1:1 ffffffffffffffffffffffffffffffffffffffff" \
     --datadirectory /var/lib/tor/
-    
+
 sudo wget -O /etc/tor/torrc http://directoryserver/router.conf
 
 HOSTNAME=$(hostname -s)
