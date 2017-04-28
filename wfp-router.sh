@@ -13,14 +13,12 @@ sudo -u debian-tor tor --list-fingerprint --orport 1 \
     --dirserver "x 127.0.0.1:1 ffffffffffffffffffffffffffffffffffffffff" \
     --datadirectory /var/lib/tor/
 
-sudo wget -O /etc/tor/torrc http://directoryserver/router.conf
+sudo wget -O /etc/tor/torrc http://directoryserver/relay.conf
 
 HOSTNAME=$(hostname -s)
 echo "Nickname $HOSTNAME" | sudo tee -a /etc/tor/torrc
 ADDRESS=$(hostname -I | tr " " "\n" | grep "192.168")
-for A in $ADDRESS; do
-  echo "Address $A" | sudo tee -a /etc/tor/torrc
-done
+echo "Address $ADDRESS" | sudo tee -a /etc/tor/torrc
 
 sudo cat /etc/tor/torrc
 

@@ -45,7 +45,7 @@ ControlPort 9051
 Address 192.168.1.4
 DirPort 7000
 # An exit policy that allows exiting to IPv4 LAN
-ExitPolicy accept 192.168.1.0/24:*
+ExitPolicy accept 192.168.0.0/16:*
 
 AuthoritativeDirectory 1
 V3AuthoritativeDirectory 1
@@ -59,7 +59,7 @@ EOL"
 sudo apt-get update
 sudo apt-get -y install apache2 php5 libapache2-mod-php5
 
-sudo bash -c "cat >/var/www/html/router.conf <<EOL
+sudo bash -c "cat >/var/www/html/relay.conf <<EOL
 TestingTorNetwork 1
 DataDirectory /var/lib/tor
 RunAsDaemon 1
@@ -79,10 +79,7 @@ OrPort 5000
 ControlPort 9051
 
 # An exit policy that allows exiting to IPv4 LAN
-ExitPolicy accept 192.168.1.0/24:*
-ExitPolicy accept 192.168.2.0/24:*
-ExitPolicy accept 192.168.3.0/24:*
-ExitPolicy accept 192.168.4.0/24:*
+ExitPolicy accept 192.168.0.0/16:*
 EOL"
 
 sudo bash -c "cat >/var/www/html/client.conf <<EOL

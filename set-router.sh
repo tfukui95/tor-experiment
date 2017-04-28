@@ -18,9 +18,7 @@ sudo wget -O /etc/tor/torrc http://directoryserver/router.conf
 HOSTNAME=$(hostname -s)
 echo "Nickname $HOSTNAME" | sudo tee -a /etc/tor/torrc
 ADDRESS=$(hostname -I | tr " " "\n" | grep "192.168")
-for A in $ADDRESS; do
-  echo "Address $A" | sudo tee -a /etc/tor/torrc
-done
+echo "Address $ADDRESS" | sudo tee -a /etc/tor/torrc
 
 sudo cat /etc/tor/torrc
 
