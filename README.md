@@ -389,6 +389,10 @@ signed by a number of DAs to consider it trustworthy. This process of synchroniz
 with other DAs is called consensus. The DAs come to a new consensus every hour
 and the consensus is frequently checked to make sure that it is not too old [7].
 
+## Notes
+
+You can find a link to my thesis defense [here](https://docs.google.com/presentation/d/1MUq0iiiuTazeB9wU_rOQFi5fCaD49f-FzRwwq74pF2A/edit#slide=id.p).
+
 ## References
 
   [1] "What is HTTPS?" [https://www.instantssl.com/ssl-certificate-products/https.html](https://www.instantssl.com/ssl-certificate-products/https.html)  
