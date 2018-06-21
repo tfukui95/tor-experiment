@@ -9,7 +9,7 @@ sudo apt-get -y --force-yes install tor deb.torproject.org-keyring vim curl tor-
 sudo pip install stem
 
 wget https://raw.githubusercontent.com/tfukui95/tor-experiment/master/utilities/exit-relay.py
-wget https://raw.githubusercontent.com/tfukui95/tor-experiment/master/utilities/list-circuits.p
+wget https://raw.githubusercontent.com/tfukui95/tor-experiment/master/utilities/list-circuits.py
 
 sudo /etc/init.d/tor stop
 
